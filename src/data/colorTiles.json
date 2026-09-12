@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "brown",
+    "name": "Brown",
+    "hex": "#8b7261",
+    "url": "/collections/all-products?color=brown",
+    "image": "/storage/products/01M16W1273GJ7PBYV9ABMCERD6.png"
+  },
+  {
+    "slug": "mint",
+    "name": "Mint",
+    "hex": "#c8d5c5",
+    "url": "/collections/all-products?color=mint",
+    "image": "/storage/products/01M171XDJKR8N8S3GVH9SJ2GD7.png"
+  },
+  {
+    "slug": "pastel",
+    "name": "PASTEL",
+    "hex": "#e9e4da",
+    "url": "/collections/all-products?color=pastel",
+    "image": "/storage/products/01M1725BYF378AAA07WV611QP6.png"
+  },
+  {
+    "slug": "black",
+    "name": "Black",
+    "hex": "#2e2e2e",
+    "url": "/collections/all-products?color=black",
+    "image": "/storage/products/01M17213VK500NQYQR6FV534XP.png"
+  },
+  {
+    "slug": "blue",
+    "name": "Blue",
+    "hex": "#afc3d2",
+    "url": "/collections/all-products?color=blue",
+    "image": "/storage/products/01M17329AJ7CX6TNJZT43C6QRG.png"
+  },
+  {
+    "slug": "gray",
+    "name": "Gray",
+    "hex": "#b9b9b9",
+    "url": "/collections/all-products?color=gray",
+    "image": "/storage/products/01M1736ACHATYQ07SQWJB7FA71.png"
+  }
+]

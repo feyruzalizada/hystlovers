@@ -1,0 +1,105 @@
+{
+  "name": "Hystlovers",
+  "currency": {
+    "code": "AZN",
+    "symbol": "₼"
+  },
+  "freeShippingThreshold": 100,
+  "shippingFee": 5,
+  "navigation": [
+    {
+      "labelKey": "nav.new_in",
+      "url": "/collections/new-in",
+      "children": []
+    },
+    {
+      "label": "Sets",
+      "url": "/collections/sets",
+      "children": []
+    },
+    {
+      "label": "Single Pieces",
+      "url": "/collections/single-pieces",
+      "children": [
+        {
+          "label": "T-Shirts",
+          "url": "/collections/t-shirts"
+        },
+        {
+          "label": "Tank Tops",
+          "url": "/collections/tank-tops"
+        },
+        {
+          "label": "Sweatshirts",
+          "url": "/collections/sweatshirts"
+        },
+        {
+          "label": "Shorts",
+          "url": "/collections/shorts"
+        },
+        {
+          "label": "Accessories",
+          "url": "/collections/accessories"
+        }
+      ]
+    },
+    {
+      "labelKey": "nav.all_products",
+      "url": "/collections/all-products",
+      "children": []
+    },
+    {
+      "labelKey": "nav.blog",
+      "url": "/blog",
+      "children": []
+    }
+  ],
+  "footer": [
+    {
+      "titleKey": "footer.group.company",
+      "links": [
+        {
+          "label": "About Us",
+          "url": "/pages/about-us"
+        },
+        {
+          "labelKey": "nav.contact",
+          "url": "/contact"
+        },
+        {
+          "label": "Careers",
+          "url": "/pages/careers"
+        },
+        {
+          "label": "Washing & Care Instructions",
+          "url": "/pages/care-instructions"
+        }
+      ]
+    },
+    {
+      "titleKey": "footer.group.help",
+      "links": [
+        {
+          "label": "Order Tracking",
+          "url": "/pages/order-tracking"
+        },
+        {
+          "label": "Shipping & Delivery",
+          "url": "/pages/shipping-and-delivery"
+        },
+        {
+          "label": "Return Policy",
+          "url": "/pages/return-policy"
+        },
+        {
+          "label": "Privacy Policy",
+          "url": "/pages/privacy-policy"
+        },
+        {
+          "label": "Terms of Sale",
+          "url": "/pages/terms-of-sale"
+        }
+      ]
+    }
+  ]
+}

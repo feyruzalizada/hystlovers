@@ -1,0 +1,72 @@
+{
+  "ev-geyimini-nece-secmeli": {
+    "az": {
+      "slug": "ev-geyimini-nece-secmeli",
+      "title": "Ev geyimini necə seçməli",
+      "excerpt": "Rahatlıq və zəriflik arasında balansı tapmaq üçün üç sadə qayda.",
+      "cover": null,
+      "url": "/az/blog/ev-geyimini-nece-secmeli",
+      "publishedAt": "06.09.2026",
+      "publishedAtIso": "2026-09-06",
+      "body": "<p>Ev geyimi gündəlik həyatınızın ən çox vaxt keçirdiyiniz hissəsidir. Ona görə də seçim təsadüfi olmamalıdır.</p><h2>Üç qayda</h2><ul><li><p>Parçaya toxunun — dəriyə xoş gəlməlidir.</p></li><li><p>Ölçünü bir beden böyük seçməkdən çəkinməyin.</p></li><li><p>Rəngləri bir-biri ilə uyğunlaşan dəstlər alın.</p></li></ul>",
+      "images": []
+    },
+    "en": {
+      "slug": "ev-geyimini-nece-secmeli",
+      "title": "How to choose loungewear",
+      "excerpt": "Three simple rules for balancing comfort and elegance.",
+      "cover": null,
+      "url": "/en/blog/ev-geyimini-nece-secmeli",
+      "publishedAt": "06.09.2026",
+      "publishedAtIso": "2026-09-06",
+      "body": "<p>Loungewear is what you spend most of your life in, so the choice deserves more than a moment.</p><h2>Three rules</h2><ul><li><p>Touch the fabric — it has to feel kind against the skin.</p></li><li><p>Do not be afraid to size up.</p></li><li><p>Buy sets whose colours work together.</p></li></ul>",
+      "images": []
+    },
+    "ru": {
+      "slug": "ev-geyimini-nece-secmeli",
+      "title": "Как выбрать домашнюю одежду",
+      "excerpt": "Три простых правила, чтобы найти баланс между комфортом и элегантностью.",
+      "cover": null,
+      "url": "/ru/blog/ev-geyimini-nece-secmeli",
+      "publishedAt": "06.09.2026",
+      "publishedAtIso": "2026-09-06",
+      "body": "<p>В домашней одежде вы проводите большую часть жизни, поэтому выбор заслуживает большего, чем пара секунд.</p><h2>Три правила</h2><ul><li><p>Потрогайте ткань — она должна быть приятной коже.</p></li><li><p>Не бойтесь взять размер больше.</p></li><li><p>Покупайте комплекты, цвета которых сочетаются.</p></li></ul>",
+      "images": []
+    }
+  },
+  "bambuk-parcanin-sirri": {
+    "az": {
+      "slug": "bambuk-parcanin-sirri",
+      "title": "Bambuk parçanın sirri",
+      "excerpt": "Niyə bambuk lifini seçirik və ona necə qulluq etmək lazımdır.",
+      "cover": null,
+      "url": "/az/blog/bambuk-parcanin-sirri",
+      "publishedAt": "26.08.2026",
+      "publishedAtIso": "2026-08-26",
+      "body": "<p>Bambuk lifi yumşaqlığı ilə pambığı, nəfəs alması ilə isə kətanı xatırladır. Dərini qıcıqlandırmır və gün ərzində temperaturu tarazlayır.</p><h2>Qulluq</h2><p>30 dərəcədə zərif rejimdə yuyun, quruducudan istifadə etməyin. Parça ilk yuyuşdan sonra daha da yumşalır.</p>",
+      "images": []
+    },
+    "en": {
+      "slug": "bambuk-parcanin-sirri",
+      "title": "The secret of bamboo fabric",
+      "excerpt": "Why we choose bamboo fibre, and how to look after it.",
+      "cover": null,
+      "url": "/en/blog/bambuk-parcanin-sirri",
+      "publishedAt": "26.08.2026",
+      "publishedAtIso": "2026-08-26",
+      "body": "<p>Bamboo fibre is as soft as cotton and as breathable as linen. It does not irritate the skin and balances temperature through the day.</p><h2>Care</h2><p>Wash at 30° on a gentle cycle and skip the tumble dryer. The fabric only gets softer after the first wash.</p>",
+      "images": []
+    },
+    "ru": {
+      "slug": "bambuk-parcanin-sirri",
+      "title": "Секрет бамбуковой ткани",
+      "excerpt": "Почему мы выбираем бамбуковое волокно и как за ним ухаживать.",
+      "cover": null,
+      "url": "/ru/blog/bambuk-parcanin-sirri",
+      "publishedAt": "26.08.2026",
+      "publishedAtIso": "2026-08-26",
+      "body": "<p>Бамбуковое волокно мягкое, как хлопок, и дышит, как лён. Оно не раздражает кожу и весь день удерживает комфортную температуру.</p><h2>Уход</h2><p>Стирайте при 30° в деликатном режиме и не используйте сушильную машину. После первой стирки ткань становится ещё мягче.</p>",
+      "images": []
+    }
+  }
+}

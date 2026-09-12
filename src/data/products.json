@@ -1,0 +1,530 @@
+[
+  {
+    "slug": "t-shirt-brown",
+    "name": "LOVE T-SHIRT - BROWN",
+    "series": "LOVE",
+    "item": "T-Shirt",
+    "type": "single",
+    "category": "T-Shirts",
+    "category_slug": "t-shirts",
+    "fabric": "Cotton",
+    "price": 55,
+    "compare_at": null,
+    "color": {
+      "slug": "brown",
+      "name": "Brown",
+      "hex": "#8b7261"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "100% cotton",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "100% cotton",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M16W1273GJ7PBYV9ABMCERD6.png",
+      "/storage/products/01M16W1273GJ7PBYV9ABMCERD6.png"
+    ]
+  },
+  {
+    "slug": "t-shirt-mint",
+    "name": "LOVE T-SHIRT - MINT",
+    "series": "LOVE",
+    "item": "T-Shirt",
+    "type": "single",
+    "category": "T-Shirts",
+    "category_slug": "t-shirts",
+    "fabric": "Cotton",
+    "price": 55,
+    "compare_at": null,
+    "color": {
+      "slug": "mint",
+      "name": "Mint",
+      "hex": "#c8d5c5"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "100% cotton",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "100% cotton",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M171XDJKR8N8S3GVH9SJ2GD7.png",
+      "/storage/products/01M171XDJKR8N8S3GVH9SJ2GD7.png"
+    ]
+  },
+  {
+    "slug": "kai-t-shirt-ecru",
+    "name": "LOVE T-SHIRT - PASTEL",
+    "series": "LOVE",
+    "item": "T-Shirt",
+    "type": "single",
+    "category": "T-Shirts",
+    "category_slug": "t-shirts",
+    "fabric": "Cotton",
+    "price": 55,
+    "compare_at": null,
+    "color": {
+      "slug": "pastel",
+      "name": "PASTEL",
+      "hex": "#e9e4da"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": false,
+        "remaining": null
+      },
+      "M/L": {
+        "available": false,
+        "remaining": null
+      }
+    },
+    "in_stock": false,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "100% cotton",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "100% cotton",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M1725BYF378AAA07WV611QP6.png",
+      "/storage/products/01M1725BYF378AAA07WV611QP6.png"
+    ]
+  },
+  {
+    "slug": "kai-t-shirt-black",
+    "name": "LOVE T-SHIRT - BLACK",
+    "series": "LOVE",
+    "item": "T-Shirt",
+    "type": "single",
+    "category": "T-Shirts",
+    "category_slug": "t-shirts",
+    "fabric": "Cotton",
+    "price": 55,
+    "compare_at": null,
+    "color": {
+      "slug": "black",
+      "name": "Black",
+      "hex": "#2e2e2e"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "100% cotton",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "100% cotton",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M17213VK500NQYQR6FV534XP.png",
+      "/storage/products/01M17213VK500NQYQR6FV534XP.png"
+    ]
+  },
+  {
+    "slug": "tank-top-ecru",
+    "name": "LOVE TANK TOP - PASTEL",
+    "series": "LOVE",
+    "item": "Tank Top",
+    "type": "single",
+    "category": "Tank Tops",
+    "category_slug": "tank-tops",
+    "fabric": "Modal",
+    "price": 45,
+    "compare_at": null,
+    "color": {
+      "slug": "pastel",
+      "name": "PASTEL",
+      "hex": "#e9e4da"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "48% modal, 48% cotton, 4% elastane",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Modal fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "48% modal, 48% cotton, 4% elastane",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M172TD5FNGY177PN3E6JKA54.png",
+      "/storage/products/01M172TD5FNGY177PN3E6JKA54.png"
+    ]
+  },
+  {
+    "slug": "kai-tank-top-black",
+    "name": "LOVE TANK TOP - BLACK",
+    "series": "LOVE",
+    "item": "Tank Top",
+    "type": "single",
+    "category": "Tank Tops",
+    "category_slug": "tank-tops",
+    "fabric": "Modal",
+    "price": 45,
+    "compare_at": null,
+    "color": {
+      "slug": "black",
+      "name": "Black",
+      "hex": "#2e2e2e"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "48% modal, 48% cotton, 4% elastane",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Modal fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "48% modal, 48% cotton, 4% elastane",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M172YZ2KMA1SHZKGW46NHZDF.png",
+      "/storage/products/01M172YZ2KMA1SHZKGW46NHZDF.png"
+    ]
+  },
+  {
+    "slug": "kai-tank-top-blue",
+    "name": "LOVE TANK TOP - BLUE",
+    "series": "LOVE",
+    "item": "Tank Top",
+    "type": "single",
+    "category": "Tank Tops",
+    "category_slug": "tank-tops",
+    "fabric": "Modal",
+    "price": 45,
+    "compare_at": null,
+    "color": {
+      "slug": "blue",
+      "name": "Blue",
+      "hex": "#afc3d2"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": false,
+        "remaining": null
+      },
+      "M/L": {
+        "available": false,
+        "remaining": null
+      }
+    },
+    "in_stock": false,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "48% modal, 48% cotton, 4% elastane",
+    "set_parts": null,
+    "description": "From the KAI series, where carefully selected Modal fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "48% modal, 48% cotton, 4% elastane",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M17329AJ7CX6TNJZT43C6QRG.png",
+      "/storage/products/01M17329AJ7CX6TNJZT43C6QRG.png"
+    ]
+  },
+  {
+    "slug": "aditya-dress-black",
+    "name": "LOVE SWEATSHIRT - BLACK",
+    "series": "LOVE",
+    "item": "Sweatshirt",
+    "type": "single",
+    "category": "Sweatshirts",
+    "category_slug": "sweatshirts",
+    "fabric": "Modal",
+    "price": 65,
+    "compare_at": null,
+    "color": {
+      "slug": "black",
+      "name": "Black",
+      "hex": "#2e2e2e"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "95% modal, 5% elastane",
+    "set_parts": null,
+    "description": "From the ADITYA series, where carefully selected Modal fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "95% modal, 5% elastane",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M173BAWKQ4C2D7D4KXA20YB5.png",
+      "/storage/products/01M173BAWKQ4C2D7D4KXA20YB5.png"
+    ]
+  },
+  {
+    "slug": "ari-sweatshirt-gray",
+    "name": "LOVE SWEATSHIRT - GRAY",
+    "series": "LOVE",
+    "item": "Sweatshirt",
+    "type": "single",
+    "category": "Sweatshirts",
+    "category_slug": "sweatshirts",
+    "fabric": "Cotton",
+    "price": 65,
+    "compare_at": null,
+    "color": {
+      "slug": "gray",
+      "name": "Gray",
+      "hex": "#b9b9b9"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "80% cotton, 20% polyester",
+    "set_parts": null,
+    "description": "From the ARI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "80% cotton, 20% polyester",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M1736ACHATYQ07SQWJB7FA71.png",
+      "/storage/products/01M1736ACHATYQ07SQWJB7FA71.png"
+    ]
+  },
+  {
+    "slug": "ari-sweatshirt",
+    "name": "LOVE SWEATSHIRT - PASTEL",
+    "series": "LOVE",
+    "item": "Sweatshirt",
+    "type": "single",
+    "category": "Sweatshirts",
+    "category_slug": "sweatshirts",
+    "fabric": "Cotton",
+    "price": 65,
+    "compare_at": null,
+    "color": {
+      "slug": "pastel",
+      "name": "PASTEL",
+      "hex": "#e9e4da"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": true,
+        "remaining": null
+      },
+      "M/L": {
+        "available": true,
+        "remaining": null
+      }
+    },
+    "in_stock": true,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "80% cotton, 20% polyester",
+    "set_parts": null,
+    "description": "From the ARI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "80% cotton, 20% polyester",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M17398RYBRC19GN4MHBF9NZH.png",
+      "/storage/products/01M17398RYBRC19GN4MHBF9NZH.png"
+    ]
+  },
+  {
+    "slug": "ari-sweatshirt-brown",
+    "name": "LOVE SWEATSHIRT - BROWN",
+    "series": "LOVE",
+    "item": "Sweatshirt",
+    "type": "single",
+    "category": "Sweatshirts",
+    "category_slug": "sweatshirts",
+    "fabric": "Cotton",
+    "price": 65,
+    "compare_at": null,
+    "color": {
+      "slug": "brown",
+      "name": "Brown",
+      "hex": "#8b7261"
+    },
+    "sizes": [
+      "XS/S",
+      "M/L"
+    ],
+    "size_stock": {
+      "XS/S": {
+        "available": false,
+        "remaining": null
+      },
+      "M/L": {
+        "available": false,
+        "remaining": null
+      }
+    },
+    "in_stock": false,
+    "is_preorder": false,
+    "preorder_ships_at": null,
+    "is_new": true,
+    "composition": "80% cotton, 20% polyester",
+    "set_parts": null,
+    "description": "From the ARI series, where carefully selected Cotton fabric meets an elegant design language. Crafted for all-day comfort and a timeless silhouette.",
+    "features": [
+      "80% cotton, 20% polyester",
+      "Soft, breathable fabric",
+      "Model is 1.75m tall and wears size XS/S",
+      "Consciously made in Türkiye"
+    ],
+    "images": [
+      "/storage/products/01M173EDTHDPK1AWTB2T4D14FA.png",
+      "/storage/products/01M173EDTHDPK1AWTB2T4D14FA.png"
+    ]
+  }
+]

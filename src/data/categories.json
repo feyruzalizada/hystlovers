@@ -1,0 +1,56 @@
+[
+  {
+    "slug": "new-in",
+    "name": null,
+    "labelKey": "nav.new_in",
+    "parent": null
+  },
+  {
+    "slug": "sets",
+    "name": "Sets",
+    "labelKey": null,
+    "parent": null
+  },
+  {
+    "slug": "single-pieces",
+    "name": "Single Pieces",
+    "labelKey": null,
+    "parent": null
+  },
+  {
+    "slug": "t-shirts",
+    "name": "T-Shirts",
+    "labelKey": null,
+    "parent": "single-pieces"
+  },
+  {
+    "slug": "tank-tops",
+    "name": "Tank Tops",
+    "labelKey": null,
+    "parent": "single-pieces"
+  },
+  {
+    "slug": "sweatshirts",
+    "name": "Sweatshirts",
+    "labelKey": null,
+    "parent": "single-pieces"
+  },
+  {
+    "slug": "shorts",
+    "name": "Shorts",
+    "labelKey": null,
+    "parent": "single-pieces"
+  },
+  {
+    "slug": "accessories",
+    "name": "Accessories",
+    "labelKey": null,
+    "parent": "single-pieces"
+  },
+  {
+    "slug": "all-products",
+    "name": null,
+    "labelKey": "nav.all_products",
+    "parent": null
+  }
+]

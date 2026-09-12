@@ -1,0 +1,114 @@
+{
+  "about-us": {
+    "az": {
+      "title": "About Us",
+      "body": "<p>A timeless world where carefully selected fabrics meet an elegant design language, and quality blends with simplicity.</p>\n<p>Our brand is built on quiet elegance, conscious production and a deep respect for detail. Unnoticed touches of luxury, thoughtful manufacturing and devotion to craftsmanship are at the heart of every piece we make.</p>\n<p>Hystlovers is not seasonal fashion — it is a lifestyle you own. Our pieces are designed not for trends, but to stay with you for years.</p>"
+    },
+    "en": {
+      "title": "About Us",
+      "body": "<p>A timeless world where carefully selected fabrics meet an elegant design language, and quality blends with simplicity.</p>\n<p>Our brand is built on quiet elegance, conscious production and a deep respect for detail. Unnoticed touches of luxury, thoughtful manufacturing and devotion to craftsmanship are at the heart of every piece we make.</p>\n<p>Hystlovers is not seasonal fashion — it is a lifestyle you own. Our pieces are designed not for trends, but to stay with you for years.</p>"
+    },
+    "ru": {
+      "title": "About Us",
+      "body": "<p>A timeless world where carefully selected fabrics meet an elegant design language, and quality blends with simplicity.</p>\n<p>Our brand is built on quiet elegance, conscious production and a deep respect for detail. Unnoticed touches of luxury, thoughtful manufacturing and devotion to craftsmanship are at the heart of every piece we make.</p>\n<p>Hystlovers is not seasonal fashion — it is a lifestyle you own. Our pieces are designed not for trends, but to stay with you for years.</p>"
+    }
+  },
+  "careers": {
+    "az": {
+      "title": "Careers",
+      "body": "<p>At Hystlovers, we value quiet elegance, conscious production and a deep respect for detail.</p>\n<p>To apply for open positions, send your resume to careers@hystlovers.com.</p>"
+    },
+    "en": {
+      "title": "Careers",
+      "body": "<p>At Hystlovers, we value quiet elegance, conscious production and a deep respect for detail.</p>\n<p>To apply for open positions, send your resume to careers@hystlovers.com.</p>"
+    },
+    "ru": {
+      "title": "Careers",
+      "body": "<p>At Hystlovers, we value quiet elegance, conscious production and a deep respect for detail.</p>\n<p>To apply for open positions, send your resume to careers@hystlovers.com.</p>"
+    }
+  },
+  "care-instructions": {
+    "az": {
+      "title": "Washing & Care Instructions",
+      "body": "<p>To extend the life of your garments, wash at 30 degrees on a delicate cycle with similar colors.</p>\n<p>Do not tumble dry. Iron inside out at low temperature.</p>\n<p>Lay viscose and modal pieces flat to dry instead of hanging them.</p>"
+    },
+    "en": {
+      "title": "Washing & Care Instructions",
+      "body": "<p>To extend the life of your garments, wash at 30 degrees on a delicate cycle with similar colors.</p>\n<p>Do not tumble dry. Iron inside out at low temperature.</p>\n<p>Lay viscose and modal pieces flat to dry instead of hanging them.</p>"
+    },
+    "ru": {
+      "title": "Washing & Care Instructions",
+      "body": "<p>To extend the life of your garments, wash at 30 degrees on a delicate cycle with similar colors.</p>\n<p>Do not tumble dry. Iron inside out at low temperature.</p>\n<p>Lay viscose and modal pieces flat to dry instead of hanging them.</p>"
+    }
+  },
+  "order-tracking": {
+    "az": {
+      "title": "Order Tracking",
+      "body": "<p>Once your order has shipped, your tracking number will be sent by e-mail and SMS.</p>\n<p>You can follow your shipment on the carrier&#039;s website using your tracking number.</p>"
+    },
+    "en": {
+      "title": "Order Tracking",
+      "body": "<p>Once your order has shipped, your tracking number will be sent by e-mail and SMS.</p>\n<p>You can follow your shipment on the carrier&#039;s website using your tracking number.</p>"
+    },
+    "ru": {
+      "title": "Order Tracking",
+      "body": "<p>Once your order has shipped, your tracking number will be sent by e-mail and SMS.</p>\n<p>You can follow your shipment on the carrier&#039;s website using your tracking number.</p>"
+    }
+  },
+  "shipping-and-delivery": {
+    "az": {
+      "title": "Shipping & Delivery",
+      "body": "<p>Orders are shipped within 1-3 business days.</p>\n<p>Shipping is free on orders over 2,500.00TL.</p>\n<p>Delivery takes 1-4 business days depending on the carrier.</p>"
+    },
+    "en": {
+      "title": "Shipping & Delivery",
+      "body": "<p>Orders are shipped within 1-3 business days.</p>\n<p>Shipping is free on orders over 2,500.00TL.</p>\n<p>Delivery takes 1-4 business days depending on the carrier.</p>"
+    },
+    "ru": {
+      "title": "Shipping & Delivery",
+      "body": "<p>Orders are shipped within 1-3 business days.</p>\n<p>Shipping is free on orders over 2,500.00TL.</p>\n<p>Delivery takes 1-4 business days depending on the carrier.</p>"
+    }
+  },
+  "return-policy": {
+    "az": {
+      "title": "Return Policy",
+      "body": "<p>You may return your items within 14 days of delivery.</p>\n<p>Returned items must be unused with all tags attached.</p>\n<p>To request a return, please reach out via our contact page.</p>"
+    },
+    "en": {
+      "title": "Return Policy",
+      "body": "<p>You may return your items within 14 days of delivery.</p>\n<p>Returned items must be unused with all tags attached.</p>\n<p>To request a return, please reach out via our contact page.</p>"
+    },
+    "ru": {
+      "title": "Return Policy",
+      "body": "<p>You may return your items within 14 days of delivery.</p>\n<p>Returned items must be unused with all tags attached.</p>\n<p>To request a return, please reach out via our contact page.</p>"
+    }
+  },
+  "privacy-policy": {
+    "az": {
+      "title": "Privacy Policy",
+      "body": "<p>Your personal data is processed solely for order fulfilment, in accordance with applicable data protection law.</p>\n<p>Your data is never shared with third parties and is deleted at the end of the legal retention period.</p>"
+    },
+    "en": {
+      "title": "Privacy Policy",
+      "body": "<p>Your personal data is processed solely for order fulfilment, in accordance with applicable data protection law.</p>\n<p>Your data is never shared with third parties and is deleted at the end of the legal retention period.</p>"
+    },
+    "ru": {
+      "title": "Privacy Policy",
+      "body": "<p>Your personal data is processed solely for order fulfilment, in accordance with applicable data protection law.</p>\n<p>Your data is never shared with third parties and is deleted at the end of the legal retention period.</p>"
+    }
+  },
+  "terms-of-sale": {
+    "az": {
+      "title": "Terms of Sale",
+      "body": "<p>This agreement sets out the terms of the sales relationship established electronically between the seller and the buyer.</p>\n<p>The consumer may exercise their right of withdrawal and return the purchased item within 14 days.</p>"
+    },
+    "en": {
+      "title": "Terms of Sale",
+      "body": "<p>This agreement sets out the terms of the sales relationship established electronically between the seller and the buyer.</p>\n<p>The consumer may exercise their right of withdrawal and return the purchased item within 14 days.</p>"
+    },
+    "ru": {
+      "title": "Terms of Sale",
+      "body": "<p>This agreement sets out the terms of the sales relationship established electronically between the seller and the buyer.</p>\n<p>The consumer may exercise their right of withdrawal and return the purchased item within 14 days.</p>"
+    }
+  }
+}
