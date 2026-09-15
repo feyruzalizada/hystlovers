@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { FooterGroup } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
+import NewsletterForm from "./NewsletterForm";
 
 export default function Footer({ groups }: { groups: FooterGroup[] }) {
   const { t, path } = useI18n();
@@ -35,17 +36,7 @@ export default function Footer({ groups }: { groups: FooterGroup[] }) {
 
       <div className="mx-auto max-w-[1400px] px-4 pb-12 md:px-8">
         <h2 className="heading-brand text-xs">{t("footer.newsletter.title")}</h2>
-        <form className="mt-4 flex max-w-md gap-3" onSubmit={(event) => event.preventDefault()}>
-          <input
-            type="email"
-            required
-            placeholder={t("footer.newsletter.placeholder")}
-            className="input-brand"
-          />
-          <button type="submit" className="btn-primary whitespace-nowrap">
-            {t("footer.newsletter.submit")}
-          </button>
-        </form>
+        <NewsletterForm />
       </div>
 
       <div className="border-t border-line px-4 py-6 text-center text-xs tracking-brand text-ink-soft uppercase md:px-8">

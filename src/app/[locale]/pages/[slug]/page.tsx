@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getStaticPage, getStaticPageSlugs } from "@/lib/data";
+import { getStaticPages } from "@/lib/cms";
+import { renderRichText } from "@/lib/richtext";
 import { isLocale, locales } from "@/lib/i18n";
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) => getStaticPageSlugs().map((slug) => ({ locale, slug })));
+export async function generateStaticParams() {
+  const pages = await getStaticPages("az");
+  return locales.flatMap((locale) => pages.map((page) => ({ locale, slug: page.slug })));
 }
 
 export async function generateMetadata({
@@ -14,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
-  const page = getStaticPage(locale, slug);
+  const page = (await getStaticPages(locale)).find((p) => p.slug === slug);
   return page ? { title: page.title } : {};
 }
 
@@ -26,7 +28,7 @@ export default async function StaticPageRoute({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
 
-  const page = getStaticPage(locale, slug);
+  const page = (await getStaticPages(locale)).find((p) => p.slug === slug);
   if (!page) notFound();
 
   return (
@@ -34,7 +36,7 @@ export default async function StaticPageRoute({
       <h1 className="heading-brand text-xl">{page.title}</h1>
       <div
         className="page-body mt-10 text-sm leading-relaxed text-ink-soft"
-        dangerouslySetInnerHTML={{ __html: page.body }}
+        dangerouslySetInnerHTML={{ __html: renderRichText(page.lexical) }}
       />
     </div>
   );

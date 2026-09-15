@@ -2,22 +2,24 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
 import ProductGrid from "@/components/ProductGrid";
-import { getProduct, getProductSlugs, getRelated, getSiblings } from "@/lib/data";
-import { createTranslator, isLocale, locales } from "@/lib/i18n";
+import { getProducts, getRelated, getSiblings } from "@/lib/cms";
+import { getTranslator } from "@/lib/server-i18n";
+import { isLocale, locales } from "@/lib/i18n";
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) => getProductSlugs().map((slug) => ({ locale, slug })));
+export async function generateStaticParams() {
+  const products = await getProducts("az");
+  return locales.flatMap((locale) => products.map((product) => ({ locale, slug: product.slug })));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const product = getProduct(slug);
-  if (!product) return {};
-  return { title: product.name, description: product.description };
+  const { locale, slug } = await params;
+  if (!isLocale(locale)) return {};
+  const product = (await getProducts(locale)).find((p) => p.slug === slug);
+  return product ? { title: product.name, description: product.description } : {};
 }
 
 export default async function ProductPage({
@@ -28,15 +30,16 @@ export default async function ProductPage({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
 
-  const product = getProduct(slug);
+  const products = await getProducts(locale);
+  const product = products.find((p) => p.slug === slug);
   if (!product) notFound();
 
-  const t = createTranslator(locale);
-  const related = getRelated(product);
+  const t = await getTranslator(locale);
+  const related = getRelated(products, product);
 
   return (
     <>
-      <ProductDetail product={product} siblings={getSiblings(product)} />
+      <ProductDetail product={product} siblings={getSiblings(products, product)} />
 
       {related.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-4 pb-20 md:px-8">

@@ -10,7 +10,7 @@
     "generate:types": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" payload generate:importmap",
     "payload": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" payload",
-    "seed": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" tsx src/seed/run.ts"
+    "seed": "cross-env RUN_SEED=1 NODE_OPTIONS=--no-deprecation next build"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.88.0",
@@ -31,6 +31,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",

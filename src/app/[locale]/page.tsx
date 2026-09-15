@@ -3,22 +3,29 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Hero from "@/components/Hero";
 import ProductGrid from "@/components/ProductGrid";
-import { getColorTiles, getFeaturedBlocks, getNewIn, getSlides } from "@/lib/data";
-import { createTranslator, isLocale, localePath } from "@/lib/i18n";
+import { getColorTiles, getHomeSections, getProducts, getSlides } from "@/lib/cms";
+import { getTranslator } from "@/lib/server-i18n";
+import { isLocale, localePath } from "@/lib/i18n";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const t = createTranslator(locale);
-  const path = (p: string) => localePath(locale, p);
 
-  const newIn = getNewIn();
-  const colorTiles = getColorTiles();
-  const featured = getFeaturedBlocks().filter((block) => block.products.length > 0);
+  const [t, slides, products, colorTiles, sections] = await Promise.all([
+    getTranslator(locale),
+    getSlides(),
+    getProducts(locale),
+    getColorTiles(locale),
+    getHomeSections(locale),
+  ]);
+
+  const path = (p: string) => localePath(locale, p);
+  const newIn = products.filter((product) => product.is_new).slice(0, 8);
+  const featured = sections.filter((section) => section.products.length > 0);
 
   return (
     <>
-      <Hero slides={getSlides()} />
+      <Hero slides={slides} />
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 text-center md:px-8">
         <p className="mx-auto max-w-2xl text-sm leading-relaxed text-ink-soft">{t("home.manifesto")}</p>

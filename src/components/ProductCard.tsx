@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { Product } from "@/lib/types";
-import { formatPrice } from "@/lib/format";
 import { useI18n } from "./I18nProvider";
+import { useShop } from "./ShopProvider";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { t, path } = useI18n();
+  const { formatPrice } = useShop();
   const [hovered, setHovered] = useState(false);
   const image = hovered && product.images[1] ? product.images[1] : product.images[0];
   const onSale = product.compare_at != null && product.compare_at > product.price;

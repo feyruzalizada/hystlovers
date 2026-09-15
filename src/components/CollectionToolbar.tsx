@@ -4,12 +4,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import type { Facets, SortKey } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
-import { formatPrice } from "@/lib/format";
+import { useShop } from "./ShopProvider";
 
 const sortKeys: SortKey[] = ["featured", "newest", "price_asc", "price_desc", "name_asc", "name_desc"];
 
 export default function CollectionToolbar({ facets, total }: { facets: Facets; total: number }) {
   const { t } = useI18n();
+  const { formatPrice } = useShop();
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();

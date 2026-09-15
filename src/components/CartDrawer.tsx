@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "./CartProvider";
 import { useI18n } from "./I18nProvider";
-import { formatPrice } from "@/lib/format";
+import { useShop } from "./ShopProvider";
 
 export default function CartDrawer() {
   const cart = useCart();
   const { t, path } = useI18n();
+  const { formatPrice } = useShop();
 
   if (!cart.isOpen) return null;
 

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { createTranslator, defaultLocale, localePath } from "@/lib/i18n";
+import { getTranslator } from "@/lib/server-i18n";
+import { defaultLocale, localePath } from "@/lib/i18n";
 
-export default function NotFound() {
-  const t = createTranslator(defaultLocale);
+export default async function NotFound() {
+  const t = await getTranslator(defaultLocale);
 
   return (
     <div className="mx-auto max-w-[600px] px-4 py-32 text-center md:px-8">

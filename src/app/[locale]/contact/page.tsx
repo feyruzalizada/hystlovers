@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ContactForm from "@/components/ContactForm";
-import { getContact } from "@/lib/data";
-import { createTranslator, isLocale, locales } from "@/lib/i18n";
+import { getContactDetails } from "@/lib/cms";
+import { getTranslator } from "@/lib/server-i18n";
+import { isLocale, locales } from "@/lib/i18n";
+import { CONTACT_SUBJECTS } from "@/collections/Commerce";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -15,7 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const t = createTranslator(locale);
+  const t = await getTranslator(locale);
   return { title: t("contact.title"), description: t("contact.meta_description") };
 }
 
@@ -23,8 +25,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const t = createTranslator(locale);
-  const { details, subjects } = getContact();
+  const [t, details] = await Promise.all([getTranslator(locale), getContactDetails(locale)]);
 
   const rows: { label: string; value: string | null; href?: string }[] = [
     { label: t("contact.details.email"), value: details.email, href: `mailto:${details.email}` },
@@ -46,7 +47,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       </header>
 
       <div className="grid gap-16 md:grid-cols-[1fr_320px]">
-        <ContactForm subjects={subjects} />
+        <ContactForm subjects={[...CONTACT_SUBJECTS]} />
 
         <aside className="flex flex-col gap-6 border-t border-line pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-10">
           {rows

@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import type { Product, ProductSibling } from "@/lib/types";
-import { formatPrice } from "@/lib/format";
 import { useI18n } from "./I18nProvider";
 import { useCart } from "./CartProvider";
-import shop from "@/data/shop.json";
+import { useShop } from "./ShopProvider";
+import { notifyWhenInStock } from "@/app/actions/shop";
 
 const sizeGuide = [
   { size: "XS/S", chest: "82—90", waist: "62—70", hips: "88—96" },
@@ -38,14 +38,17 @@ export default function ProductDetail({
   product: Product;
   siblings: ProductSibling[];
 }) {
-  const { t, path } = useI18n();
+  const { t, path, locale } = useI18n();
   const cart = useCart();
+  const { formatPrice, freeShippingThreshold, currency } = useShop();
   const [size, setSize] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notified, setNotified] = useState(false);
+  const [notifyPending, startNotify] = useTransition();
+  const [notifyError, setNotifyError] = useState<string | null>(null);
 
   const onSale = product.compare_at != null && product.compare_at > product.price;
   const stock = size ? product.size_stock[size] : null;
@@ -223,10 +226,18 @@ export default function ProductDetail({
                 <p className="mt-3 text-xs tracking-brand uppercase">{t("product.notify_sent")}</p>
               ) : (
                 <form
-                  className="mt-3 flex gap-3"
+                  className="mt-3 flex flex-wrap gap-3"
                   onSubmit={(event) => {
                     event.preventDefault();
-                    setNotified(true);
+                    const data = new FormData();
+                    data.set("email", notifyEmail);
+                    data.set("slug", product.slug);
+                    data.set("locale", locale);
+                    startNotify(async () => {
+                      const result = await notifyWhenInStock(data);
+                      if (result.ok) setNotified(true);
+                      else setNotifyError(result.message);
+                    });
                   }}
                 >
                   <input
@@ -237,9 +248,14 @@ export default function ProductDetail({
                     placeholder={t("product.email_placeholder")}
                     className="input-brand"
                   />
-                  <button type="submit" className="btn-secondary whitespace-nowrap">
+                  <button
+                    type="submit"
+                    className="btn-secondary whitespace-nowrap"
+                    disabled={notifyPending}
+                  >
                     {t("product.notify_cta")}
                   </button>
+                  {notifyError && <p className="w-full text-xs text-sale">{notifyError}</p>}
                 </form>
               )}
             </div>
@@ -267,7 +283,7 @@ export default function ProductDetail({
             <Accordion title={t("product.care.title")}>{t("product.care.body")}</Accordion>
             <Accordion title={t("product.shipping.title")}>
               {t("product.shipping.body", {
-                threshold: `${shop.freeShippingThreshold} ${shop.currency.symbol}`,
+                threshold: `${freeShippingThreshold} ${currency.symbol}`,
               })}
             </Accordion>
             <Accordion title={t("product.returns.title")}>{t("product.returns.body")}</Accordion>

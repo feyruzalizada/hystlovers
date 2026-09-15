@@ -3,17 +3,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CollectionToolbar from "@/components/CollectionToolbar";
 import ProductGrid from "@/components/ProductGrid";
-import {
-  applyFilters,
-  buildFacets,
-  countInCollection,
-  getCategory,
-  getCollectionProducts,
-  getSeriesName,
-  getSeriesProducts,
-  getSubcategories,
-} from "@/lib/data";
-import { createTranslator, isLocale, localePath } from "@/lib/i18n";
+import { buildFacets, filterByCategory, getCategories, getProducts } from "@/lib/cms";
+import { getTranslator } from "@/lib/server-i18n";
+import { isLocale, localePath } from "@/lib/i18n";
+import { applyFilters } from "@/lib/filters";
 import type { CollectionFilters, Locale, Product, SortKey } from "@/lib/types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -24,33 +17,54 @@ function asArray(value: string | string[] | undefined): string[] | undefined {
 }
 
 /**
- * A slug is either a special catalog-wide collection, a category, or — when it
- * matches no category — a series landing page such as /collections/kai.
+ * A slug is a catalog-wide collection, a category, or — when it matches no
+ * category — a series landing page such as /collections/kai.
  */
-function resolveCollection(slug: string, locale: Locale) {
-  const t = createTranslator(locale);
-  const category = getCategory(slug);
+async function resolveCollection(slug: string, locale: Locale) {
+  const [t, products, categories] = await Promise.all([
+    getTranslator(locale),
+    getProducts(locale),
+    getCategories(locale),
+  ]);
 
-  if (category) {
+  if (slug === "all-products" || slug === "new-in") {
     const key = `collection.${slug.replaceAll("-", "_")}`;
-    const name = category.labelKey ? t(category.labelKey) : (category.name ?? slug);
-    const description = t(`${key}.description`);
     return {
-      name: t(`${key}.title`) === `${key}.title` ? name : t(`${key}.title`),
-      description: description === `${key}.description` ? null : description,
-      products: getCollectionProducts(slug),
-      subcategories: getSubcategories(slug),
+      name: t(`${key}.title`),
+      description: t(`${key}.description`),
+      products: slug === "new-in" ? products.filter((p) => p.is_new) : products,
+      subcategories: [],
+      counts: {} as Record<string, number>,
     };
   }
 
-  const series = getSeriesName(slug);
-  if (!series) return null;
+  const category = categories.find((c) => c.slug === slug);
+  if (category) {
+    const subcategories = categories.filter((c) => c.parent === slug);
+    return {
+      name: category.name ?? slug,
+      description: category.description ?? null,
+      products: filterByCategory(products, categories, slug),
+      subcategories,
+      counts: Object.fromEntries(
+        subcategories.map((child) => [
+          child.slug,
+          filterByCategory(products, categories, child.slug).length,
+        ]),
+      ),
+    };
+  }
+
+  const series = slug.replaceAll("-", " ").toLowerCase();
+  const inSeries = products.filter((p) => p.series.toLowerCase() === series);
+  if (inSeries.length === 0) return null;
 
   return {
-    name: series,
-    description: t("collection.series_description", { series }),
-    products: getSeriesProducts(slug),
+    name: inSeries[0].series,
+    description: t("collection.series_description", { series: inSeries[0].series }),
+    products: inSeries,
     subcategories: [],
+    counts: {} as Record<string, number>,
   };
 }
 
@@ -61,7 +75,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
-  const collection = resolveCollection(slug, locale);
+  const collection = await resolveCollection(slug, locale);
   return collection ? { title: collection.name } : {};
 }
 
@@ -75,11 +89,11 @@ export default async function CollectionPage({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
 
-  const collection = resolveCollection(slug, locale);
+  const collection = await resolveCollection(slug, locale);
   if (!collection) notFound();
 
   const query = await searchParams;
-  const t = createTranslator(locale);
+  const t = await getTranslator(locale);
   const path = (p: string) => localePath(locale, p);
 
   const filters: CollectionFilters = {
@@ -124,8 +138,7 @@ export default async function CollectionPage({
               href={path(`/collections/${child.slug}`)}
               className="border border-line px-4 py-2 text-xs tracking-brand uppercase hover:border-ink"
             >
-              {child.name}{" "}
-              <span className="text-ink-soft">({countInCollection(child.slug)})</span>
+              {child.name} <span className="text-ink-soft">({collection.counts[child.slug] ?? 0})</span>
             </Link>
           ))}
         </nav>

@@ -19,6 +19,7 @@ import {
   StockNotifications,
 } from "./collections/Commerce";
 import { Settings } from "./globals/Settings";
+import { seed } from "./seed/seed";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const databaseUri = process.env.DATABASE_URI ?? "file:./hystlovers.db";
@@ -68,4 +69,8 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   db,
   sharp,
+  // `npm run seed` starts the app with RUN_SEED=1 for a one-off content import.
+  onInit: async (payload) => {
+    if (process.env.RUN_SEED === "1") await seed(payload);
+  },
 });

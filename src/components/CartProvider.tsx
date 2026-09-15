@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import shop from "@/data/shop.json";
 
 export type CartLine = {
   slug: string;
@@ -43,7 +42,13 @@ function readStorage(): CartLine[] {
   }
 }
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({
+  shipping,
+  children,
+}: {
+  shipping: { freeShippingThreshold: number; shippingFee: number };
+  children: React.ReactNode;
+}) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -90,15 +95,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<CartValue>(() => {
     const subtotal = lines.reduce((sum, l) => sum + l.price * l.qty, 0);
-    const qualifies = subtotal >= shop.freeShippingThreshold;
-    const shippingFee = lines.length === 0 || qualifies ? 0 : shop.shippingFee;
+    const qualifies = subtotal >= shipping.freeShippingThreshold;
+    const shippingFee = lines.length === 0 || qualifies ? 0 : shipping.shippingFee;
     return {
       lines,
       count: lines.reduce((sum, l) => sum + l.qty, 0),
       subtotal,
       shippingFee,
       total: subtotal + shippingFee,
-      freeShippingRemaining: Math.max(0, shop.freeShippingThreshold - subtotal),
+      freeShippingRemaining: Math.max(0, shipping.freeShippingThreshold - subtotal),
       isOpen,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
@@ -107,7 +112,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       remove,
       clear: () => setLines([]),
     };
-  }, [lines, isOpen, add, setQty, remove]);
+  }, [lines, isOpen, add, setQty, remove, shipping]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

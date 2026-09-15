@@ -40,6 +40,7 @@ export type Category = {
   name: string | null;
   labelKey: string | null;
   parent: string | null;
+  description?: string | null;
 };
 
 export type Slide = {
@@ -90,11 +91,13 @@ export type BlogPost = {
   publishedAt: string;
   publishedAtIso: string;
   body?: string;
+  lexical?: unknown;
 };
 
 export type StaticPage = {
   title: string;
   body: string;
+  lexical?: unknown;
 };
 
 export type ContactDetails = {
