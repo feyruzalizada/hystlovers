@@ -145,15 +145,26 @@ export function getSiblings(product: Product): ProductSibling[] {
 }
 
 export function getRelated(product: Product, limit = 4): Product[] {
-  const sameSeries = products.filter((p) => p.series === product.series && p.item !== product.item);
-  const sameCategory = products.filter(
-    (p) => p.category_slug === product.category_slug && p.slug !== product.slug,
-  );
-  const seen = new Set([product.slug]);
+  const scored = products
+    .filter(
+      (p) =>
+        p.slug !== product.slug &&
+        (p.series === product.series ||
+          p.category_slug === product.category_slug ||
+          p.color.slug === product.color.slug),
+    )
+    .map((p) => ({
+      product: p,
+      score: (p.series === product.series ? 2 : 0) + (p.color.slug === product.color.slug ? 1 : 0),
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  const seen = new Set<string>();
   const out: Product[] = [];
-  for (const p of [...sameSeries, ...sameCategory]) {
-    if (seen.has(p.slug)) continue;
-    seen.add(p.slug);
+  for (const { product: p } of scored) {
+    const garment = `${p.series}${p.item}`;
+    if (seen.has(garment)) continue;
+    seen.add(garment);
     out.push(p);
     if (out.length === limit) break;
   }
@@ -168,6 +179,24 @@ export function searchProducts(query: string): Product[] {
       .filter(Boolean)
       .some((field) => field.toLowerCase().includes(q)),
   );
+}
+
+/** Series landing pages: /collections/kai resolves to every KAI product. */
+export function getSeriesProducts(slug: string): Product[] {
+  const series = slug.replaceAll("-", " ").toLowerCase();
+  return products.filter((p) => p.series.toLowerCase() === series);
+}
+
+export function getSeriesName(slug: string): string | null {
+  return getSeriesProducts(slug)[0]?.series ?? null;
+}
+
+export function getSeriesSlugs(): string[] {
+  return [...new Set(products.map((p) => p.series.toLowerCase().replaceAll(" ", "-")))];
+}
+
+export function countInCollection(slug: string): number {
+  return getCollectionProducts(slug).length;
 }
 
 export function getFeaturedBlocks() {

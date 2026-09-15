@@ -6,12 +6,15 @@ import ProductGrid from "@/components/ProductGrid";
 import {
   applyFilters,
   buildFacets,
+  countInCollection,
   getCategory,
   getCollectionProducts,
+  getSeriesName,
+  getSeriesProducts,
   getSubcategories,
 } from "@/lib/data";
 import { createTranslator, isLocale, localePath } from "@/lib/i18n";
-import type { CollectionFilters, Locale, SortKey } from "@/lib/types";
+import type { CollectionFilters, Locale, Product, SortKey } from "@/lib/types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -20,14 +23,35 @@ function asArray(value: string | string[] | undefined): string[] | undefined {
   return Array.isArray(value) ? value : [value];
 }
 
-function collectionTitle(slug: string, locale: Locale) {
+/**
+ * A slug is either a special catalog-wide collection, a category, or — when it
+ * matches no category — a series landing page such as /collections/kai.
+ */
+function resolveCollection(slug: string, locale: Locale) {
   const t = createTranslator(locale);
   const category = getCategory(slug);
-  if (!category) return null;
-  if (category.labelKey) return t(category.labelKey);
-  const key = `collection.${slug.replaceAll("-", "_")}.title`;
-  const translated = t(key);
-  return translated === key ? (category.name ?? slug) : translated;
+
+  if (category) {
+    const key = `collection.${slug.replaceAll("-", "_")}`;
+    const name = category.labelKey ? t(category.labelKey) : (category.name ?? slug);
+    const description = t(`${key}.description`);
+    return {
+      name: t(`${key}.title`) === `${key}.title` ? name : t(`${key}.title`),
+      description: description === `${key}.description` ? null : description,
+      products: getCollectionProducts(slug),
+      subcategories: getSubcategories(slug),
+    };
+  }
+
+  const series = getSeriesName(slug);
+  if (!series) return null;
+
+  return {
+    name: series,
+    description: t("collection.series_description", { series }),
+    products: getSeriesProducts(slug),
+    subcategories: [],
+  };
 }
 
 export async function generateMetadata({
@@ -37,7 +61,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
-  return { title: collectionTitle(slug, locale) ?? slug };
+  const collection = resolveCollection(slug, locale);
+  return collection ? { title: collection.name } : {};
 }
 
 export default async function CollectionPage({
@@ -50,8 +75,8 @@ export default async function CollectionPage({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
 
-  const category = getCategory(slug);
-  if (!category) notFound();
+  const collection = resolveCollection(slug, locale);
+  if (!collection) notFound();
 
   const query = await searchParams;
   const t = createTranslator(locale);
@@ -68,13 +93,9 @@ export default async function CollectionPage({
     page: query.page ? Number(query.page) : 1,
   };
 
-  const pool = getCollectionProducts(slug);
+  const pool: Product[] = collection.products;
   const facets = buildFacets(pool);
   const { items, total, page, lastPage } = applyFilters(pool, filters);
-  const subcategories = getSubcategories(slug);
-
-  const descriptionKey = `collection.${slug.replaceAll("-", "_")}.description`;
-  const description = t(descriptionKey);
 
   function pageHref(target: number) {
     const next = new URLSearchParams();
@@ -89,21 +110,22 @@ export default async function CollectionPage({
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-12 md:px-8">
       <header className="mb-8 text-center">
-        <h1 className="heading-brand text-xl">{collectionTitle(slug, locale)}</h1>
-        {description !== descriptionKey && (
-          <p className="mx-auto mt-3 max-w-xl text-sm text-ink-soft">{description}</p>
+        <h1 className="heading-brand text-xl">{collection.name}</h1>
+        {collection.description && (
+          <p className="mx-auto mt-3 max-w-xl text-sm text-ink-soft">{collection.description}</p>
         )}
       </header>
 
-      {subcategories.length > 0 && (
+      {collection.subcategories.length > 0 && (
         <nav className="mb-8 flex flex-wrap justify-center gap-3">
-          {subcategories.map((child) => (
+          {collection.subcategories.map((child) => (
             <Link
               key={child.slug}
               href={path(`/collections/${child.slug}`)}
               className="border border-line px-4 py-2 text-xs tracking-brand uppercase hover:border-ink"
             >
-              {child.name}
+              {child.name}{" "}
+              <span className="text-ink-soft">({countInCollection(child.slug)})</span>
             </Link>
           ))}
         </nav>
