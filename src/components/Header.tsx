@@ -1,202 +1,294 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { NavItem } from "@/lib/types";
+import { localeNames, locales } from "@/lib/i18n";
 import { useI18n } from "./I18nProvider";
 import { useCart } from "./CartProvider";
-import LocaleSwitcher from "./LocaleSwitcher";
+import DrawerShell from "./DrawerShell";
+import Icon from "./Icon";
 
 function label(item: NavItem, t: (key: string) => string) {
   return item.labelKey ? t(item.labelKey) : (item.label ?? "");
 }
 
 export default function Header({ navigation }: { navigation: NavItem[] }) {
-  const { t, path } = useI18n();
+  const { t, path, locale } = useI18n();
   const cart = useCart();
   const router = useRouter();
+  const pathname = usePathname();
+
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
+
+  // Always the account page: guests are redirected on to /login from there,
+  // which keeps this layout static instead of reading the session cookie.
+  const accountUrl = path("/account");
+  const restOfPath = pathname.split("/").slice(2).join("/");
 
   useEffect(() => {
     if (searchOpen) searchInput.current?.focus();
   }, [searchOpen]);
 
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
-
   function submitSearch(event: React.FormEvent) {
     event.preventDefault();
-    if (!query.trim()) return;
+    const q = query.trim();
+    if (!q) return;
     setSearchOpen(false);
-    setMenuOpen(false);
-    router.push(path(`/search?q=${encodeURIComponent(query.trim())}`));
+    router.push(path(`/search?q=${encodeURIComponent(q)}`));
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-paper">
-      <div className="bg-ink px-4 py-2 text-center text-[11px] tracking-brand text-paper uppercase">
+    <div className="sticky top-0 z-30">
+      <p className="bg-ink px-4 py-2 text-center text-[11px] tracking-brand text-paper uppercase">
         {t("general.announcement")}
-      </div>
+      </p>
 
-      <div className="border-b border-line">
-        <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 md:px-8">
+      <header className="border-b border-line bg-paper">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:py-5">
           <button
             type="button"
-            className="text-xs tracking-brand uppercase lg:hidden"
+            className="-m-2 p-2 lg:hidden"
             aria-label={t("nav.menu_open")}
             onClick={() => setMenuOpen(true)}
           >
-            {t("nav.menu")}
+            <Icon name="menu" size={22} />
           </button>
-
-          <nav aria-label={t("nav.main_menu")} className="hidden items-center gap-8 lg:flex">
-            {navigation.map((item) => (
-              <div
-                key={item.url}
-                className="relative"
-                onMouseEnter={() => setExpanded(item.url)}
-                onMouseLeave={() => setExpanded(null)}
-              >
-                <Link
-                  href={path(item.url)}
-                  className="block py-5 text-xs tracking-brand uppercase hover:text-ink-soft"
-                >
-                  {label(item, t)}
-                </Link>
-                {item.children && item.children.length > 0 && expanded === item.url && (
-                  <div className="absolute top-full left-0 min-w-56 border border-line bg-paper py-3">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.url}
-                        href={path(child.url)}
-                        className="block px-5 py-2 text-xs tracking-brand uppercase hover:bg-mist"
-                      >
-                        {label(child, t)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
 
           <Link
             href={path("/")}
             aria-label={t("nav.home_aria")}
-            className="heading-brand absolute left-1/2 -translate-x-1/2 text-lg"
+            className="heading-brand text-lg whitespace-nowrap sm:text-xl"
           >
             Hystlovers
           </Link>
 
-          <div className="flex items-center gap-5 text-xs tracking-brand uppercase">
-            <LocaleSwitcher />
-            <button type="button" onClick={() => setSearchOpen(true)}>
-              {t("nav.search")}
-            </button>
-            <Link href={path("/account")} className="hidden sm:inline">
-              {t("nav.account")}
-            </Link>
-            <button
-              type="button"
-              onClick={cart.open}
-              aria-label={t("nav.cart_open", { count: cart.count })}
-            >
-              {t("cart.title")} ({cart.count})
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {searchOpen && (
-        <div className="border-b border-line bg-paper">
-          <form onSubmit={submitSearch} className="mx-auto flex max-w-[1400px] gap-3 px-4 py-5 md:px-8">
-            <input
-              ref={searchInput}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t("nav.search_placeholder")}
-              className="input-brand"
-            />
-            <button type="submit" className="btn-primary">
-              {t("nav.search_submit")}
-            </button>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => setSearchOpen(false)}
-              aria-label={t("nav.search_close")}
-            >
-              {t("general.close")}
-            </button>
-          </form>
-        </div>
-      )}
-
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 bg-paper lg:hidden" aria-label={t("nav.mobile_menu")}>
-          <div className="flex h-16 items-center justify-between border-b border-line px-4">
-            <span className="heading-brand text-sm">{t("nav.menu")}</span>
-            <button type="button" className="btn-ghost" onClick={() => setMenuOpen(false)}>
-              {t("general.close")}
-            </button>
-          </div>
-          <nav className="overflow-y-auto px-4 py-6">
-            {navigation.map((item) => (
-              <div key={item.url} className="border-b border-line py-3">
-                <div className="flex items-center justify-between">
+          <nav className="hidden lg:block" aria-label={t("nav.main_menu")}>
+            <ul className="flex items-center gap-7">
+              {navigation.map((item) => (
+                <li key={item.url} className="group relative">
                   <Link
                     href={path(item.url)}
-                    onClick={() => setMenuOpen(false)}
-                    className="text-sm tracking-brand uppercase"
+                    className={`flex items-center gap-1 py-2 text-xs font-medium tracking-brand uppercase transition-opacity hover:opacity-60 ${
+                      pathname.startsWith(path(item.url)) ? "underline underline-offset-4" : ""
+                    }`}
                   >
                     {label(item, t)}
+                    {item.children && item.children.length > 0 && (
+                      <Icon name="chevron-down" size={12} className="opacity-50" />
+                    )}
                   </Link>
+
                   {item.children && item.children.length > 0 && (
-                    <button
-                      type="button"
-                      aria-label={t("nav.expand_children").replace(":label", label(item, t))}
-                      onClick={() => setExpanded(expanded === item.url ? null : item.url)}
-                      className="px-3 text-lg leading-none"
-                    >
-                      {expanded === item.url ? "−" : "+"}
-                    </button>
+                    <div className="invisible absolute top-full left-1/2 z-40 -translate-x-1/2 pt-1 opacity-0 transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                      <ul className="min-w-48 border border-line bg-paper py-2">
+                        {item.children.map((child) => (
+                          <li key={child.url}>
+                            <Link
+                              href={path(child.url)}
+                              className="block px-5 py-2.5 text-xs tracking-brand uppercase transition-colors hover:bg-mist"
+                            >
+                              {label(child, t)}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </div>
-                {item.children && expanded === item.url && (
-                  <div className="mt-3 flex flex-col gap-2 pl-4">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.url}
-                        href={path(child.url)}
-                        onClick={() => setMenuOpen(false)}
-                        className="text-xs tracking-brand text-ink-soft uppercase"
-                      >
-                        {label(child, t)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-            <Link
-              href={path("/account")}
-              onClick={() => setMenuOpen(false)}
-              className="mt-6 block text-sm tracking-brand uppercase"
-            >
-              {t("nav.account")}
-            </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
+
+          <div className="flex items-center gap-1 sm:gap-2">
+            <nav className="hidden items-center gap-1 sm:flex" aria-label={t("general.language")}>
+              {locales.map((code) => (
+                <Link
+                  key={code}
+                  href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
+                  hrefLang={code}
+                  aria-current={code === locale ? "true" : undefined}
+                  className={`px-1.5 py-1 text-[11px] font-medium tracking-brand uppercase transition-opacity ${
+                    code === locale ? "text-ink underline underline-offset-4" : "text-ink/40 hover:text-ink"
+                  }`}
+                >
+                  {localeNames[code].short}
+                </Link>
+              ))}
+            </nav>
+
+            <button
+              type="button"
+              className="-m-1 p-2 transition-opacity hover:opacity-60"
+              aria-label={t("nav.search")}
+              onClick={() => setSearchOpen(true)}
+            >
+              <Icon name="search" size={21} />
+            </button>
+
+            <Link
+              href={accountUrl}
+              className="hidden p-2 transition-opacity hover:opacity-60 sm:block"
+              aria-label={t("nav.account")}
+            >
+              <Icon name="user" size={21} />
+            </Link>
+
+            <button
+              type="button"
+              className="relative -m-1 p-2 transition-opacity hover:opacity-60"
+              aria-label={t("nav.cart_open", { count: cart.count })}
+              onClick={cart.open}
+            >
+              <Icon name="bag" size={21} />
+              {cart.count > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 flex h-[18px] w-[18px] items-center justify-center bg-ink text-[10px] font-medium text-paper">
+                  {cart.count}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <DrawerShell
+        open={menuOpen}
+        title={t("nav.menu")}
+        side="left"
+        onClose={() => setMenuOpen(false)}
+      >
+        <nav aria-label={t("nav.mobile_menu")}>
+          <ul>
+            {navigation.map((item) => {
+              const children = item.children ?? [];
+              return (
+                <li key={item.url} className="border-b border-line">
+                  {children.length > 0 ? (
+                    <div className="flex items-stretch">
+                      <Link
+                        href={path(item.url)}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex-1 px-5 py-4 text-sm tracking-brand uppercase"
+                      >
+                        {label(item, t)}
+                      </Link>
+                      <button
+                        type="button"
+                        className="px-5"
+                        aria-expanded={expanded === item.url}
+                        aria-label={t("nav.expand_children").replace(":label", label(item, t))}
+                        onClick={() => setExpanded(expanded === item.url ? null : item.url)}
+                      >
+                        <Icon
+                          name="chevron-down"
+                          size={16}
+                          className={`opacity-40 transition-transform duration-200 ${
+                            expanded === item.url ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      href={path(item.url)}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-between px-5 py-4 text-sm tracking-brand uppercase"
+                    >
+                      {label(item, t)}
+                      <Icon name="chevron-right" size={16} className="opacity-40" />
+                    </Link>
+                  )}
+
+                  {children.length > 0 && expanded === item.url && (
+                    <ul className="bg-mist/50 pb-2">
+                      {children.map((child) => (
+                        <li key={child.url}>
+                          <Link
+                            href={path(child.url)}
+                            onClick={() => setMenuOpen(false)}
+                            className="block px-8 py-3 text-[13px] tracking-brand text-ink/70 uppercase"
+                          >
+                            {label(child, t)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="flex flex-col gap-6 px-5 py-6">
+            <Link
+              href={accountUrl}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 text-sm tracking-brand uppercase"
+            >
+              <Icon name="user" size={18} />
+              {t("nav.my_account")}
+            </Link>
+
+            <div>
+              <p className="text-[11px] tracking-brand text-ink/40 uppercase">
+                {t("general.language")}
+              </p>
+              <div className="mt-2 flex gap-2">
+                {locales.map((code) => (
+                  <Link
+                    key={code}
+                    href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
+                    hrefLang={code}
+                    onClick={() => setMenuOpen(false)}
+                    className={`border px-3 py-1.5 text-xs tracking-brand uppercase ${
+                      code === locale ? "border-ink bg-ink text-paper" : "border-line-strong"
+                    }`}
+                  >
+                    {localeNames[code].short}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+      </DrawerShell>
+
+      {searchOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-ink/40"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setSearchOpen(false);
+          }}
+        >
+          <div className="bg-paper px-4 py-6 sm:py-10">
+            <form onSubmit={submitSearch} className="mx-auto flex max-w-2xl items-center gap-3">
+              <Icon name="search" size={20} className="shrink-0 opacity-50" />
+              <input
+                ref={searchInput}
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => event.key === "Escape" && setSearchOpen(false)}
+                placeholder={t("nav.search_placeholder")}
+                className="w-full border-0 bg-transparent py-2 text-base focus:outline-none sm:text-lg"
+              />
+              <button
+                type="button"
+                className="-m-2 shrink-0 p-2"
+                aria-label={t("nav.search_close")}
+                onClick={() => setSearchOpen(false)}
+              >
+                <Icon name="close" size={20} />
+              </button>
+            </form>
+          </div>
         </div>
       )}
-    </header>
+    </div>
   );
 }
