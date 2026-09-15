@@ -54,6 +54,9 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " — Hystlovers" },
+    components: {
+      beforeDashboard: ["/components/admin/DashboardStats#default"],
+    },
   },
   collections: [
     Categories,

@@ -11,7 +11,12 @@ export const FOOTER_GROUPS = [
 export const Slides: CollectionConfig = {
   slug: "slides",
   hooks: revalidateHooks,
-  admin: { useAsTitle: "title", defaultColumns: ["title", "isActive", "sortOrder"], group: "Content" },
+  labels: { singular: "Slide", plural: "Slider" },
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "isActive", "sortOrder"],
+    group: "Content",
+  },
   access: adminAccess,
   defaultSort: "sortOrder",
   fields: [
@@ -46,7 +51,7 @@ export const Slides: CollectionConfig = {
 export const HomeSections: CollectionConfig = {
   slug: "home-sections",
   hooks: revalidateHooks,
-  labels: { singular: "Home section", plural: "Home sections" },
+  labels: { singular: "Homepage section", plural: "Homepage" },
   admin: { useAsTitle: "title", group: "Content" },
   access: adminAccess,
   defaultSort: "sortOrder",
@@ -96,6 +101,7 @@ export const Pages: CollectionConfig = {
 
 export const Posts: CollectionConfig = {
   slug: "posts",
+  labels: { singular: "Post", plural: "Blog" },
   admin: { useAsTitle: "title", defaultColumns: ["title", "slug", "publishedAt"], group: "Content" },
   access: adminAccess,
   defaultSort: "-publishedAt",
@@ -135,7 +141,7 @@ export const SiteTexts: CollectionConfig = {
   hooks: revalidateHooks,
   labels: { singular: "Site text", plural: "Site texts" },
   admin: { useAsTitle: "key", defaultColumns: ["key", "group", "az", "en", "ru"], group: "Content" },
-  access: adminAccess,
+  access: { ...adminAccess, create: () => false },
   defaultSort: "key",
   fields: [
     { name: "key", type: "text", required: true, unique: true, index: true },

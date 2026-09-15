@@ -5,7 +5,11 @@ import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
 export const Categories: CollectionConfig = {
   slug: "categories",
-  admin: { useAsTitle: "name", defaultColumns: ["name", "slug", "parent", "isActive"], group: "Catalog" },
+  admin: {
+    useAsTitle: "name",
+    defaultColumns: ["name", "slug", "parent", "isActive"],
+    group: "Shop",
+  },
   access: adminAccess,
   defaultSort: "sortOrder",
   hooks: {

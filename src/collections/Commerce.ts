@@ -17,12 +17,17 @@ export const Customers: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 60 * 1000,
   },
-  admin: { useAsTitle: "email", defaultColumns: ["email", "name", "createdAt"], group: "Shop" },
+  admin: {
+    useAsTitle: "email",
+    defaultColumns: ["email", "name", "createdAt"],
+    group: "Shop",
+  },
   access: {
     // A shopper may read and update only their own record.
     read: ({ req }) =>
       req.user?.collection === "users" ? true : req.user ? { id: { equals: req.user.id } } : false,
-    create: () => true,
+    // Registration goes through the server action, which overrides access.
+    create: () => false,
     update: ({ req }) =>
       req.user?.collection === "users" ? true : req.user ? { id: { equals: req.user.id } } : false,
     delete: adminOnly,
@@ -44,9 +49,9 @@ export const Orders: CollectionConfig = {
         : req.user
           ? { customer: { equals: req.user.id } }
           : false,
-    // Orders are only ever created by the checkout route, which uses a
-    // privileged Local API call rather than an authenticated request.
-    create: adminOnly,
+    // Orders are only ever created by checkout, which uses a privileged
+    // Local API call rather than an authenticated request.
+    create: () => false,
     update: adminOnly,
     delete: adminOnly,
   },
@@ -134,9 +139,9 @@ export const ContactMessages: CollectionConfig = {
   admin: {
     useAsTitle: "subject",
     defaultColumns: ["name", "email", "subject", "readAt", "createdAt"],
-    group: "Shop",
+    group: "Contact",
   },
-  access: { read: adminOnly, create: adminOnly, update: adminOnly, delete: adminOnly },
+  access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [
     { name: "name", type: "text", required: true },
@@ -149,18 +154,18 @@ export const ContactMessages: CollectionConfig = {
 
 export const NewsletterSubscribers: CollectionConfig = {
   slug: "newsletter-subscribers",
-  labels: { singular: "Newsletter subscriber", plural: "Newsletter subscribers" },
-  admin: { useAsTitle: "email", group: "Shop" },
-  access: { read: adminOnly, create: adminOnly, update: adminOnly, delete: adminOnly },
+  labels: { singular: "Newsletter subscriber", plural: "Newsletter" },
+  admin: { useAsTitle: "email", group: "Contact" },
+  access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [{ name: "email", type: "email", required: true, unique: true, index: true }],
 };
 
 export const StockNotifications: CollectionConfig = {
   slug: "stock-notifications",
-  labels: { singular: "Stock notification", plural: "Stock notifications" },
-  admin: { useAsTitle: "email", defaultColumns: ["email", "product", "createdAt"], group: "Shop" },
-  access: { read: adminOnly, create: adminOnly, update: adminOnly, delete: adminOnly },
+  labels: { singular: "Stock alert", plural: "Stock alerts" },
+  admin: { useAsTitle: "email", defaultColumns: ["email", "product", "createdAt"], group: "Contact" },
+  access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [
     { name: "product", type: "relationship", relationTo: "products", required: true },
