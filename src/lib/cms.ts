@@ -4,6 +4,17 @@ import { getPayload, type Payload } from "payload";
 import config from "@payload-config";
 import { slugify } from "./slug";
 import type {
+  Category as CmsCategory,
+  HomeSection,
+  Media,
+  Page as CmsPage,
+  Post as CmsPost,
+  Product as CmsProduct,
+  Setting,
+  Slide as CmsSlide,
+  SiteText,
+} from "@/payload-types";
+import type {
   BlogPost,
   Category,
   ColorTile,
@@ -23,30 +34,40 @@ export const payloadClient = cache(async (): Promise<Payload> => getPayload({ co
 
 const ALL = { limit: 0, pagination: false } as const;
 
-type Doc = Record<string, any>;
+type Related<T> = number | T | null | undefined;
 
-function mediaUrl(value: unknown): string | null {
-  if (!value || typeof value !== "object") return null;
-  const media = value as Doc;
-  return (media.url as string) ?? null;
+function resolve<T>(value: Related<T>): T | null {
+  return value && typeof value === "object" ? value : null;
+}
+
+/**
+ * Payload returns absolute URLs once SERVER_URL is set; next/image only accepts
+ * remote hosts that are allow-listed, and the files are served by this app
+ * anyway, so they are reduced back to a path.
+ */
+function mediaUrl(value: Related<Media>): string | null {
+  const url = resolve(value)?.url;
+  if (!url) return null;
+  if (!url.startsWith("http")) return url;
+  const parsed = URL.parse(url);
+  return parsed ? `${parsed.pathname}${parsed.search}` : url;
 }
 
 /** "LOVE T-SHIRT - BROWN (SHIRT, TROUSERS)" — the source shop's naming. */
-function displayName(doc: Doc): string {
-  const setParts = (doc.setParts ?? []).map((part: Doc) => part.value).filter(Boolean);
+function displayName(doc: CmsProduct): string {
+  const setParts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
   let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toUpperCase();
   if (setParts.length > 0) name += ` (${setParts.join(", ").toUpperCase()})`;
   return name;
 }
 
-function remainingFor(doc: Doc, size: string): number | null {
-  const row = (doc.sizes ?? []).find((entry: Doc) => entry.size === size);
-  const quantity = row?.quantity;
-  return quantity === null || quantity === undefined || quantity === "" ? null : Math.max(0, Number(quantity));
+function remainingFor(doc: CmsProduct, size: string): number | null {
+  const quantity = (doc.sizes ?? []).find((entry) => entry.size === size)?.quantity;
+  return quantity === null || quantity === undefined ? null : Math.max(0, quantity);
 }
 
-function isOrderable(doc: Doc, size: string, qty = 1): boolean {
-  const sizes: string[] = (doc.sizes ?? []).map((entry: Doc) => entry.size);
+function isOrderable(doc: CmsProduct, size: string, qty = 1): boolean {
+  const sizes = (doc.sizes ?? []).map((entry) => entry.size);
   if (!sizes.includes(size)) return false;
   if (doc.isPreorder) return true;
   if (!doc.inStock) return false;
@@ -54,12 +75,12 @@ function isOrderable(doc: Doc, size: string, qty = 1): boolean {
   return remaining === null || remaining >= qty;
 }
 
-function toProduct(doc: Doc): Product {
-  const sizes: string[] = (doc.sizes ?? []).map((entry: Doc) => entry.size);
-  const category = typeof doc.category === "object" ? doc.category : null;
+function toProduct(doc: CmsProduct): Product {
+  const sizes = (doc.sizes ?? []).map((entry) => entry.size);
+  const category = resolve(doc.category);
   const images = (doc.images ?? [])
-    .map((row: Doc) => mediaUrl(row.image))
-    .filter((url: string | null): url is string => Boolean(url));
+    .map((row) => mediaUrl(row.image))
+    .filter((url): url is string => Boolean(url));
 
   // A single image is duplicated so the card's hover swap always has a partner.
   if (images.length === 1) images.push(images[0]);
@@ -90,9 +111,9 @@ function toProduct(doc: Doc): Product {
       : null,
     is_new: Boolean(doc.isNew),
     composition: doc.composition ?? "",
-    set_parts: (doc.setParts ?? []).length > 0 ? doc.setParts.map((p: Doc) => p.value) : null,
+    set_parts: (doc.setParts ?? []).length > 0 ? doc.setParts!.map((part) => part.value) : null,
     description: doc.description ?? "",
-    features: (doc.features ?? []).map((f: Doc) => f.value).filter(Boolean),
+    features: (doc.features ?? []).map((feature) => feature.value).filter(Boolean),
     images,
   };
 }
@@ -121,11 +142,11 @@ export const getCategories = cache(async (locale: Locale): Promise<Category[]> =
     ...ALL,
   });
 
-  return result.docs.map((doc: Doc) => ({
+  return result.docs.map((doc: CmsCategory) => ({
     slug: doc.slug,
     name: doc.name,
     labelKey: null,
-    parent: typeof doc.parent === "object" && doc.parent ? doc.parent.slug : null,
+    parent: resolve(doc.parent)?.slug ?? null,
     description: doc.description ?? null,
   }));
 });
@@ -135,13 +156,13 @@ export const getSiteTexts = cache(async (locale: Locale): Promise<Record<string,
   const result = await payload.find({ collection: "site-texts", ...ALL });
 
   return Object.fromEntries(
-    result.docs.map((doc: Doc) => [doc.key, (doc[locale] as string) || (doc.az as string)]),
+    result.docs.map((doc: SiteText) => [doc.key, doc[locale] || doc.az]),
   );
 });
 
-export const getSettings = cache(async (locale: Locale) => {
+export const getSettings = cache(async (locale: Locale): Promise<Setting> => {
   const payload = await payloadClient();
-  return (await payload.findGlobal({ slug: "settings", locale })) as Doc;
+  return payload.findGlobal({ slug: "settings", locale });
 });
 
 export const getShop = cache(async (locale: Locale): Promise<ShopSettings> => {
@@ -198,7 +219,7 @@ const getFooterPages = cache(async (locale: Locale) => {
     sort: "sortOrder",
     ...ALL,
   });
-  return result.docs.map((doc: Doc) => ({
+  return result.docs.map((doc: CmsPage) => ({
     slug: doc.slug,
     title: doc.title,
     footerGroup: doc.footerGroup ?? null,
@@ -229,8 +250,8 @@ export const getSlides = cache(async (): Promise<Slide[]> => {
   });
 
   return result.docs
-    .filter((doc: Doc) => !doc.endsAt || new Date(doc.endsAt) >= new Date())
-    .map((doc: Doc) => ({
+    .filter((doc: CmsSlide) => !doc.endsAt || new Date(doc.endsAt) >= new Date())
+    .map((doc: CmsSlide) => ({
       title: doc.title ?? "",
       subtitle: doc.subtitle ?? "",
       cta: doc.ctaLabel ?? "",
@@ -270,8 +291,8 @@ export const getHomeSections = cache(async (locale: Locale) => {
   const products = await getProducts(locale);
   const categories = await getCategories(locale);
 
-  return result.docs.map((doc: Doc) => {
-    const category = typeof doc.category === "object" ? doc.category : null;
+  return result.docs.map((doc: HomeSection) => {
+    const category = resolve(doc.category);
     const slug = category?.slug ?? "";
     return {
       title: doc.title || category?.name || slug,
@@ -304,7 +325,7 @@ export const getPosts = cache(async (locale: Locale): Promise<BlogPost[]> => {
     ...ALL,
   });
 
-  return result.docs.map((doc: Doc) => ({
+  return result.docs.map((doc: CmsPost) => ({
     slug: doc.slug,
     title: doc.title,
     excerpt: doc.excerpt ?? "",
@@ -328,7 +349,12 @@ export const getStaticPages = cache(async (locale: Locale): Promise<(StaticPage 
     ...ALL,
   });
 
-  return result.docs.map((doc: Doc) => ({ slug: doc.slug, title: doc.title, body: "", lexical: doc.body }));
+  return result.docs.map((doc: CmsPage) => ({
+    slug: doc.slug,
+    title: doc.title,
+    body: "",
+    lexical: doc.body,
+  }));
 });
 
 export const getContactDetails = cache(async (locale: Locale): Promise<ContactDetails> => {

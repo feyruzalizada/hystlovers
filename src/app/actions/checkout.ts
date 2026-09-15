@@ -6,7 +6,11 @@ import { getCustomer } from "@/lib/auth";
 import { defaultLocale, isLocale, localePath } from "@/lib/i18n";
 import { availableIn, hit, tooManyAttempts } from "@/lib/rate-limit";
 import { PAYMENT_METHODS } from "@/collections/Commerce";
+import type { Order, Product, Setting } from "@/payload-types";
 import type { Locale } from "@/lib/types";
+
+type OrderItem = NonNullable<Order["items"]>[number];
+type PaymentMethod = Order["paymentMethod"];
 
 export type CheckoutLine = { slug: string; size: string; qty: number };
 export type CheckoutResult = { ok: true; number: string } | { ok: false; message: string };
@@ -17,21 +21,20 @@ function localeOf(value: string): Locale {
   return isLocale(value) ? value : defaultLocale;
 }
 
-function displayName(doc: Record<string, any>): string {
-  const parts = (doc.setParts ?? []).map((p: Record<string, any>) => p.value).filter(Boolean);
+function displayName(doc: Product): string {
+  const parts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
   let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toUpperCase();
   if (parts.length > 0) name += ` (${parts.join(", ").toUpperCase()})`;
   return name;
 }
 
-function remainingFor(doc: Record<string, any>, size: string): number | null {
-  const row = (doc.sizes ?? []).find((entry: Record<string, any>) => entry.size === size);
-  const quantity = row?.quantity;
-  return quantity === null || quantity === undefined || quantity === "" ? null : Math.max(0, Number(quantity));
+function remainingFor(doc: Product, size: string): number | null {
+  const quantity = (doc.sizes ?? []).find((entry) => entry.size === size)?.quantity;
+  return quantity === null || quantity === undefined ? null : Math.max(0, quantity);
 }
 
-function isOrderable(doc: Record<string, any>, size: string, qty: number): boolean {
-  const sizes = (doc.sizes ?? []).map((entry: Record<string, any>) => entry.size);
+function isOrderable(doc: Product, size: string, qty: number): boolean {
+  const sizes = (doc.sizes ?? []).map((entry) => entry.size);
   if (!sizes.includes(size)) return false;
   if (doc.isPreorder) return true;
   if (!doc.inStock) return false;
@@ -81,7 +84,7 @@ export async function placeOrder(input: {
   if (!PHONE.test(input.phone.trim())) {
     return { ok: false, message: t("checkout.error.phone") };
   }
-  if (!PAYMENT_METHODS.includes(input.paymentMethod as never)) {
+  if (!PAYMENT_METHODS.includes(input.paymentMethod as PaymentMethod)) {
     return { ok: false, message: t("form.error.invalid") };
   }
   if (input.items.length === 0 || input.items.length > 50) {
@@ -89,10 +92,10 @@ export async function placeOrder(input: {
   }
 
   const payload = await payloadClient();
-  const settings = (await payload.findGlobal({ slug: "settings" })) as Record<string, any>;
+  const settings: Setting = await payload.findGlobal({ slug: "settings" });
 
-  const lines: Record<string, unknown>[] = [];
-  const stockWrites: { id: string | number; sizes: unknown; inStock: boolean }[] = [];
+  const lines: OrderItem[] = [];
+  const stockWrites: { id: number; sizes: Product["sizes"]; inStock: boolean }[] = [];
 
   for (const item of input.items) {
     const qty = Math.max(1, Math.min(20, Math.trunc(item.qty)));
@@ -103,7 +106,7 @@ export async function placeOrder(input: {
       overrideAccess: true,
     });
 
-    const doc = found.docs[0] as Record<string, any> | undefined;
+    const doc = found.docs[0];
     if (!doc) return { ok: false, message: t("checkout.error.unavailable") };
 
     if (!isOrderable(doc, item.size, qty)) {
@@ -114,7 +117,7 @@ export async function placeOrder(input: {
     }
 
     // Prices always come from the database, never from the submitted cart.
-    const unitPrice = Number(doc.price);
+    const unitPrice = doc.price;
     lines.push({
       product: doc.id,
       name: displayName(doc),
@@ -127,14 +130,14 @@ export async function placeOrder(input: {
     });
 
     if (!doc.isPreorder && remainingFor(doc, item.size) !== null) {
-      const sizes = (doc.sizes ?? []).map((row: Record<string, any>) =>
+      const sizes = (doc.sizes ?? []).map((row) =>
         row.size === item.size
-          ? { ...row, quantity: Math.max(0, Number(row.quantity) - qty) }
+          ? { ...row, quantity: Math.max(0, (row.quantity ?? 0) - qty) }
           : row,
       );
       const tracked = sizes
-        .filter((row: Record<string, any>) => row.quantity !== null && row.quantity !== undefined)
-        .map((row: Record<string, any>) => Number(row.quantity));
+        .map((row) => row.quantity)
+        .filter((quantity): quantity is number => quantity !== null && quantity !== undefined);
 
       stockWrites.push({
         id: doc.id,
@@ -144,8 +147,7 @@ export async function placeOrder(input: {
     }
   }
 
-  const subtotal =
-    Math.round(lines.reduce((sum, line) => sum + Number(line.lineTotal), 0) * 100) / 100;
+  const subtotal = Math.round(lines.reduce((sum, line) => sum + line.lineTotal, 0) * 100) / 100;
   const threshold = Number(settings.freeShippingThreshold ?? 0);
   const shippingTotal = subtotal >= threshold ? 0 : Number(settings.shippingFee ?? 0);
 
@@ -156,9 +158,9 @@ export async function placeOrder(input: {
     overrideAccess: true,
     data: {
       number,
-      customer: customer.id,
+      customer: Number(customer.id),
       status: "pending",
-      paymentMethod: input.paymentMethod,
+      paymentMethod: input.paymentMethod as PaymentMethod,
       paymentStatus: "pending",
       customerName: input.customerName.trim(),
       customerEmail: customer.email,

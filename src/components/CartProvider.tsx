@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
 
 export type CartLine = {
   slug: string;
@@ -33,13 +33,54 @@ const STORAGE_KEY = "hystlovers-cart";
 const CartContext = createContext<CartValue | null>(null);
 const lineKey = (slug: string, size: string) => `${slug}::${size}`;
 
-function readStorage(): CartLine[] {
+/**
+ * The cart lives in localStorage so it survives reloads without a backend.
+ * It is exposed as an external store: the server renders an empty cart, and
+ * React swaps in the stored one after hydration without a mismatch.
+ */
+const EMPTY: CartLine[] = [];
+const listeners = new Set<() => void>();
+
+let cachedRaw: string | null = null;
+let cachedLines: CartLine[] = EMPTY;
+
+function readStore(): CartLine[] {
+  let raw: string | null = null;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as CartLine[]) : [];
+    raw = window.localStorage.getItem(STORAGE_KEY);
   } catch {
-    return [];
+    return EMPTY;
   }
+
+  if (raw !== cachedRaw) {
+    cachedRaw = raw;
+    try {
+      cachedLines = raw ? (JSON.parse(raw) as CartLine[]) : EMPTY;
+    } catch {
+      cachedLines = EMPTY;
+    }
+  }
+  return cachedLines;
+}
+
+function writeStore(lines: CartLine[]) {
+  cachedLines = lines;
+  cachedRaw = JSON.stringify(lines);
+  try {
+    window.localStorage.setItem(STORAGE_KEY, cachedRaw);
+  } catch {
+    // storage unavailable — the cart still works for this page view
+  }
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", listener);
+  };
 }
 
 export function CartProvider({
@@ -49,54 +90,42 @@ export function CartProvider({
   shipping: { freeShippingThreshold: number; shippingFee: number };
   children: React.ReactNode;
 }) {
-  const [lines, setLines] = useState<CartLine[]>([]);
+  const lines = useSyncExternalStore(subscribe, readStore, () => EMPTY);
   const [isOpen, setIsOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setLines(readStorage());
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
-    } catch {
-      // storage unavailable — cart stays in memory for this session
-    }
-  }, [lines, hydrated]);
 
   const add = useCallback<CartValue["add"]>((line, qty = 1) => {
-    setLines((current) => {
-      const key = lineKey(line.slug, line.size);
-      const existing = current.find((l) => lineKey(l.slug, l.size) === key);
-      if (existing) {
-        return current.map((l) =>
-          lineKey(l.slug, l.size) === key ? { ...l, qty: l.qty + qty } : l,
-        );
-      }
-      return [...current, { ...line, qty }];
-    });
+    const current = readStore();
+    const key = lineKey(line.slug, line.size);
+    const existing = current.find((l) => lineKey(l.slug, l.size) === key);
+
+    writeStore(
+      existing
+        ? current.map((l) => (lineKey(l.slug, l.size) === key ? { ...l, qty: l.qty + qty } : l))
+        : [...current, { ...line, qty }],
+    );
     setIsOpen(true);
   }, []);
 
   const setQty = useCallback<CartValue["setQty"]>((slug, size, qty) => {
-    setLines((current) =>
+    const current = readStore();
+    const key = lineKey(slug, size);
+
+    writeStore(
       qty <= 0
-        ? current.filter((l) => lineKey(l.slug, l.size) !== lineKey(slug, size))
-        : current.map((l) => (lineKey(l.slug, l.size) === lineKey(slug, size) ? { ...l, qty } : l)),
+        ? current.filter((l) => lineKey(l.slug, l.size) !== key)
+        : current.map((l) => (lineKey(l.slug, l.size) === key ? { ...l, qty } : l)),
     );
   }, []);
 
   const remove = useCallback<CartValue["remove"]>((slug, size) => {
-    setLines((current) => current.filter((l) => lineKey(l.slug, l.size) !== lineKey(slug, size)));
+    writeStore(readStore().filter((l) => lineKey(l.slug, l.size) !== lineKey(slug, size)));
   }, []);
 
   const value = useMemo<CartValue>(() => {
     const subtotal = lines.reduce((sum, l) => sum + l.price * l.qty, 0);
     const qualifies = subtotal >= shipping.freeShippingThreshold;
     const shippingFee = lines.length === 0 || qualifies ? 0 : shipping.shippingFee;
+
     return {
       lines,
       count: lines.reduce((sum, l) => sum + l.qty, 0),
@@ -110,7 +139,7 @@ export function CartProvider({
       add,
       setQty,
       remove,
-      clear: () => setLines([]),
+      clear: () => writeStore(EMPTY),
     };
   }, [lines, isOpen, add, setQty, remove, shipping]);
 

@@ -12,7 +12,9 @@ export default defineConfig({
   webServer: {
     command: `cross-env NODE_OPTIONS=--no-deprecation next dev -p ${port}`,
     url: `http://localhost:${port}/az`,
-    reuseExistingServer: true,
+    // SERVER_URL is Payload's CSRF origin: it has to match where the tests run.
+    env: { SERVER_URL: `http://localhost:${port}` },
+    reuseExistingServer: false,
     timeout: 180_000,
   },
 });

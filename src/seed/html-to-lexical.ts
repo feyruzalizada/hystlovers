@@ -4,7 +4,7 @@
  * only for the one-off import; the panel writes Lexical directly from then on.
  */
 
-type LexicalNode = Record<string, unknown>;
+type LexicalNode = { [k: string]: unknown; type: string; version: number };
 
 const BLOCK = /<(p|h2|h3|ul|ol|blockquote)\b[^>]*>([\s\S]*?)<\/\1>/gi;
 const LIST_ITEM = /<li\b[^>]*>([\s\S]*?)<\/li>/gi;
@@ -166,8 +166,8 @@ export function htmlToLexical(html: string | null | undefined) {
     root: {
       type: "root",
       children: children.length ? children : [paragraph([textNode("")])],
-      direction: "ltr",
-      format: "",
+      direction: "ltr" as const,
+      format: "" as const,
       indent: 0,
       version: 1,
     },

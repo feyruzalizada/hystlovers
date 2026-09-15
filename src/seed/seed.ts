@@ -37,7 +37,7 @@ type SeedProduct = {
 
 /** One-off import of the content carried over from the PHP shop. */
 export async function seed(payload: Payload) {
-  const media = new Map<string, number | string>();
+  const media = new Map<string, number>();
 
   const uploadImage = async (publicPath: string) => {
     if (!publicPath) return null;
@@ -55,7 +55,7 @@ export async function seed(payload: Payload) {
       filePath: file,
     });
 
-    media.set(publicPath, created.id);
+    media.set(publicPath, created.id as number);
     return created.id;
   };
 
@@ -175,7 +175,7 @@ export async function seed(payload: Payload) {
     "content/categories.json",
   ).filter((c) => c.name); // new-in / all-products are virtual collections, not rows
 
-  const categoryIds = new Map<string, number | string>();
+  const categoryIds = new Map<string, number>();
   const existingCategories = await payload.count({ collection: "categories" });
 
   if (existingCategories.totalDocs === 0) {
@@ -196,13 +196,13 @@ export async function seed(payload: Payload) {
             sortOrder: ++order,
           },
         });
-        categoryIds.set(category.slug, created.id);
+        categoryIds.set(category.slug, created.id as number);
       }
     }
     payload.logger.info(`${categoryIds.size} categories imported`);
   } else {
     const all = await payload.find({ collection: "categories", limit: 100, pagination: false });
-    all.docs.forEach((doc) => categoryIds.set(doc.slug as string, doc.id));
+    all.docs.forEach((doc) => categoryIds.set(doc.slug, doc.id));
   }
 
   // ---- products ---------------------------------------------------------
@@ -212,7 +212,7 @@ export async function seed(payload: Payload) {
   if (existingProducts.totalDocs === 0) {
     let order = 0;
     for (const product of products) {
-      const images: { image: number | string }[] = [];
+      const images: { image: number }[] = [];
       for (const image of product.images) {
         const id = await uploadImage(image);
         if (id) images.push({ image: id });

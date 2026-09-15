@@ -37,10 +37,10 @@ export async function submitContact(formData: FormData): Promise<ActionResult> {
 
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
-  const subject = String(formData.get("subject") ?? "");
+  const subject = String(formData.get("subject") ?? "") as (typeof CONTACT_SUBJECTS)[number];
   const message = String(formData.get("message") ?? "").trim();
 
-  if (!name || !email || !message || !CONTACT_SUBJECTS.includes(subject as never)) {
+  if (!name || !email || !message || !CONTACT_SUBJECTS.includes(subject)) {
     return { ok: false, message: t("form.error.invalid") };
   }
 

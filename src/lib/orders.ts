@@ -1,5 +1,6 @@
 import "server-only";
 import { payloadClient } from "./cms";
+import type { Order, Setting } from "@/payload-types";
 
 export type OrderItemView = {
   name: string;
@@ -33,16 +34,16 @@ export type OrderView = {
   items: OrderItemView[];
 };
 
-function toView(doc: Record<string, any>): OrderView {
-  const items: OrderItemView[] = (doc.items ?? []).map((item: Record<string, any>) => ({
+function toView(doc: Order): OrderView {
+  const items: OrderItemView[] = (doc.items ?? []).map((item) => ({
     name: item.name,
     color: item.colorName,
     size: item.size,
-    qty: Number(item.qty),
+    qty: item.qty,
     isPreorder: Boolean(item.isPreorder),
-    unitPrice: Number(item.unitPrice),
-    lineTotal: Number(item.lineTotal),
-    slug: typeof item.product === "object" && item.product ? item.product.slug : null,
+    unitPrice: item.unitPrice,
+    lineTotal: item.lineTotal,
+    slug: item.product && typeof item.product === "object" ? item.product.slug : null,
   }));
 
   const created = new Date(doc.createdAt);
@@ -61,9 +62,9 @@ function toView(doc: Record<string, any>): OrderView {
     city: doc.city,
     address: doc.address,
     note: doc.note ?? null,
-    subtotal: Number(doc.subtotal),
-    shippingTotal: Number(doc.shippingTotal),
-    total: Number(doc.total),
+    subtotal: doc.subtotal,
+    shippingTotal: doc.shippingTotal,
+    total: doc.total,
     createdAt: `${created.toLocaleDateString("en-GB").replaceAll("/", ".")} ${created
       .toTimeString()
       .slice(0, 5)}`,
@@ -103,6 +104,6 @@ export async function getOrderFor(
 
 export async function getBankTransferDetails(): Promise<string | null> {
   const payload = await payloadClient();
-  const settings = (await payload.findGlobal({ slug: "settings" })) as Record<string, any>;
+  const settings: Setting = await payload.findGlobal({ slug: "settings" });
   return settings.bankTransferDetails || null;
 }
