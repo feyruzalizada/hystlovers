@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { slugify } from "@/lib/slug";
+import { revalidateAfterChange, revalidateAfterDelete, revalidateHooks } from "./revalidate";
 
 export const FOOTER_GROUPS = [
   { label: "Company", value: "company" },
@@ -9,6 +10,7 @@ export const FOOTER_GROUPS = [
 
 export const Slides: CollectionConfig = {
   slug: "slides",
+  hooks: revalidateHooks,
   admin: { useAsTitle: "title", defaultColumns: ["title", "isActive", "sortOrder"], group: "Content" },
   access: adminAccess,
   defaultSort: "sortOrder",
@@ -43,6 +45,7 @@ export const Slides: CollectionConfig = {
 
 export const HomeSections: CollectionConfig = {
   slug: "home-sections",
+  hooks: revalidateHooks,
   labels: { singular: "Home section", plural: "Home sections" },
   admin: { useAsTitle: "title", group: "Content" },
   access: adminAccess,
@@ -67,6 +70,8 @@ export const Pages: CollectionConfig = {
   access: adminAccess,
   defaultSort: "sortOrder",
   hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {
         if (data) data.slug = slugify(data.slug || data.title || "");
@@ -95,6 +100,8 @@ export const Posts: CollectionConfig = {
   access: adminAccess,
   defaultSort: "-publishedAt",
   hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {
         if (data) data.slug = slugify(data.slug || data.title || "");
@@ -125,6 +132,7 @@ export const Posts: CollectionConfig = {
  */
 export const SiteTexts: CollectionConfig = {
   slug: "site-texts",
+  hooks: revalidateHooks,
   labels: { singular: "Site text", plural: "Site texts" },
   admin: { useAsTitle: "key", defaultColumns: ["key", "group", "az", "en", "ru"], group: "Content" },
   access: adminAccess,

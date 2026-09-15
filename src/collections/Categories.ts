@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { slugify } from "@/lib/slug";
+import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
 export const Categories: CollectionConfig = {
   slug: "categories",
@@ -8,6 +9,8 @@ export const Categories: CollectionConfig = {
   access: adminAccess,
   defaultSort: "sortOrder",
   hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {
         if (data) data.slug = slugify(data.slug || data.name || "");

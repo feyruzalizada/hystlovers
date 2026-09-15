@@ -1,10 +1,12 @@
 import type { GlobalConfig } from "payload";
 import { adminOnly, publicRead } from "@/collections/access";
+import { revalidateGlobalAfterChange } from "@/collections/revalidate";
 
 export const Settings: GlobalConfig = {
   slug: "settings",
   admin: { group: "System" },
   access: { read: publicRead, update: adminOnly },
+  hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {
       type: "tabs",

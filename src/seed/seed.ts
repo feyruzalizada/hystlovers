@@ -104,6 +104,11 @@ export async function seed(payload: Payload) {
       "Please check the form and try again.",
       "Пожалуйста, проверьте форму и попробуйте снова.",
     ],
+    "auth.email_taken": [
+      "Bu e-poçt ünvanı artıq qeydiyyatdan keçib.",
+      "That email address is already registered.",
+      "Этот адрес электронной почты уже зарегистрирован.",
+    ],
     "form.error.unexpected": [
       "Gözlənilməz xəta baş verdi. Bir az sonra yenidən cəhd edin.",
       "Something went wrong. Please try again in a moment.",

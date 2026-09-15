@@ -7,7 +7,13 @@ import type { Product } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import { useShop } from "./ShopProvider";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  priority?: boolean;
+}) {
   const { t, path } = useI18n();
   const { formatPrice } = useShop();
   const [hovered, setHovered] = useState(false);
@@ -28,6 +34,7 @@ export default function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
+            priority={priority}
             className="object-cover transition-opacity duration-300"
           />
         )}

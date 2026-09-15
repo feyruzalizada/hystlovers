@@ -1,0 +1,108 @@
+import "server-only";
+import { payloadClient } from "./cms";
+
+export type OrderItemView = {
+  name: string;
+  color: string;
+  size: string;
+  qty: number;
+  isPreorder: boolean;
+  unitPrice: number;
+  lineTotal: number;
+  slug: string | null;
+};
+
+export type OrderView = {
+  number: string;
+  status: string;
+  statusKey: string;
+  paymentMethod: string;
+  paymentMethodKey: string;
+  paymentStatus: string;
+  paymentStatusKey: string;
+  hasPreorder: boolean;
+  customerName: string;
+  phone: string;
+  city: string;
+  address: string;
+  note: string | null;
+  subtotal: number;
+  shippingTotal: number;
+  total: number;
+  createdAt: string;
+  items: OrderItemView[];
+};
+
+function toView(doc: Record<string, any>): OrderView {
+  const items: OrderItemView[] = (doc.items ?? []).map((item: Record<string, any>) => ({
+    name: item.name,
+    color: item.colorName,
+    size: item.size,
+    qty: Number(item.qty),
+    isPreorder: Boolean(item.isPreorder),
+    unitPrice: Number(item.unitPrice),
+    lineTotal: Number(item.lineTotal),
+    slug: typeof item.product === "object" && item.product ? item.product.slug : null,
+  }));
+
+  const created = new Date(doc.createdAt);
+
+  return {
+    number: doc.number,
+    status: doc.status,
+    statusKey: `order.status.${doc.status}`,
+    paymentMethod: doc.paymentMethod,
+    paymentMethodKey: `checkout.payment.${doc.paymentMethod}`,
+    paymentStatus: doc.paymentStatus,
+    paymentStatusKey: `order.payment_status.${doc.paymentStatus}`,
+    hasPreorder: items.some((item) => item.isPreorder),
+    customerName: doc.customerName,
+    phone: doc.phone,
+    city: doc.city,
+    address: doc.address,
+    note: doc.note ?? null,
+    subtotal: Number(doc.subtotal),
+    shippingTotal: Number(doc.shippingTotal),
+    total: Number(doc.total),
+    createdAt: `${created.toLocaleDateString("en-GB").replaceAll("/", ".")} ${created
+      .toTimeString()
+      .slice(0, 5)}`,
+    items,
+  };
+}
+
+export async function getOrdersFor(customerId: string | number): Promise<OrderView[]> {
+  const payload = await payloadClient();
+  const result = await payload.find({
+    collection: "orders",
+    where: { customer: { equals: customerId } },
+    sort: "-createdAt",
+    depth: 2,
+    limit: 0,
+    pagination: false,
+    overrideAccess: true,
+  });
+  return result.docs.map(toView);
+}
+
+export async function getOrderFor(
+  customerId: string | number,
+  number: string,
+): Promise<OrderView | null> {
+  const payload = await payloadClient();
+  const result = await payload.find({
+    collection: "orders",
+    where: { number: { equals: number }, customer: { equals: customerId } },
+    depth: 2,
+    limit: 1,
+    overrideAccess: true,
+  });
+  const doc = result.docs[0];
+  return doc ? toView(doc) : null;
+}
+
+export async function getBankTransferDetails(): Promise<string | null> {
+  const payload = await payloadClient();
+  const settings = (await payload.findGlobal({ slug: "settings" })) as Record<string, any>;
+  return settings.bankTransferDetails || null;
+}

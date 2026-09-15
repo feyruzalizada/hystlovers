@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { slugify } from "@/lib/slug";
+import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
 export const SIZE_SUGGESTIONS = ["XS/S", "M/L", "One Size"];
 export const FABRIC_SUGGESTIONS = ["Bamboo", "Cotton", "Lycra", "Modal", "Terry Cloth", "Viscose"];
@@ -19,6 +20,8 @@ export const Products: CollectionConfig = {
   access: adminAccess,
   defaultSort: "sortOrder",
   hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {
         if (data) {

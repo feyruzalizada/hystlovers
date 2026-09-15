@@ -26,7 +26,7 @@ export default function Hero({ slides }: { slides: Slide[] }) {
         alt={t("home.slide_aria", { number: index + 1, title: slide.title })}
         fill
         priority
-        sizes="100vw"
+        sizes="(min-width: 768px) 100vw, 1px"
         className="hidden object-cover md:block"
       />
       <Image
@@ -34,7 +34,7 @@ export default function Hero({ slides }: { slides: Slide[] }) {
         alt=""
         fill
         priority
-        sizes="100vw"
+        sizes="(max-width: 767px) 100vw, 1px"
         className="object-cover md:hidden"
       />
 

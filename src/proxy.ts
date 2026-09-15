@@ -3,7 +3,7 @@ import { defaultLocale, isLocale, locales } from "@/lib/i18n";
 
 const LOCALE_COOKIE = "storefront_locale";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const [, first] = pathname.split("/");
 
