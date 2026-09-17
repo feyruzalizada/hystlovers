@@ -15,21 +15,22 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
   const [t, orders] = await Promise.all([getTranslator(locale), getOrdersFor(customer.id)]);
 
   return (
-    <div className="mx-auto max-w-[900px] px-4 py-16 md:px-8">
-      <header className="flex flex-wrap items-baseline justify-between gap-4">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="heading-brand text-lg">{t("account.title")}</h1>
-          <p className="mt-2 text-sm text-ink-soft">
+          <h1 className="heading-brand text-2xl">{t("account.title")}</h1>
+          <p className="mt-2 text-sm text-ink/60">
             {customer.name} · {customer.email}
           </p>
         </div>
         <LogoutButton />
-      </header>
+      </div>
 
-      <section className="mt-12">
-        <h2 className="heading-brand text-xs">{t("account.orders_heading")}</h2>
-        <OrderList orders={orders} />
-      </section>
+      <h2 className="mt-12 text-xs font-medium tracking-brand uppercase">
+        {t("account.orders_heading")}
+      </h2>
+
+      <OrderList orders={orders} />
     </div>
   );
 }

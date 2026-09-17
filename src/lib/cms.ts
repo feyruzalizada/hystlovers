@@ -335,6 +335,9 @@ export const getPosts = cache(async (locale: Locale): Promise<BlogPost[]> => {
       ? new Date(doc.publishedAt).toLocaleDateString("en-GB").replaceAll("/", ".")
       : "",
     publishedAtIso: doc.publishedAt ? String(doc.publishedAt).slice(0, 10) : "",
+    images: (doc.images ?? [])
+      .map((row) => mediaUrl(row.image))
+      .filter((url): url is string => Boolean(url)),
     lexical: doc.body ?? null,
   })) as BlogPost[];
 });

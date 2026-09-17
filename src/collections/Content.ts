@@ -122,6 +122,12 @@ export const Posts: CollectionConfig = {
     { name: "body", type: "richText", localized: true },
     { name: "coverImage", type: "upload", relationTo: "media" },
     {
+      name: "images",
+      type: "array",
+      admin: { description: "Shown as a gallery under the article." },
+      fields: [{ name: "image", type: "upload", relationTo: "media", required: true }],
+    },
+    {
       type: "row",
       fields: [
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },

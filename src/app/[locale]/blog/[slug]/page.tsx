@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPosts } from "@/lib/cms";
@@ -18,8 +19,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
-  const post = (await getPosts(locale)).find((p) => p.slug === slug);
-  return post ? { title: post.title, description: post.excerpt } : {};
+  const post = (await getPosts(locale)).find((entry) => entry.slug === slug);
+  if (!post) return {};
+
+  return {
+    title: post.title,
+    description: post.excerpt || undefined,
+    openGraph: {
+      title: post.title,
+      type: "article",
+      images: post.cover ? [post.cover] : undefined,
+    },
+  };
 }
 
 export default async function BlogPostPage({
@@ -31,50 +42,89 @@ export default async function BlogPostPage({
   if (!isLocale(locale)) notFound();
 
   const posts = await getPosts(locale);
-  const post = posts.find((p) => p.slug === slug);
+  const post = posts.find((entry) => entry.slug === slug);
   if (!post) notFound();
 
   const t = await getTranslator(locale);
-  const more = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const more = posts.filter((entry) => entry.slug !== post.slug).slice(0, 3);
 
   return (
-    <article className="mx-auto max-w-[760px] px-4 py-12 md:px-8">
-      <Link href={localePath(locale, "/blog")} className="btn-ghost">
-        {t("blog.back")}
-      </Link>
+    <>
+      <article className="mx-auto max-w-2xl px-4 py-12 sm:py-20">
+        <header className="text-center">
+          {post.publishedAtIso && (
+            <time
+              dateTime={post.publishedAtIso}
+              className="text-[11px] tracking-brand text-ink/40 uppercase"
+            >
+              {post.publishedAt}
+            </time>
+          )}
+          <h1 className="heading-brand mt-3 text-2xl leading-snug sm:text-3xl">{post.title}</h1>
+          {post.excerpt && <p className="mt-4 text-sm leading-relaxed text-ink/60">{post.excerpt}</p>}
+        </header>
 
-      <header className="mt-10">
-        <time
-          className="text-xs tracking-brand text-ink-soft uppercase"
-          dateTime={post.publishedAtIso}
-        >
-          {post.publishedAt}
-        </time>
-        <h1 className="heading-brand mt-3 text-2xl">{post.title}</h1>
-      </header>
+        {post.cover && (
+          <Image
+            src={post.cover}
+            alt={post.title}
+            width={1200}
+            height={800}
+            priority
+            className="mt-10 w-full bg-mist object-cover"
+          />
+        )}
 
-      <div
-        className="page-body mt-10 text-sm leading-relaxed text-ink-soft"
-        dangerouslySetInnerHTML={{ __html: renderRichText(post.lexical) }}
-      />
+        <div
+          className="page-body mt-10 text-sm leading-relaxed text-ink/75 sm:text-base"
+          dangerouslySetInnerHTML={{ __html: renderRichText(post.lexical) }}
+        />
+
+        {post.images.length > 0 && (
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {post.images.map((image) => (
+              <Image
+                key={image}
+                src={image}
+                alt={post.title}
+                width={800}
+                height={1000}
+                className="w-full bg-mist object-cover"
+              />
+            ))}
+          </div>
+        )}
+
+        <Link href={localePath(locale, "/blog")} className="btn-ghost mt-12 inline-block text-xs">
+          {t("blog.back")}
+        </Link>
+      </article>
 
       {more.length > 0 && (
-        <section className="mt-20 border-t border-line pt-10">
-          <h2 className="heading-brand text-sm">{t("blog.more_heading")}</h2>
-          <ul className="mt-5 flex flex-col gap-3">
-            {more.map((item) => (
-              <li key={item.slug}>
-                <Link
-                  href={localePath(locale, `/blog/${item.slug}`)}
-                  className="text-sm hover:underline"
-                >
-                  {item.title}
+        <section className="border-t border-line">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+            <h2 className="heading-brand text-lg sm:text-xl">{t("blog.more_heading")}</h2>
+            <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-3">
+              {more.map((item) => (
+                <Link key={item.slug} href={localePath(locale, item.url)} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-mist">
+                    {item.cover && (
+                      <Image
+                        src={item.cover}
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  <h3 className="mt-3 text-xs tracking-brand uppercase">{item.title}</h3>
                 </Link>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          </div>
         </section>
       )}
-    </article>
+    </>
   );
 }

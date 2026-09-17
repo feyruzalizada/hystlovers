@@ -385,6 +385,15 @@ export interface Post {
     [k: string]: unknown;
   } | null;
   coverImage?: (number | null) | Media;
+  /**
+   * Shown as a gallery under the article.
+   */
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   isActive?: boolean | null;
   publishedAt?: string | null;
   updatedAt: string;
@@ -780,6 +789,12 @@ export interface PostsSelect<T extends boolean = true> {
   excerpt?: T;
   body?: T;
   coverImage?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   isActive?: T;
   publishedAt?: T;
   updatedAt?: T;

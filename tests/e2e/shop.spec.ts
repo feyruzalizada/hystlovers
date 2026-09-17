@@ -28,17 +28,25 @@ test("language switch keeps the visitor on the same page", async ({ page }) => {
   await expect(page).toHaveURL(/\/ru\/collections\/all-products/);
 });
 
-test("collection filters narrow the grid", async ({ page }) => {
+test("collection filters narrow the grid without leaving the page", async ({ page }) => {
   await page.goto("/az/collections/all-products");
-  const before = await page.locator("a[href*='/products/']").count();
+  const cards = page.locator("a[href*='/products/']");
+  const before = await cards.count();
 
-  await page.getByRole("button", { name: /filtr/i }).first().click();
-  await page.getByRole("button", { name: "Brown", exact: true }).click();
-  await page.waitForURL(/color=brown/);
+  // Filtering happens in the browser, as in the source shop: the URL stays put.
+  await page.getByTitle("Brown", { exact: true }).click();
+  await expect(cards).not.toHaveCount(before);
 
-  const after = await page.locator("a[href*='/products/']").count();
-  expect(after).toBeLessThan(before);
+  const after = await cards.count();
   expect(after).toBeGreaterThan(0);
+  await expect(page).toHaveURL(/\/az\/collections\/all-products$/);
+});
+
+test("the colour gallery preselects its filter", async ({ page }) => {
+  await page.goto("/az/collections/all-products?color=brown");
+  await expect(page.locator("a[href*='/products/']").first()).toBeVisible();
+  const count = await page.locator("a[href*='/products/']").count();
+  expect(count).toBeGreaterThan(0);
 });
 
 test("a shopper can register, buy and see the order", async ({ page }) => {

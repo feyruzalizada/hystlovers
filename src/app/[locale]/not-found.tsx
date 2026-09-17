@@ -11,10 +11,11 @@ export default async function NotFound() {
   const t = await getTranslator(locale);
 
   return (
-    <div className="mx-auto max-w-[600px] px-4 py-32 text-center md:px-8">
-      <h1 className="heading-brand text-xl">{t("error.404.title")}</h1>
-      <p className="mt-4 text-sm text-ink-soft">{t("error.404.body")}</p>
-      <Link href={localePath(locale, "/")} className="btn-secondary mt-8">
+    <div className="mx-auto max-w-md px-4 py-24 text-center sm:py-32">
+      <p className="heading-brand text-6xl text-ink/15">404</p>
+      <h1 className="heading-brand mt-6 text-xl">{t("error.404.title")}</h1>
+      <p className="mt-4 text-sm text-ink/60">{t("error.404.body")}</p>
+      <Link href={localePath(locale, "/")} className="btn-primary mt-10">
         {t("error.404.cta")}
       </Link>
     </div>

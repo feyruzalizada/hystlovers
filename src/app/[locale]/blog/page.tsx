@@ -43,69 +43,72 @@ export default async function BlogPage({
     `${localePath(locale, "/blog")}${target > 1 ? `?page=${target}` : ""}`;
 
   return (
-    <div className="mx-auto max-w-[1100px] px-4 py-12 md:px-8">
-      <header className="mb-12 text-center">
-        <h1 className="heading-brand text-xl">{t("blog.title")}</h1>
-        <p className="mt-3 text-sm text-ink-soft">{t("blog.subtitle")}</p>
+    <>
+      <header className="border-b border-line bg-mist/60">
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
+          <h1 className="heading-brand text-2xl sm:text-3xl">{t("blog.title")}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-ink/60">{t("blog.subtitle")}</p>
+        </div>
       </header>
 
-      {posts.length === 0 ? (
-        <p className="py-20 text-center text-sm text-ink-soft">{t("blog.empty")}</p>
-      ) : (
-        <div className="grid gap-10 md:grid-cols-2">
-          {posts.map((post) => (
-            <article key={post.slug} className="flex flex-col">
-              <Link href={localePath(locale, `/blog/${post.slug}`)}>
-                <div className="relative aspect-[4/3] bg-mist">
-                  {post.cover && (
-                    <Image
-                      src={post.cover}
-                      alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                    />
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+        {posts.length === 0 ? (
+          <p className="py-24 text-center text-sm text-ink/60">{t("blog.empty")}</p>
+        ) : (
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <article key={post.slug}>
+                <Link href={localePath(locale, post.url)} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-mist">
+                    {post.cover && (
+                      <Image
+                        src={post.cover}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  {post.publishedAtIso && (
+                    <time
+                      dateTime={post.publishedAtIso}
+                      className="mt-4 block text-[11px] tracking-brand text-ink/40 uppercase"
+                    >
+                      {post.publishedAt}
+                    </time>
                   )}
-                </div>
-              </Link>
-              <time
-                className="mt-5 text-xs tracking-brand text-ink-soft uppercase"
-                dateTime={post.publishedAtIso}
-              >
-                {post.publishedAt}
-              </time>
-              <h2 className="heading-brand mt-2 text-sm">
-                <Link href={localePath(locale, `/blog/${post.slug}`)}>{post.title}</Link>
-              </h2>
-              <p className="mt-3 text-sm text-ink-soft">{post.excerpt}</p>
-              <Link
-                href={localePath(locale, `/blog/${post.slug}`)}
-                className="btn-ghost mt-5 self-start"
-              >
-                {t("blog.read_more")}
-              </Link>
-            </article>
-          ))}
-        </div>
-      )}
+                  <h2 className="mt-2 text-sm tracking-brand uppercase">{post.title}</h2>
+                  {post.excerpt && (
+                    <p className="mt-2 text-sm leading-relaxed text-ink/60">{post.excerpt}</p>
+                  )}
+                  <p className="mt-3 text-[11px] tracking-brand uppercase underline decoration-line-strong underline-offset-4 transition-colors group-hover:decoration-ink">
+                    {t("blog.read_more")}
+                  </p>
+                </Link>
+              </article>
+            ))}
+          </div>
+        )}
 
-      {lastPage > 1 && (
-        <nav className="mt-16 flex items-center justify-center gap-6 border-t border-line pt-8">
-          {page > 1 && (
-            <Link href={href(page - 1)} className="btn-ghost">
-              {t("blog.prev")}
-            </Link>
-          )}
-          <span className="text-xs tracking-brand text-ink-soft uppercase">
-            {page} / {lastPage}
-          </span>
-          {page < lastPage && (
-            <Link href={href(page + 1)} className="btn-ghost">
-              {t("blog.next")}
-            </Link>
-          )}
-        </nav>
-      )}
-    </div>
+        {lastPage > 1 && (
+          <nav className="mt-16 flex items-center justify-center gap-6 text-xs tracking-brand uppercase">
+            {page > 1 && (
+              <Link href={href(page - 1)} className="hover:opacity-60">
+                {t("blog.prev")}
+              </Link>
+            )}
+            <span className="text-ink/40">
+              {page} / {lastPage}
+            </span>
+            {page < lastPage && (
+              <Link href={href(page + 1)} className="hover:opacity-60">
+                {t("blog.next")}
+              </Link>
+            )}
+          </nav>
+        )}
+      </div>
+    </>
   );
 }

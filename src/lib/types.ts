@@ -90,6 +90,7 @@ export type BlogPost = {
   url: string;
   publishedAt: string;
   publishedAtIso: string;
+  images: string[];
   body?: string;
   lexical?: unknown;
 };

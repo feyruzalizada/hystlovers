@@ -7,6 +7,8 @@ import { useI18n } from "./I18nProvider";
 
 type ActionResult = { ok: true } | { ok: false; message: string };
 
+const LABEL = "mb-2 block text-xs font-medium tracking-brand uppercase";
+
 function useAuthSubmit(action: (data: FormData) => Promise<ActionResult | void>) {
   const { locale } = useI18n();
   const [pending, startTransition] = useTransition();
@@ -21,7 +23,7 @@ function useAuthSubmit(action: (data: FormData) => Promise<ActionResult | void>)
     startTransition(async () => {
       setError(null);
       const result = await action(data);
-      // A successful login/register redirects and never returns a result.
+      // A successful login or registration redirects and returns nothing.
       if (result && !result.ok) setError(result.message);
       else if (result) setDone(true);
     });
@@ -30,33 +32,21 @@ function useAuthSubmit(action: (data: FormData) => Promise<ActionResult | void>)
   return { onSubmit, pending, error, done };
 }
 
-function Shell({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
-  return (
-    <div className="mx-auto w-full max-w-md px-4 py-20 md:px-0">
-      <h1 className="heading-brand text-center text-lg">{title}</h1>
-      {subtitle && <p className="mt-3 text-center text-sm text-ink-soft">{subtitle}</p>}
-      <div className="mt-10">{children}</div>
-    </div>
-  );
-}
-
 function Field({
   label,
   name,
   type = "text",
-  required = true,
   autoComplete,
 }: {
   label: string;
   name: string;
   type?: string;
-  required?: boolean;
   autoComplete?: string;
 }) {
   return (
-    <label className="flex flex-col gap-2">
-      <span className="text-xs tracking-brand uppercase">{label}</span>
-      <input name={name} type={type} required={required} autoComplete={autoComplete} className="input-brand" />
+    <label className="block">
+      <span className={LABEL}>{label}</span>
+      <input name={name} type={type} required autoComplete={autoComplete} className="input-brand" />
     </label>
   );
 }
@@ -66,35 +56,45 @@ export function LoginForm() {
   const { onSubmit, pending, error } = useAuthSubmit(login);
 
   return (
-    <Shell title={t("auth.login.title")}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
-        <Field label={t("auth.password")} name="password" type="password" autoComplete="current-password" />
+    <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
+      <h1 className="heading-brand text-center text-2xl">{t("auth.login.title")}</h1>
 
-        <div className="flex items-center justify-between text-xs">
-          <label className="flex items-center gap-2 tracking-brand uppercase">
-            <input type="checkbox" name="remember" defaultChecked />
+      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
+        <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
+        <Field
+          label={t("auth.password")}
+          name="password"
+          type="password"
+          autoComplete="current-password"
+        />
+
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 text-xs text-ink/60">
+            <input type="checkbox" name="remember" defaultChecked className="accent-ink" />
             {t("auth.login.remember")}
           </label>
-          <Link href={path("/forgot-password")} className="underline underline-offset-4">
+          <Link
+            href={path("/forgot-password")}
+            className="text-xs text-ink/50 underline underline-offset-4 hover:text-ink"
+          >
             {t("auth.login.forgot")}
           </Link>
         </div>
 
         {error && <p className="text-xs text-sale">{error}</p>}
 
-        <button type="submit" className="btn-primary" disabled={pending}>
+        <button type="submit" className="btn-primary w-full" disabled={pending}>
           {pending ? t("auth.login.submitting") : t("auth.login.title")}
         </button>
-
-        <p className="text-center text-xs text-ink-soft">
-          {t("auth.login.no_account")}{" "}
-          <Link href={path("/register")} className="underline underline-offset-4">
-            {t("auth.login.register_link")}
-          </Link>
-        </p>
       </form>
-    </Shell>
+
+      <p className="mt-8 text-center text-sm text-ink/60">
+        {t("auth.login.no_account")}{" "}
+        <Link href={path("/register")} className="text-ink underline underline-offset-4">
+          {t("auth.login.register_link")}
+        </Link>
+      </p>
+    </div>
   );
 }
 
@@ -103,11 +103,19 @@ export function RegisterForm() {
   const { onSubmit, pending, error } = useAuthSubmit(register);
 
   return (
-    <Shell title={t("auth.register.title")} subtitle={t("auth.register.subtitle")}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
+      <h1 className="heading-brand text-center text-2xl">{t("auth.register.title")}</h1>
+      <p className="mt-4 text-center text-sm text-ink/60">{t("auth.register.subtitle")}</p>
+
+      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
         <Field label={t("auth.register.name")} name="name" autoComplete="name" />
         <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
-        <Field label={t("auth.password")} name="password" type="password" autoComplete="new-password" />
+        <Field
+          label={t("auth.password")}
+          name="password"
+          type="password"
+          autoComplete="new-password"
+        />
         <Field
           label={t("auth.register.password_confirm")}
           name="password_confirmation"
@@ -117,18 +125,18 @@ export function RegisterForm() {
 
         {error && <p className="text-xs text-sale">{error}</p>}
 
-        <button type="submit" className="btn-primary" disabled={pending}>
+        <button type="submit" className="btn-primary w-full" disabled={pending}>
           {pending ? t("auth.register.submitting") : t("auth.register.title")}
         </button>
-
-        <p className="text-center text-xs text-ink-soft">
-          {t("auth.register.have_account")}{" "}
-          <Link href={path("/login")} className="underline underline-offset-4">
-            {t("auth.register.login_link")}
-          </Link>
-        </p>
       </form>
-    </Shell>
+
+      <p className="mt-8 text-center text-sm text-ink/60">
+        {t("auth.register.have_account")}{" "}
+        <Link href={path("/login")} className="text-ink underline underline-offset-4">
+          {t("auth.register.login_link")}
+        </Link>
+      </p>
+    </div>
   );
 }
 
@@ -137,27 +145,30 @@ export function ForgotPasswordForm() {
   const { onSubmit, pending, error, done } = useAuthSubmit(requestPasswordReset);
 
   return (
-    <Shell title={t("auth.forgot.title")} subtitle={t("auth.forgot.subtitle")}>
+    <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
+      <h1 className="heading-brand text-center text-2xl">{t("auth.forgot.title")}</h1>
+      <p className="mt-4 text-center text-sm text-ink/60">{t("auth.forgot.subtitle")}</p>
+
       {done ? (
-        <div className="text-center">
-          <p className="text-sm text-ink-soft">{t("auth.forgot.sent")}</p>
-          <Link href={path("/login")} className="btn-secondary mt-8">
+        <div className="mt-10 text-center">
+          <p className="bg-mist px-4 py-3 text-xs">{t("auth.forgot.sent")}</p>
+          <Link href={path("/login")} className="btn-ghost mt-8 inline-block text-xs">
             {t("auth.forgot.back")}
           </Link>
         </div>
       ) : (
-        <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
           <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
           {error && <p className="text-xs text-sale">{error}</p>}
-          <button type="submit" className="btn-primary" disabled={pending}>
+          <button type="submit" className="btn-primary w-full" disabled={pending}>
             {pending ? t("auth.forgot.submitting") : t("auth.forgot.submit")}
           </button>
-          <Link href={path("/login")} className="btn-ghost self-center">
+          <Link href={path("/login")} className="btn-ghost text-xs">
             {t("auth.forgot.back")}
           </Link>
         </form>
       )}
-    </Shell>
+    </div>
   );
 }
 
@@ -166,21 +177,30 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const { onSubmit, pending, error } = useAuthSubmit(resetPassword);
 
   return (
-    <Shell title={t("auth.reset.title")}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
+      <h1 className="heading-brand text-center text-2xl">{t("auth.reset.title")}</h1>
+
+      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
         <input type="hidden" name="token" value={token} />
-        <Field label={t("auth.reset.password")} name="password" type="password" autoComplete="new-password" />
+        <Field
+          label={t("auth.reset.password")}
+          name="password"
+          type="password"
+          autoComplete="new-password"
+        />
         <Field
           label={t("auth.reset.password_confirm")}
           name="password_confirmation"
           type="password"
           autoComplete="new-password"
         />
+
         {error && <p className="text-xs text-sale">{error}</p>}
-        <button type="submit" className="btn-primary" disabled={pending}>
+
+        <button type="submit" className="btn-primary w-full" disabled={pending}>
           {pending ? t("auth.reset.submitting") : t("auth.reset.submit")}
         </button>
       </form>
-    </Shell>
+    </div>
   );
 }

@@ -26,54 +26,61 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   if (!isLocale(locale)) notFound();
 
   const [t, details] = await Promise.all([getTranslator(locale), getContactDetails(locale)]);
-
-  const rows: { label: string; value: string | null; href?: string }[] = [
-    { label: t("contact.details.email"), value: details.email, href: `mailto:${details.email}` },
-    { label: t("contact.details.phone"), value: details.phone, href: `tel:${details.phone}` },
-    {
-      label: t("contact.details.whatsapp"),
-      value: details.whatsapp,
-      href: `https://wa.me/${details.whatsapp?.replace(/\D/g, "")}`,
-    },
-    { label: t("contact.details.address"), value: details.address },
-    { label: t("contact.details.hours"), value: details.workingHours },
-  ];
+  const heading = "text-xs font-medium tracking-brand uppercase";
 
   return (
-    <div className="mx-auto max-w-[1100px] px-4 py-16 md:px-8">
-      <header className="mb-12">
-        <h1 className="heading-brand text-xl">{t("contact.title")}</h1>
-        <p className="mt-3 max-w-xl text-sm text-ink-soft">{t("contact.subtitle")}</p>
-      </header>
+    <div className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
+      <h1 className="heading-brand text-center text-2xl sm:text-3xl">{t("contact.title")}</h1>
+      <p className="mx-auto mt-4 max-w-md text-center text-sm text-ink/60">{t("contact.subtitle")}</p>
 
-      <div className="grid gap-16 md:grid-cols-[1fr_320px]">
+      <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem] lg:gap-16">
         <ContactForm subjects={[...CONTACT_SUBJECTS]} />
 
-        <aside className="flex flex-col gap-6 border-t border-line pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-10">
-          {rows
-            .filter((row) => row.value)
-            .map((row) => (
-              <div key={row.label}>
-                <p className="text-xs tracking-brand text-ink-soft uppercase">{row.label}</p>
-                {row.href ? (
-                  <a href={row.href} className="mt-1 block text-sm hover:underline">
-                    {row.value}
-                  </a>
-                ) : (
-                  <p className="mt-1 text-sm">{row.value}</p>
-                )}
-              </div>
-            ))}
-
+        <aside className="flex flex-col gap-8 border-t border-line pt-8 text-sm lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12">
+          {details.email && (
+            <div>
+              <p className={heading}>{t("contact.details.email")}</p>
+              <a href={`mailto:${details.email}`} className="mt-2 block text-ink/70 hover:text-ink">
+                {details.email}
+              </a>
+            </div>
+          )}
+          {details.phone && (
+            <div>
+              <p className={heading}>{t("contact.details.phone")}</p>
+              <a
+                href={`tel:${details.phone.replace(/\s/g, "")}`}
+                className="mt-2 block text-ink/70 hover:text-ink"
+              >
+                {details.phone}
+              </a>
+            </div>
+          )}
+          {details.whatsapp && (
+            <div>
+              <p className={heading}>{t("contact.details.whatsapp")}</p>
+              <p className="mt-2 text-ink/70">{details.whatsapp}</p>
+            </div>
+          )}
+          {details.workingHours && (
+            <div>
+              <p className={heading}>{t("contact.details.hours")}</p>
+              <p className="mt-2 text-ink/70">{details.workingHours}</p>
+            </div>
+          )}
+          {details.address && (
+            <div>
+              <p className={heading}>{t("contact.details.address")}</p>
+              <p className="mt-2 text-ink/70">{details.address}</p>
+            </div>
+          )}
           {details.socials.length > 0 && (
             <div>
-              <p className="text-xs tracking-brand text-ink-soft uppercase">
-                {t("contact.details.socials")}
-              </p>
-              <ul className="mt-1 flex flex-col gap-1">
+              <p className={heading}>{t("contact.details.socials")}</p>
+              <ul className="mt-2 flex flex-col gap-1.5 text-ink/70">
                 {details.socials.map((social) => (
-                  <li key={social.name} className="text-sm">
-                    {social.name} — {social.handle}
+                  <li key={social.name}>
+                    <span className="text-ink/40">{social.name}:</span> {social.handle}
                   </li>
                 ))}
               </ul>
