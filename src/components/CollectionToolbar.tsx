@@ -6,7 +6,14 @@ import type { Facets, SortKey } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import { useShop } from "./ShopProvider";
 
-const sortKeys: SortKey[] = ["featured", "newest", "price_asc", "price_desc", "name_asc", "name_desc"];
+const sortKeys: SortKey[] = [
+  "featured",
+  "newest",
+  "price-asc",
+  "price-desc",
+  "name-asc",
+  "name-desc",
+];
 
 export default function CollectionToolbar({ facets, total }: { facets: Facets; total: number }) {
   const { t } = useI18n();
@@ -95,7 +102,7 @@ export default function CollectionToolbar({ facets, total }: { facets: Facets; t
           >
             {sortKeys.map((key) => (
               <option key={key} value={key}>
-                {t(`collection.sort.${key}`)}
+                {t(`collection.sort.${key.replace("-", "_")}`)}
               </option>
             ))}
           </select>

@@ -8,6 +8,7 @@ import { availableIn, hit, tooManyAttempts } from "@/lib/rate-limit";
 import { PAYMENT_METHODS } from "@/collections/Commerce";
 import type { Order, Product, Setting } from "@/payload-types";
 import type { Locale } from "@/lib/types";
+import { renderOrderEmail } from "@/lib/order-email";
 
 type OrderItem = NonNullable<Order["items"]>[number];
 type PaymentMethod = Order["paymentMethod"];
@@ -153,7 +154,7 @@ export async function placeOrder(input: {
 
   const number = await generateNumber(payload);
 
-  await payload.create({
+  const order = await payload.create({
     collection: "orders",
     overrideAccess: true,
     data: {
@@ -191,13 +192,14 @@ export async function placeOrder(input: {
     await payload.sendEmail({
       to: customer.email,
       subject: t("mail.order.subject", { number }),
-      text: [
-        t("mail.order.greeting", { name: input.customerName.trim() }),
-        t("mail.order.intro", { number }),
-        ...(input.paymentMethod === "bank_transfer" && settings.bankTransferDetails
-          ? [t("mail.order.bank_intro"), settings.bankTransferDetails, t("mail.order.bank_reference", { number })]
-          : []),
-      ].join("\n\n"),
+      html: renderOrderEmail({
+        order,
+        t,
+        locale,
+        currencySymbol: settings.currencySymbol ?? "",
+        bankDetails:
+          input.paymentMethod === "bank_transfer" ? (settings.bankTransferDetails ?? null) : null,
+      }),
     });
   } catch {
     // logged by Payload's email adapter

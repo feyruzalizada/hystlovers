@@ -5,10 +5,10 @@ export const PER_PAGE = 12;
 const sorters: Record<SortKey, (a: Product, b: Product) => number> = {
   featured: () => 0,
   newest: (a, b) => Number(b.is_new) - Number(a.is_new),
-  price_asc: (a, b) => a.price - b.price,
-  price_desc: (a, b) => b.price - a.price,
-  name_asc: (a, b) => a.name.localeCompare(b.name),
-  name_desc: (a, b) => b.name.localeCompare(a.name),
+  "price-asc": (a, b) => a.price - b.price,
+  "price-desc": (a, b) => b.price - a.price,
+  "name-asc": (a, b) => a.name.localeCompare(b.name),
+  "name-desc": (a, b) => b.name.localeCompare(a.name),
 };
 
 export function applyFilters(pool: Product[], filters: CollectionFilters) {

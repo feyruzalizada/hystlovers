@@ -117,7 +117,7 @@ export type Facets = {
   priceMax: number;
 };
 
-export type SortKey = "featured" | "newest" | "price_asc" | "price_desc" | "name_asc" | "name_desc";
+export type SortKey = "featured" | "newest" | "price-asc" | "price-desc" | "name-asc" | "name-desc";
 
 export type CollectionFilters = {
   category?: string[];

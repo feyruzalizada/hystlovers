@@ -7,11 +7,12 @@ import type { Product, ProductSibling } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import { useCart } from "./CartProvider";
 import { useShop } from "./ShopProvider";
+import Icon from "./Icon";
 import { notifyWhenInStock } from "@/app/actions/shop";
 
 const sizeGuide = [
-  { size: "XS/S", chest: "82—90", waist: "62—70", hips: "88—96" },
-  { size: "M/L", chest: "90—100", waist: "70—80", hips: "96—106" },
+  { size: "XS/S", chest: "82-88", waist: "62-68", hips: "88-94" },
+  { size: "M/L", chest: "90-98", waist: "70-78", hips: "96-104" },
 ];
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
@@ -24,7 +25,11 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
         className="flex w-full items-center justify-between py-4 text-xs tracking-brand uppercase"
       >
         {title}
-        <span className="text-lg leading-none">{open ? "−" : "+"}</span>
+        <Icon
+          name="chevron-down"
+          size={16}
+          className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
       </button>
       {open && <div className="pb-5 text-sm leading-relaxed text-ink-soft">{children}</div>}
     </div>
