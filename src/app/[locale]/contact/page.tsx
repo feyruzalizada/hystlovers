@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ContactForm from "@/components/ContactForm";
 import { getContactDetails } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, locales } from "@/lib/i18n";
 import { CONTACT_SUBJECTS } from "@/collections/Commerce";
 
@@ -18,7 +19,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
-  return { title: t("contact.title"), description: t("contact.meta_description") };
+  return {
+    title: t("contact.title"),
+    description: t("contact.meta_description"),
+    alternates: localeAlternates("/contact"),
+  };
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {

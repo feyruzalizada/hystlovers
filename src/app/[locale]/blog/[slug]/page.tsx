@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getPosts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { renderRichText } from "@/lib/richtext";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
 
 export async function generateStaticParams() {
@@ -25,6 +26,7 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt || undefined,
+    alternates: localeAlternates(`/blog/${slug}`),
     openGraph: {
       title: post.title,
       type: "article",

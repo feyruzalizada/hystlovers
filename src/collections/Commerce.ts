@@ -143,12 +143,35 @@ export const ContactMessages: CollectionConfig = {
   },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
+  hooks: {
+    // Opening a single message in the panel marks it read, as the Filament
+    // view page did. List views (findMany) leave it alone.
+    afterRead: [
+      async ({ doc, req, findMany, context }) => {
+        // context guards against the update below re-entering this hook.
+        if (findMany || context.skipRead || doc.readAt || req.user?.collection !== "users") {
+          return doc;
+        }
+
+        const readAt = new Date().toISOString();
+        await req.payload.update({
+          collection: "contact-messages",
+          id: doc.id,
+          data: { readAt },
+          overrideAccess: true,
+          context: { skipRead: true },
+        });
+
+        return { ...doc, readAt };
+      },
+    ],
+  },
   fields: [
     { name: "name", type: "text", required: true },
     { name: "email", type: "email", required: true },
     { name: "subject", type: "select", options: options(CONTACT_SUBJECTS), required: true },
     { name: "message", type: "textarea", required: true },
-    { name: "readAt", type: "date" },
+    { name: "readAt", type: "date", admin: { readOnly: true } },
   ],
 };
 

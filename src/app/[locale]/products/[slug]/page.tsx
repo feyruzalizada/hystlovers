@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import SectionHeading from "@/components/SectionHeading";
 import { getProducts, getRelated, getSiblings } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, locales } from "@/lib/i18n";
 
 export async function generateStaticParams() {
@@ -20,7 +21,13 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const product = (await getProducts(locale)).find((p) => p.slug === slug);
-  return product ? { title: product.name, description: product.description } : {};
+  return product
+    ? {
+        title: product.name,
+        description: product.description,
+        alternates: localeAlternates(`/products/${slug}`),
+      }
+    : {};
 }
 
 export default async function ProductPage({

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import CollectionView from "@/components/CollectionView";
 import { buildFacets, filterByCategory, getCategories, getProducts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
 
@@ -78,16 +79,18 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const collection = await resolveCollection(slug, locale);
   return collection
-    ? { title: collection.name, description: collection.description ?? undefined }
+    ? {
+        title: collection.name,
+        description: collection.description ?? undefined,
+        alternates: localeAlternates(`/collections/${slug}`),
+      }
     : {};
 }
 
 export default async function CollectionPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ color?: string }>;
 }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
@@ -95,7 +98,6 @@ export default async function CollectionPage({
   const collection = await resolveCollection(slug, locale);
   if (!collection) notFound();
 
-  const { color } = await searchParams;
   const path = (p: string) => localePath(locale, p);
 
   // Facets come from the whole active catalogue, as in the source controller.
@@ -140,7 +142,7 @@ export default async function CollectionPage({
         </div>
       </header>
 
-      <CollectionView products={collection.products} facets={facets} initialColor={color} />
+      <CollectionView products={collection.products} facets={facets} />
     </>
   );
 }

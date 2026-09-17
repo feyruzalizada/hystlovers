@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import type { Facets, Product, SortKey } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import DrawerShell from "./DrawerShell";
@@ -9,6 +9,11 @@ import Icon from "./Icon";
 import ProductCard from "./ProductCard";
 
 const PER_PAGE = 12;
+
+// The colour in the URL is browser state, so it is read as an external store:
+// the prerendered HTML renders unfiltered and React applies it on hydration.
+const noopSubscribe = () => () => {};
+const readUrlColor = () => new URLSearchParams(window.location.search).get("color") ?? "";
 
 const SORT_OPTIONS: { value: SortKey; key: string }[] = [
   { value: "featured", key: "collection.sort.featured" },
@@ -27,43 +32,51 @@ const SORT_OPTIONS: { value: SortKey; key: string }[] = [
 export default function CollectionView({
   products,
   facets,
-  initialColor,
 }: {
   products: Product[];
   facets: Facets;
-  initialColor?: string;
 }) {
   const { t, locale } = useI18n();
 
   const [filters, setFilters] = useState<FilterState>({
     categories: [],
-    colors: initialColor ? [initialColor] : [],
+    colors: [],
     sizes: [],
     fabrics: [],
     inStockOnly: false,
     maxPrice: facets.priceMax,
   });
+
+  const [touched, setTouched] = useState(false);
+  const urlColor = useSyncExternalStore(noopSubscribe, readUrlColor, () => "");
+
+  // Until the shopper changes anything, the colour gallery's link wins.
+  const active = useMemo<FilterState>(
+    () => (touched || !urlColor ? filters : { ...filters, colors: [urlColor] }),
+    [touched, urlColor, filters],
+  );
+
   const [sort, setSort] = useState<SortKey>("featured");
   const [page, setPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const activeFilterCount =
-    filters.categories.length +
-    filters.colors.length +
-    filters.sizes.length +
-    filters.fabrics.length +
-    (filters.inStockOnly ? 1 : 0) +
-    (filters.maxPrice < facets.priceMax ? 1 : 0);
+    active.categories.length +
+    active.colors.length +
+    active.sizes.length +
+    active.fabrics.length +
+    (active.inStockOnly ? 1 : 0) +
+    (active.maxPrice < facets.priceMax ? 1 : 0);
 
   const sorted = useMemo(() => {
     const list = products.filter(
       (p) =>
-        (filters.categories.length === 0 || filters.categories.includes(p.category)) &&
-        (filters.colors.length === 0 || filters.colors.includes(p.color.slug)) &&
-        (filters.sizes.length === 0 || filters.sizes.some((s) => p.sizes.includes(s))) &&
-        (filters.fabrics.length === 0 || filters.fabrics.includes(p.fabric)) &&
-        (!filters.inStockOnly || p.in_stock) &&
-        p.price <= filters.maxPrice,
+        (active.categories.length === 0 || active.categories.includes(p.category)) &&
+        (active.colors.length === 0 || active.colors.includes(p.color.slug)) &&
+        (active.sizes.length === 0 || active.sizes.some((s) => p.sizes.includes(s))) &&
+        (active.fabrics.length === 0 || active.fabrics.includes(p.fabric)) &&
+        (!active.inStockOnly || p.in_stock) &&
+        p.price <= active.maxPrice,
     );
 
     switch (sort) {
@@ -80,13 +93,14 @@ export default function CollectionView({
       default:
         return list;
     }
-  }, [products, filters, sort, locale]);
+  }, [products, active, sort, locale]);
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / PER_PAGE));
   const current = Math.min(page, totalPages);
   const paginated = sorted.slice((current - 1) * PER_PAGE, current * PER_PAGE);
 
   function update(next: FilterState) {
+    setTouched(true);
     setFilters(next);
     setPage(1);
   }
@@ -164,7 +178,7 @@ export default function CollectionView({
                 </button>
               )}
             </div>
-            <FilterPanel filters={filters} facets={facets} onChange={update} className="mt-2" />
+            <FilterPanel filters={active} facets={facets} onChange={update} className="mt-2" />
           </div>
         </aside>
 
@@ -242,7 +256,7 @@ export default function CollectionView({
           </div>
         }
       >
-        <FilterPanel filters={filters} facets={facets} onChange={update} className="px-5" />
+        <FilterPanel filters={active} facets={facets} onChange={update} className="px-5" />
       </DrawerShell>
     </div>
   );

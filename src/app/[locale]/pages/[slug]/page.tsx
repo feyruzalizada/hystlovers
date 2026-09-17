@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStaticPages } from "@/lib/cms";
 import { renderRichText } from "@/lib/richtext";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, locales } from "@/lib/i18n";
 
 export async function generateStaticParams() {
@@ -17,7 +18,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
   const page = (await getStaticPages(locale)).find((entry) => entry.slug === slug);
-  return page ? { title: page.title } : {};
+  return page ? { title: page.title, alternates: localeAlternates(`/pages/${slug}`) } : {};
 }
 
 export default async function StaticPageRoute({

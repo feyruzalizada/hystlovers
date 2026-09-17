@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import SectionHeading from "@/components/SectionHeading";
 import { getColorTiles, getHomeSections, getSlides } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath } from "@/lib/i18n";
 
 export async function generateMetadata({
@@ -17,7 +18,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
-  return { title: t("home.title"), description: t("home.meta_description") };
+  return {
+    title: t("home.title"),
+    description: t("home.meta_description"),
+    alternates: localeAlternates("/"),
+  };
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {

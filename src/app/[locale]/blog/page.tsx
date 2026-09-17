@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPosts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
+import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
 
 const PER_PAGE = 9;
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
-  return { title: t("blog.title"), description: t("blog.meta_description") };
+  return {
+    title: t("blog.title"),
+    description: t("blog.meta_description"),
+    alternates: localeAlternates("/blog"),
+  };
 }
 
 export default async function BlogPage({
