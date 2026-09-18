@@ -5,6 +5,8 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, GlobalAfterC
  * them. Content is shared across every route, so the whole layout is dropped.
  */
 async function revalidateAll() {
+  // The seed runs outside Next, where there is nothing to revalidate yet.
+  if (process.env.RUN_SEED === "1") return;
   const { revalidatePath } = await import("next/cache");
   revalidatePath("/", "layout");
 }

@@ -29,9 +29,13 @@ const databaseUri = process.env.DATABASE_URI ?? "file:./hystlovers.db";
  * Postgres in production, SQLite locally — the same split the PHP app used, so
  * a developer needs no database server to run the shop.
  */
+// The seed runs under `next build`, where Payload would otherwise skip the
+// schema push and leave the database without tables.
+const push = process.env.RUN_SEED === "1" || process.env.NODE_ENV !== "production";
+
 const db = databaseUri.startsWith("postgres")
-  ? postgresAdapter({ pool: { connectionString: databaseUri } })
-  : sqliteAdapter({ client: { url: databaseUri } });
+  ? postgresAdapter({ pool: { connectionString: databaseUri }, push })
+  : sqliteAdapter({ client: { url: databaseUri }, push });
 
 /** SMTP when it is configured, otherwise Payload logs the message to the console. */
 const email = process.env.SMTP_HOST
