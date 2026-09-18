@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
-    "vercel-build": "npm run seed && npm run build",
+    "build": "npm run seed && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "eslint",
     "generate:types": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" payload generate:types",
