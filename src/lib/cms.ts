@@ -48,9 +48,14 @@ function resolve<T>(value: Related<T>): T | null {
 function mediaUrl(value: Related<Media>): string | null {
   const url = resolve(value)?.url;
   if (!url) return null;
-  if (!url.startsWith("http")) return url;
-  const parsed = URL.parse(url);
-  return parsed ? `${parsed.pathname}${parsed.search}` : url;
+  let path = url;
+  if (url.startsWith("http")) {
+    const parsed = URL.parse(url);
+    path = parsed ? `${parsed.pathname}${parsed.search}` : url;
+  }
+  // The files sit in public/uploads, so serve them statically: prerendered
+  // pages then need neither Payload's route nor a database at runtime.
+  return path.replace(/^\/api\/media\/file\//, "/uploads/");
 }
 
 /** "LOVE T-SHIRT - BROWN (SHIRT, TROUSERS)" — the source shop's naming. */
