@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Barlow } from "next/font/google";
 import "../globals.css";
 import { getShop, getSiteTexts } from "@/lib/cms";
 import { buildTranslator, isLocale, locales } from "@/lib/i18n";
@@ -10,13 +9,6 @@ import { CartProvider } from "@/components/CartProvider";
 import CartDrawer from "@/components/CartDrawer";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const barlow = Barlow({
-  subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-barlow",
-  display: "swap",
-});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -49,7 +41,7 @@ export default async function LocaleLayout({
   const [shop, messages] = await Promise.all([getShop(locale), getSiteTexts(locale)]);
 
   return (
-    <html lang={locale} className={`h-full ${barlow.variable}`}>
+    <html lang={locale} className="h-full">
       <head>
         <meta name="theme-color" content="#1c1c1c" />
       </head>

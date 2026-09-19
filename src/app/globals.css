@@ -1,17 +1,5 @@
 @import "tailwindcss";
 
-/*
- * Barlow draws the Azerbaijani schwa at x-height, so uppercase headings come
- * out as "MəHSULLAR". This family covers only that pair of characters and sits
- * ahead of Barlow in the stack, letting a system face draw a full-height Ə.
- */
-@font-face {
-  font-family: "Schwa Fallback";
-  src: local("Segoe UI"), local("Helvetica Neue"), local("Arial"), local("DejaVu Sans");
-  unicode-range: U+018F, U+0259;
-  font-display: swap;
-}
-
 @theme {
   --color-ink: #1c1c1c;
   --color-ink-soft: #3e3e3e;
@@ -21,7 +9,7 @@
   --color-line-strong: #cfcfcf;
   --color-sale: #9b2c2c;
 
-  --font-sans: "Schwa Fallback", var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
   --tracking-brand: 0.14em;
 
   --radius-xs: 0;
