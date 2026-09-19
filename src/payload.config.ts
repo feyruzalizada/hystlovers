@@ -23,7 +23,9 @@ import { Settings } from "./globals/Settings";
 import { seed } from "./seed/seed";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
-const databaseUri = process.env.DATABASE_URI ?? "file:./hystlovers.db";
+// Without DATABASE_URI the app opens the read-only demo database that ships
+// with the repository, so a deployment needs no database server.
+const databaseUri = process.env.DATABASE_URI ?? "file:./src/seed/demo.sqlite";
 
 /**
  * Postgres in production, SQLite locally — the same split the PHP app used, so

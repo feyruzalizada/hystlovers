@@ -6,7 +6,7 @@ export const Media: CollectionConfig = {
   admin: { group: "System" },
   access: { read: publicRead, create: adminOnly, update: adminOnly, delete: adminOnly },
   upload: {
-    staticDir: "public/uploads",
+    staticDir: "public/media",
     mimeTypes: ["image/*"],
     imageSizes: [
       { name: "card", width: 600, height: 800, position: "centre" },
