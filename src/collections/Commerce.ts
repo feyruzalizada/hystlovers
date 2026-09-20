@@ -193,5 +193,6 @@ export const StockNotifications: CollectionConfig = {
   fields: [
     { name: "product", type: "relationship", relationTo: "products", required: true },
     { name: "email", type: "email", required: true },
+    { name: "notifiedAt", type: "date", admin: { description: "Set once the back-in-stock mail goes out." } },
   ],
 };

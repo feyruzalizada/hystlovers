@@ -508,6 +508,10 @@ export interface StockNotification {
   id: number;
   product: number | Product;
   email: string;
+  /**
+   * Set once the back-in-stock mail goes out.
+   */
+  notifiedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -903,6 +907,7 @@ export interface NewsletterSubscribersSelect<T extends boolean = true> {
 export interface StockNotificationsSelect<T extends boolean = true> {
   product?: T;
   email?: T;
+  notifiedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
