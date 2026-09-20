@@ -25,9 +25,11 @@ export function proxy(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/${preferred}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(url);
+  // The bare domain only picks a language, but a deeper unprefixed path is an
+  // old link: the source shop moves it permanently, so search engines follow.
+  return NextResponse.redirect(url, pathname === "/" ? 302 : 301);
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|admin|uploads|storage|favicon.ico|.*\..*).*)"],
+  matcher: ["/((?!_next|api|admin|media|storage|favicon.ico|.*\..*).*)"],
 };
