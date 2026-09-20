@@ -45,7 +45,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
 
   return (
     <div className="sticky top-0 z-30">
-      <p className="bg-ink px-4 py-2 text-center text-[11px] tracking-brand text-paper uppercase">
+      <p className="bg-ink px-4 py-2 text-center text-[11px] tracking-wide2 text-paper uppercase">
         {t("general.announcement")}
       </p>
 
@@ -74,7 +74,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                 <li key={item.url} className="group relative">
                   <Link
                     href={path(item.url)}
-                    className={`flex items-center gap-1 py-2 text-xs font-medium tracking-brand uppercase transition-opacity hover:opacity-60 ${
+                    className={`flex items-center gap-1 py-2 text-xs font-medium tracking-wide2 uppercase transition-opacity hover:opacity-60 ${
                       pathname.startsWith(path(item.url)) ? "underline underline-offset-4" : ""
                     }`}
                   >
@@ -91,7 +91,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                           <li key={child.url}>
                             <Link
                               href={path(child.url)}
-                              className="block px-5 py-2.5 text-xs tracking-brand uppercase transition-colors hover:bg-mist"
+                              className="block px-5 py-2.5 text-xs tracking-wide2 uppercase transition-colors hover:bg-mist"
                             >
                               {label(child, t)}
                             </Link>
@@ -113,7 +113,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                   href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
                   hrefLang={code}
                   aria-current={code === locale ? "true" : undefined}
-                  className={`px-1.5 py-1 text-[11px] font-medium tracking-brand uppercase transition-opacity ${
+                  className={`px-1.5 py-1 text-[11px] font-medium tracking-wide2 uppercase transition-opacity ${
                     code === locale ? "text-ink underline underline-offset-4" : "text-ink/40 hover:text-ink"
                   }`}
                 >
@@ -173,7 +173,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                       <Link
                         href={path(item.url)}
                         onClick={() => setMenuOpen(false)}
-                        className="flex-1 px-5 py-4 text-sm tracking-brand uppercase"
+                        className="flex-1 px-5 py-4 text-sm tracking-wide2 uppercase"
                       >
                         {label(item, t)}
                       </Link>
@@ -197,7 +197,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                     <Link
                       href={path(item.url)}
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center justify-between px-5 py-4 text-sm tracking-brand uppercase"
+                      className="flex items-center justify-between px-5 py-4 text-sm tracking-wide2 uppercase"
                     >
                       {label(item, t)}
                       <Icon name="chevron-right" size={16} className="opacity-40" />
@@ -211,7 +211,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                           <Link
                             href={path(child.url)}
                             onClick={() => setMenuOpen(false)}
-                            className="block px-8 py-3 text-[13px] tracking-brand text-ink/70 uppercase"
+                            className="block px-8 py-3 text-[13px] tracking-wide2 text-ink/70 uppercase"
                           >
                             {label(child, t)}
                           </Link>
@@ -228,14 +228,14 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
             <Link
               href={accountUrl}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-3 text-sm tracking-brand uppercase"
+              className="flex items-center gap-3 text-sm tracking-wide2 uppercase"
             >
               <Icon name="user" size={18} />
               {t("nav.my_account")}
             </Link>
 
             <div>
-              <p className="text-[11px] tracking-brand text-ink/40 uppercase">
+              <p className="text-[11px] tracking-wide2 text-ink/40 uppercase">
                 {t("general.language")}
               </p>
               <div className="mt-2 flex gap-2">
@@ -245,7 +245,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                     href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
                     hrefLang={code}
                     onClick={() => setMenuOpen(false)}
-                    className={`border px-3 py-1.5 text-xs tracking-brand uppercase ${
+                    className={`border px-3 py-1.5 text-xs tracking-wide2 uppercase ${
                       code === locale ? "border-ink bg-ink text-paper" : "border-line-strong"
                     }`}
                   >

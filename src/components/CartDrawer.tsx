@@ -25,7 +25,7 @@ export default function CartDrawer() {
         </p>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="tracking-brand uppercase">{t("cart.subtotal")}</span>
+          <span className="tracking-wide2 uppercase">{t("cart.subtotal")}</span>
           <span className="font-medium">{formatPrice(cart.subtotal)}</span>
         </div>
 
@@ -64,7 +64,7 @@ export default function CartDrawer() {
               <div className="flex flex-1 flex-col justify-between gap-2">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="text-xs tracking-brand uppercase">{line.name}</h3>
+                    <h3 className="text-xs tracking-wide2 uppercase">{line.name}</h3>
                     <p className="mt-1 text-xs text-ink/50">
                       {line.color} · {line.size}
                     </p>

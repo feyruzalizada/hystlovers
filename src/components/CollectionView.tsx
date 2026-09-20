@@ -126,7 +126,7 @@ export default function CollectionView({
       <div className="mb-6 flex items-center justify-between gap-4 sm:mb-8">
         <button
           type="button"
-          className="flex items-center gap-2 text-xs tracking-brand uppercase lg:hidden"
+          className="flex items-center gap-2 text-xs tracking-wide2 uppercase lg:hidden"
           onClick={() => setDrawerOpen(true)}
         >
           <Icon name="filter" size={16} />
@@ -150,7 +150,7 @@ export default function CollectionView({
               setSort(event.target.value as SortKey);
               setPage(1);
             }}
-            className="border-0 bg-transparent py-1 pr-7 text-xs tracking-brand uppercase focus:outline-none"
+            className="border-0 bg-transparent py-1 pr-7 text-xs tracking-wide2 uppercase focus:outline-none"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

@@ -11,7 +11,7 @@ import { useShop } from "./ShopProvider";
 
 const PAYMENT_METHODS = ["cod", "bank_transfer"] as const;
 
-const LABEL = "mb-2 block text-xs font-medium tracking-brand uppercase";
+const LABEL = "mb-2 block text-xs font-medium tracking-wide2 uppercase";
 
 export default function CheckoutForm({ defaultName }: { defaultName: string }) {
   const { t, path, locale } = useI18n();
@@ -123,7 +123,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
             </label>
 
             <fieldset>
-              <legend className="mb-3 text-xs font-medium tracking-brand uppercase">
+              <legend className="mb-3 text-xs font-medium tracking-wide2 uppercase">
                 {t("checkout.payment_method")}
               </legend>
               <div className="flex flex-col gap-2">
@@ -159,7 +159,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
           </form>
 
           <aside className="h-fit border border-line p-6 lg:sticky lg:top-32">
-            <h2 className="text-xs font-medium tracking-brand uppercase">{t("checkout.summary")}</h2>
+            <h2 className="text-xs font-medium tracking-wide2 uppercase">{t("checkout.summary")}</h2>
 
             <ul className="mt-4 divide-y divide-line">
               {cart.lines.map((line) => (
@@ -170,7 +170,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                     )}
                   </span>
                   <div className="flex flex-1 flex-col justify-center">
-                    <p className="text-xs tracking-brand uppercase">{line.name}</p>
+                    <p className="text-xs tracking-wide2 uppercase">{line.name}</p>
                     <p className="mt-1 text-xs text-ink/50">
                       {line.color} · {line.size} · {line.qty} {t("checkout.qty_suffix")}
                     </p>
@@ -190,7 +190,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                 <dd>{shipping === 0 ? t("checkout.shipping_free") : formatPrice(shipping)}</dd>
               </div>
               <div className="flex justify-between border-t border-line pt-2 font-medium">
-                <dt className="tracking-brand uppercase">{t("checkout.total")}</dt>
+                <dt className="tracking-wide2 uppercase">{t("checkout.total")}</dt>
                 <dd>{formatPrice(total)}</dd>
               </div>
             </dl>

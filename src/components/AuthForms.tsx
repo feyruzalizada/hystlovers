@@ -7,7 +7,7 @@ import { useI18n } from "./I18nProvider";
 
 type ActionResult = { ok: true } | { ok: false; message: string };
 
-const LABEL = "mb-2 block text-xs font-medium tracking-brand uppercase";
+const LABEL = "mb-2 block text-xs font-medium tracking-wide2 uppercase";
 
 function useAuthSubmit(action: (data: FormData) => Promise<ActionResult | void>) {
   const { locale } = useI18n();

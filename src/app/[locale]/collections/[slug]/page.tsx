@@ -110,7 +110,7 @@ export default async function CollectionPage({
           {collection.parent && (
             <nav
               aria-label="Breadcrumb"
-              className="mb-3 text-[11px] tracking-brand text-ink/50 uppercase"
+              className="mb-3 text-[11px] tracking-wide2 text-ink/50 uppercase"
             >
               <Link href={path(collection.parent.url)} className="transition-colors hover:text-ink">
                 {collection.parent.name}
@@ -131,7 +131,7 @@ export default async function CollectionPage({
                 <Link
                   key={sub.url}
                   href={path(sub.url)}
-                  className="border border-line-strong bg-paper px-4 py-2 text-[11px] tracking-brand uppercase transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+                  className="border border-line-strong bg-paper px-4 py-2 text-[11px] tracking-wide2 uppercase transition-colors hover:border-ink hover:bg-ink hover:text-paper"
                 >
                   {sub.name}
                   <span className="ml-1 opacity-50">{sub.count}</span>

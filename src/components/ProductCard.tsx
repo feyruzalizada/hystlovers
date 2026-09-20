@@ -40,18 +40,18 @@ export default function ProductCard({
 
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {product.compare_at && (
-            <span className="bg-ink px-2.5 py-1 text-[10px] font-medium tracking-brand text-paper uppercase">
+            <span className="bg-ink px-2.5 py-1 text-[10px] font-medium tracking-wide2 text-paper uppercase">
               {t("product.sale")}
             </span>
           )}
           {/* Pre-order wins over sold out: the item is buyable, just not in hand. */}
           {product.is_preorder ? (
-            <span className="bg-paper px-2.5 py-1 text-[10px] font-medium tracking-brand text-ink uppercase">
+            <span className="bg-paper px-2.5 py-1 text-[10px] font-medium tracking-wide2 text-ink uppercase">
               {t("product.preorder.badge")}
             </span>
           ) : (
             !product.in_stock && (
-              <span className="bg-paper px-2.5 py-1 text-[10px] font-medium tracking-brand text-ink uppercase">
+              <span className="bg-paper px-2.5 py-1 text-[10px] font-medium tracking-wide2 text-ink uppercase">
                 {t("product.sold_out")}
               </span>
             )
@@ -60,9 +60,9 @@ export default function ProductCard({
       </div>
 
       <div className="mt-3 flex flex-col gap-1.5 sm:mt-4">
-        <h3 className="text-xs tracking-brand uppercase sm:text-sm">{product.name}</h3>
+        <h3 className="text-xs tracking-wide2 uppercase sm:text-sm">{product.name}</h3>
         <PriceTag price={product.price} compareAt={product.compare_at} />
-        <p className="hidden pt-1 text-[11px] tracking-brand uppercase underline decoration-line-strong underline-offset-4 transition-colors group-hover:decoration-ink sm:block">
+        <p className="hidden pt-1 text-[11px] tracking-wide2 uppercase underline decoration-line-strong underline-offset-4 transition-colors group-hover:decoration-ink sm:block">
           {t("product.card_cta")}
         </p>
       </div>

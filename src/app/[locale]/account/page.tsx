@@ -26,7 +26,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         <LogoutButton />
       </div>
 
-      <h2 className="mt-12 text-xs font-medium tracking-brand uppercase">
+      <h2 className="mt-12 text-xs font-medium tracking-wide2 uppercase">
         {t("account.orders_heading")}
       </h2>
 

@@ -42,7 +42,7 @@ export default function ContactForm({ subjects }: { subjects: string[] }) {
     );
   }
 
-  const fieldLabel = "mb-2 block text-xs font-medium tracking-brand uppercase";
+  const fieldLabel = "mb-2 block text-xs font-medium tracking-wide2 uppercase";
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5">

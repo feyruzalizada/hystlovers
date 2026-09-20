@@ -63,11 +63,11 @@ export function OrderList({ orders }: { orders: OrderView[] }) {
             </div>
             <div className="flex items-center gap-6">
               {order.hasPreorder && (
-                <span className="bg-ink px-2 py-1 text-[10px] tracking-brand text-paper uppercase">
+                <span className="bg-ink px-2 py-1 text-[10px] tracking-wide2 text-paper uppercase">
                   {t("product.preorder.badge")}
                 </span>
               )}
-              <span className="bg-mist px-3 py-1 text-[11px] tracking-brand uppercase">
+              <span className="bg-mist px-3 py-1 text-[11px] tracking-wide2 uppercase">
                 {t(order.statusKey)}
               </span>
               <span className="text-sm font-medium">{formatPrice(order.total)}</span>
@@ -100,10 +100,10 @@ export function OrderDetail({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="heading-brand text-2xl">{order.number}</h1>
         <div className="flex items-center gap-2">
-          <span className="bg-mist px-3 py-1 text-[11px] tracking-brand uppercase">
+          <span className="bg-mist px-3 py-1 text-[11px] tracking-wide2 uppercase">
             {t(order.statusKey)}
           </span>
-          <span className="bg-mist px-3 py-1 text-[11px] tracking-brand uppercase">
+          <span className="bg-mist px-3 py-1 text-[11px] tracking-wide2 uppercase">
             {t(order.paymentStatusKey)}
           </span>
         </div>
@@ -118,7 +118,7 @@ export function OrderDetail({
 
       {bankDetails && (
         <div className="mt-8 border border-line bg-mist/60 p-5 text-sm">
-          <h2 className="text-xs font-medium tracking-brand uppercase">
+          <h2 className="text-xs font-medium tracking-wide2 uppercase">
             {t("account.order.bank_title")}
           </h2>
           <p className="mt-3 whitespace-pre-line">{bankDetails}</p>
@@ -138,15 +138,15 @@ export function OrderDetail({
               {item.slug ? (
                 <Link
                   href={path(`/products/${item.slug}`)}
-                  className="text-xs tracking-brand uppercase underline-offset-4 hover:underline"
+                  className="text-xs tracking-wide2 uppercase underline-offset-4 hover:underline"
                 >
                   {item.name}
                 </Link>
               ) : (
-                <p className="text-xs tracking-brand uppercase">{item.name}</p>
+                <p className="text-xs tracking-wide2 uppercase">{item.name}</p>
               )}
               {item.isPreorder && (
-                <span className="ml-2 bg-ink px-1.5 py-0.5 text-[10px] tracking-brand text-paper uppercase">
+                <span className="ml-2 bg-ink px-1.5 py-0.5 text-[10px] tracking-wide2 text-paper uppercase">
                   {t("product.preorder.badge")}
                 </span>
               )}
@@ -173,13 +173,13 @@ export function OrderDetail({
           </dd>
         </div>
         <div className="flex justify-between border-t border-line pt-2 font-medium">
-          <dt className="tracking-brand uppercase">{t("checkout.total")}</dt>
+          <dt className="tracking-wide2 uppercase">{t("checkout.total")}</dt>
           <dd>{formatPrice(order.total)}</dd>
         </div>
       </dl>
 
       <div className="mt-10 border-t border-line pt-6 text-sm">
-        <h2 className="text-xs font-medium tracking-brand uppercase">
+        <h2 className="text-xs font-medium tracking-wide2 uppercase">
           {t("account.order.delivery_heading")}
         </h2>
         <p className="mt-3">

@@ -10,7 +10,7 @@ export default function ColorTiles({ tiles }: { tiles: ColorTile[] }) {
   const { path } = useI18n();
 
   return (
-    <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-8">
+    <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-8">
       {tiles.map((tile) => (
         <Link
           key={tile.slug}
@@ -26,7 +26,7 @@ export default function ColorTiles({ tiles }: { tiles: ColorTile[] }) {
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
-          <p className="mt-2.5 flex items-center gap-2 text-[11px] tracking-brand uppercase sm:text-xs">
+          <p className="mt-2.5 flex items-center gap-2 text-[11px] tracking-wide2 uppercase sm:text-xs">
             <span
               className="h-2.5 w-2.5 rounded-full border border-ink/15"
               style={{ background: tile.hex }}

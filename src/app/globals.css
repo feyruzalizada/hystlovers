@@ -11,6 +11,7 @@
 
   --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
   --tracking-brand: 0.14em;
+  --tracking-wide2: 0.08em;
 
   --radius-xs: 0;
   --radius-sm: 0;
@@ -22,6 +23,16 @@
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
   }
 }
 
@@ -52,7 +63,7 @@
   }
 
   .btn-primary:disabled {
-    background-color: var(--color-line-strong);
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
@@ -104,9 +115,13 @@
     font-size: 0.875rem;
   }
 
+  .input-brand::placeholder {
+    color: color-mix(in srgb, var(--color-ink) 40%, transparent);
+  }
+
   .input-brand:focus {
-    outline: 1px solid var(--color-ink);
-    outline-offset: -1px;
+    border-color: var(--color-ink);
+    outline: none;
   }
 
   .page-body p {
@@ -158,5 +173,12 @@
     margin: 2rem 0;
     padding-left: 1.25rem;
     font-style: italic;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

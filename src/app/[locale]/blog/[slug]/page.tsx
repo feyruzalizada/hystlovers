@@ -57,7 +57,7 @@ export default async function BlogPostPage({
           {post.publishedAtIso && (
             <time
               dateTime={post.publishedAtIso}
-              className="text-[11px] tracking-brand text-ink/40 uppercase"
+              className="text-[11px] tracking-wide2 text-ink/40 uppercase"
             >
               {post.publishedAt}
             </time>
@@ -120,7 +120,7 @@ export default async function BlogPostPage({
                       />
                     )}
                   </div>
-                  <h3 className="mt-3 text-xs tracking-brand uppercase">{item.title}</h3>
+                  <h3 className="mt-3 text-xs tracking-wide2 uppercase">{item.title}</h3>
                 </Link>
               ))}
             </div>

@@ -43,7 +43,7 @@ export default function FilterPanel({
   ) =>
     values.length > 0 && (
       <fieldset className="py-5">
-        <legend className="text-xs font-medium tracking-brand uppercase">{legend}</legend>
+        <legend className="text-xs font-medium tracking-wide2 uppercase">{legend}</legend>
         <div className="mt-4 flex flex-col gap-3">
           {values.map((value) => {
             const active = selected.includes(value);
@@ -73,7 +73,7 @@ export default function FilterPanel({
   return (
     <div className={`divide-y divide-line ${className ?? ""}`}>
       <div className="flex items-center justify-between py-5">
-        <span className="text-xs font-medium tracking-brand uppercase">
+        <span className="text-xs font-medium tracking-wide2 uppercase">
           {t("collection.filter.in_stock_only")}
         </span>
         <button
@@ -96,7 +96,7 @@ export default function FilterPanel({
       {checkbox(t("collection.filter.category"), facets.categories, filters.categories, "categories")}
 
       <div className="py-5">
-        <p className="text-xs font-medium tracking-brand uppercase">{t("collection.filter.price")}</p>
+        <p className="text-xs font-medium tracking-wide2 uppercase">{t("collection.filter.price")}</p>
         <input
           type="range"
           min={0}
@@ -114,7 +114,7 @@ export default function FilterPanel({
 
       {facets.sizes.length > 0 && (
         <fieldset className="py-5">
-          <legend className="text-xs font-medium tracking-brand uppercase">
+          <legend className="text-xs font-medium tracking-wide2 uppercase">
             {t("collection.filter.size")}
           </legend>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -140,7 +140,7 @@ export default function FilterPanel({
 
       {facets.colors.length > 0 && (
         <fieldset className="py-5">
-          <legend className="text-xs font-medium tracking-brand uppercase">
+          <legend className="text-xs font-medium tracking-wide2 uppercase">
             {t("collection.filter.color")}
           </legend>
           <div className="mt-4 flex flex-wrap gap-2.5">

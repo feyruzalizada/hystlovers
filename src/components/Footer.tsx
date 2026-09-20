@@ -56,7 +56,7 @@ export default function Footer({ groups }: { groups: FooterGroup[] }) {
               href="https://burncode.org"
               target="_blank"
               rel="noopener"
-              className="font-medium tracking-brand text-paper/70 uppercase underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
+              className="font-medium tracking-wide2 text-paper/70 uppercase underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
             >
               Burncode LLC
             </a>

@@ -27,7 +27,7 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center justify-between py-4 text-left text-xs font-medium tracking-brand uppercase"
+        className="flex w-full items-center justify-between py-4 text-left text-xs font-medium tracking-wide2 uppercase"
       >
         {title}
         <Icon
@@ -109,7 +109,7 @@ export default function ProductDetail({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
-      <nav aria-label="Breadcrumb" className="mb-5 text-[11px] tracking-brand text-ink/50 uppercase">
+      <nav aria-label="Breadcrumb" className="mb-5 text-[11px] tracking-wide2 text-ink/50 uppercase">
         <Link href={path("/")} className="hover:text-ink">
           {t("product.breadcrumb_home")}
         </Link>
@@ -144,12 +144,12 @@ export default function ProductDetail({
               />
             )}
             {product.compare_at && (
-              <span className="absolute top-4 left-4 bg-ink px-2.5 py-1 text-[10px] font-medium tracking-brand text-paper uppercase">
+              <span className="absolute top-4 left-4 bg-ink px-2.5 py-1 text-[10px] font-medium tracking-wide2 text-paper uppercase">
                 {t("product.sale")}
               </span>
             )}
             {product.is_preorder && (
-              <span className="absolute top-4 right-4 bg-paper px-2.5 py-1 text-[10px] font-medium tracking-brand text-ink uppercase">
+              <span className="absolute top-4 right-4 bg-paper px-2.5 py-1 text-[10px] font-medium tracking-wide2 text-ink uppercase">
                 {t("product.preorder.badge")}
               </span>
             )}
@@ -181,7 +181,7 @@ export default function ProductDetail({
           </div>
 
           <fieldset className="mt-8">
-            <legend className="text-xs font-medium tracking-brand uppercase">
+            <legend className="text-xs font-medium tracking-wide2 uppercase">
               {t("product.color")}:{" "}
               <span className="font-normal text-ink/60">{product.color.name}</span>
             </legend>
@@ -214,7 +214,7 @@ export default function ProductDetail({
 
           <fieldset className="mt-7">
             <div className="flex items-center justify-between">
-              <legend className="text-xs font-medium tracking-brand uppercase">
+              <legend className="text-xs font-medium tracking-wide2 uppercase">
                 {t("product.size")}
               </legend>
               {product.sizes.length > 1 && (
@@ -269,7 +269,7 @@ export default function ProductDetail({
 
           {product.set_parts && product.set_parts.length > 0 && (
             <div className="mt-7 bg-mist/70 px-4 py-3.5">
-              <p className="text-xs font-medium tracking-brand uppercase">
+              <p className="text-xs font-medium tracking-wide2 uppercase">
                 {t("product.set_includes")}
               </p>
               <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink/70">
@@ -286,7 +286,7 @@ export default function ProductDetail({
             <div>
               {product.is_preorder && (
                 <div className="mt-8 border border-line bg-mist/70 px-4 py-3.5 text-xs leading-relaxed">
-                  <p className="font-medium tracking-brand uppercase">{t("product.preorder.badge")}</p>
+                  <p className="font-medium tracking-wide2 uppercase">{t("product.preorder.badge")}</p>
                   <p className="mt-1.5 text-ink/70">
                     {product.preorder_ships_at
                       ? t("product.preorder.ships_at", { date: product.preorder_ships_at })
@@ -323,12 +323,12 @@ export default function ProductDetail({
           ) : (
             <div className="mt-8">
               {notifySent ? (
-                <p className="flex items-center justify-center gap-2 border border-line py-3.5 text-xs tracking-brand uppercase">
+                <p className="flex items-center justify-center gap-2 border border-line py-3.5 text-xs tracking-wide2 uppercase">
                   <Icon name="check" size={15} /> {t("product.notify_sent")}
                 </p>
               ) : (
                 <form onSubmit={requestNotify} className="flex flex-col gap-3">
-                  <p className="text-xs tracking-brand text-ink/60 uppercase">
+                  <p className="text-xs tracking-wide2 text-ink/60 uppercase">
                     {t("product.out_of_stock_note")}
                   </p>
                   <div className="flex">
@@ -403,7 +403,7 @@ export default function ProductDetail({
 
             <table className="mt-5 w-full text-sm">
               <thead>
-                <tr className="border-b border-ink text-left text-xs tracking-brand uppercase">
+                <tr className="border-b border-ink text-left text-xs tracking-wide2 uppercase">
                   <th className="py-2 font-medium">{t("product.size_guide.size")}</th>
                   <th className="py-2 font-medium">{t("product.size_guide.chest")}</th>
                   <th className="py-2 font-medium">{t("product.size_guide.waist")}</th>
