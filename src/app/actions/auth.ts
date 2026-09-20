@@ -132,15 +132,16 @@ export async function resetPassword(formData: FormData): Promise<AuthResult> {
 
   const payload = await payloadClient();
   try {
-    const result = await payload.resetPassword({
+    await payload.resetPassword({
       collection: "customers",
       data: { token, password },
       overrideAccess: true,
     });
-    if (result.token) await setAuthCookie(result.token);
   } catch {
     return { ok: false, message: t("auth.reset_invalid") };
   }
 
-  redirect(localePath(locale, "/account"));
+  // The source shop signs nobody in here: it returns to the login page with a
+  // confirmation so the new password is used once deliberately.
+  redirect(localePath(locale, "/login?reset=1"));
 }

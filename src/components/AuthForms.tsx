@@ -51,13 +51,17 @@ function Field({
   );
 }
 
-export function LoginForm() {
+export function LoginForm({ resetDone = false }: { resetDone?: boolean }) {
   const { t, path } = useI18n();
   const { onSubmit, pending, error } = useAuthSubmit(login);
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
       <h1 className="heading-brand text-center text-2xl">{t("auth.login.title")}</h1>
+
+      {resetDone ? (
+        <p className="mt-6 bg-mist px-4 py-3 text-center text-xs">{t("auth.login.reset_success")}</p>
+      ) : null}
 
       <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
         <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
