@@ -74,7 +74,7 @@ export function LoginForm({ resetDone = false }: { resetDone?: boolean }) {
 
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-xs text-ink/60">
-            <input type="checkbox" name="remember" defaultChecked className="accent-ink" />
+            <input type="checkbox" name="remember" className="accent-ink" />
             {t("auth.login.remember")}
           </label>
           <Link
