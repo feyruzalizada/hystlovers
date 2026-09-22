@@ -32,9 +32,22 @@ export async function register(formData: FormData): Promise<AuthResult> {
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("password_confirmation") ?? "");
 
-  if (!name || !email.includes("@") || password.length < 8 || password !== confirm) {
+  if (
+    !name ||
+    !email.includes("@") ||
+    name.length > 255 ||
+    email.length > 255 ||
+    password.length < 8 ||
+    password !== confirm
+  ) {
     return { ok: false, message: t("form.error.invalid") };
   }
+
+  const key = `register:${await clientIp()}`;
+  if (tooManyAttempts(key, 10)) {
+    return { ok: false, message: t("auth.throttled", { seconds: availableIn(key) }) };
+  }
+  hit(key, 60);
 
   const payload = await payloadClient();
   const existing = await payload.find({

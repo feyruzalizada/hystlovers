@@ -40,7 +40,16 @@ export async function submitContact(formData: FormData): Promise<ActionResult> {
   const subject = String(formData.get("subject") ?? "") as (typeof CONTACT_SUBJECTS)[number];
   const message = String(formData.get("message") ?? "").trim();
 
-  if (!name || !email || !message || !CONTACT_SUBJECTS.includes(subject)) {
+  // Same ceilings the PHP rules enforced: 255 on the short fields, 5000 on the body.
+  if (
+    !name ||
+    !email ||
+    !message ||
+    !CONTACT_SUBJECTS.includes(subject) ||
+    name.length > 255 ||
+    email.length > 255 ||
+    message.length > 5000
+  ) {
     return { ok: false, message: t("form.error.invalid") };
   }
 
