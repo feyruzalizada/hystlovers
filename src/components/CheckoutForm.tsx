@@ -66,7 +66,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
         </div>
       ) : (
         <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_24rem]">
-          <form onSubmit={onSubmit} className="flex flex-col gap-5">
+          <form onSubmit={onSubmit} className="space-y-5">
             {error && <p className="bg-sale/10 px-4 py-3 text-xs text-sale">{error}</p>}
 
             <label className="block">
@@ -126,7 +126,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
               <legend className="mb-3 text-xs font-medium tracking-wide2 uppercase">
                 {t("checkout.payment_method")}
               </legend>
-              <div className="flex flex-col gap-2">
+              <div className="space-y-2">
                 {PAYMENT_METHODS.map((value) => (
                   <label
                     key={value}
@@ -180,7 +180,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
               ))}
             </ul>
 
-            <dl className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-sm">
+            <dl className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
               <div className="flex justify-between">
                 <dt className="text-ink/60">{t("checkout.subtotal")}</dt>
                 <dd>{formatPrice(cart.subtotal)}</dd>

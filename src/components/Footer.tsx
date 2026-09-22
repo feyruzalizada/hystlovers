@@ -29,7 +29,7 @@ export default function Footer({ groups }: { groups: FooterGroup[] }) {
             <p className="text-xs font-medium tracking-brand uppercase">
               {group.titleKey ? t(group.titleKey) : group.title}
             </p>
-            <ul className="mt-5 flex flex-col gap-3">
+            <ul className="mt-5 space-y-3">
               {group.links.map((link) => (
                 <li key={link.url}>
                   <Link

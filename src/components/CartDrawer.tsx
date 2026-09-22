@@ -15,7 +15,7 @@ export default function CartDrawer() {
 
   const footer =
     cart.lines.length > 0 ? (
-      <div className="flex flex-col gap-4 border-t border-line p-5">
+      <div className="space-y-4 border-t border-line p-5">
         <p className="bg-mist px-4 py-3 text-center text-xs">
           {cart.subtotal < freeShippingThreshold
             ? t("cart.free_shipping_progress", {

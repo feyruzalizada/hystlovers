@@ -162,7 +162,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
             >
               <Icon name="bag" size={21} />
               {cart.count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-[18px] w-[18px] items-center justify-center bg-ink text-[10px] font-medium text-paper">
+                <span className="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center bg-ink text-[10px] font-medium text-paper">
                   {cart.count}
                 </span>
               )}
@@ -239,7 +239,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
             })}
           </ul>
 
-          <div className="flex flex-col gap-6 px-5 py-6">
+          <div className="space-y-6 px-5 py-6">
             <Link
               href={accountUrl}
               onClick={() => setMenuOpen(false)}
@@ -290,7 +290,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={(event) => event.key === "Escape" && setSearchOpen(false)}
                 placeholder={t("nav.search_placeholder")}
-                className="w-full border-0 bg-transparent py-2 text-base focus:outline-none sm:text-lg"
+                className="w-full border-0 bg-transparent py-2 text-base focus:ring-0 focus:outline-none sm:text-lg"
               />
               <button
                 type="button"

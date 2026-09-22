@@ -41,7 +41,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem] lg:gap-16">
         <ContactForm subjects={[...CONTACT_SUBJECTS]} />
 
-        <aside className="flex flex-col gap-8 border-t border-line pt-8 text-sm lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12">
+        <aside className="space-y-8 border-t border-line pt-8 text-sm lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12">
           {details.email && (
             <div>
               <p className={heading}>{t("contact.details.email")}</p>
@@ -82,7 +82,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           {details.socials.length > 0 && (
             <div>
               <p className={heading}>{t("contact.details.socials")}</p>
-              <ul className="mt-2 flex flex-col gap-1.5 text-ink/70">
+              <ul className="mt-2 space-y-1.5 text-ink/70">
                 {details.socials.map((social) => (
                   <li key={social.name}>
                     <span className="text-ink/40">{social.name}:</span> {social.handle}

@@ -159,7 +159,7 @@ export function OrderDetail({
         ))}
       </ul>
 
-      <dl className="mt-6 ml-auto flex max-w-xs flex-col gap-2 text-sm">
+      <dl className="mt-6 ml-auto max-w-xs space-y-2 text-sm">
         <div className="flex justify-between">
           <dt className="text-ink/60">{t("checkout.subtotal")}</dt>
           <dd>{formatPrice(order.subtotal)}</dd>

@@ -59,7 +59,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="mt-3 flex flex-col gap-1.5 sm:mt-4">
+      <div className="mt-3 space-y-1.5 sm:mt-4">
         <h3 className="text-xs tracking-wide2 uppercase sm:text-sm">{product.name}</h3>
         <PriceTag price={product.price} compareAt={product.compare_at} />
         <p className="hidden pt-1 text-[11px] tracking-wide2 uppercase underline decoration-line-strong underline-offset-4 transition-colors group-hover:decoration-ink sm:block">

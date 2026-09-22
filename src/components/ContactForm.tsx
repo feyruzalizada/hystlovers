@@ -45,7 +45,7 @@ export default function ContactForm({ subjects }: { subjects: string[] }) {
   const fieldLabel = "mb-2 block text-xs font-medium tracking-wide2 uppercase";
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
           <span className={fieldLabel}>{t("contact.name")}</span>

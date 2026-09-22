@@ -327,7 +327,7 @@ export default function ProductDetail({
                   <Icon name="check" size={15} /> {t("product.notify_sent")}
                 </p>
               ) : (
-                <form onSubmit={requestNotify} className="flex flex-col gap-3">
+                <form onSubmit={requestNotify} className="space-y-3">
                   <p className="text-xs tracking-wide2 text-ink/60 uppercase">
                     {t("product.out_of_stock_note")}
                   </p>
@@ -356,7 +356,7 @@ export default function ProductDetail({
 
           <div className="mt-9">
             <p className="text-sm leading-relaxed text-ink/70">{product.description}</p>
-            <ul className="mt-4 flex flex-col gap-1.5 text-sm text-ink/70">
+            <ul className="mt-4 space-y-1.5 text-sm text-ink/70">
               {product.features.map((feature) => (
                 <li key={feature} className="flex gap-2.5">
                   <span className="mt-2 h-1 w-1 shrink-0 bg-ink/50" />

@@ -132,7 +132,7 @@ export default function CollectionView({
           <Icon name="filter" size={16} />
           {t("collection.filter")}
           {activeFilterCount > 0 && (
-            <span className="flex h-[18px] w-[18px] items-center justify-center bg-ink text-[10px] text-paper">
+            <span className="flex h-4.5 w-4.5 items-center justify-center bg-ink text-[10px] text-paper">
               {activeFilterCount}
             </span>
           )}
@@ -150,7 +150,7 @@ export default function CollectionView({
               setSort(event.target.value as SortKey);
               setPage(1);
             }}
-            className="border-0 bg-transparent py-1 pr-7 text-xs tracking-wide2 uppercase focus:outline-none"
+            className="border-0 bg-transparent py-1 pr-7 text-xs tracking-wide2 uppercase focus:outline-none focus:ring-0"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

@@ -44,13 +44,13 @@ export default function FilterPanel({
     values.length > 0 && (
       <fieldset className="py-5">
         <legend className="text-xs font-medium tracking-wide2 uppercase">{legend}</legend>
-        <div className="mt-4 flex flex-col gap-3">
+        <div className="mt-4 space-y-3">
           {values.map((value) => {
             const active = selected.includes(value);
             return (
               <label key={value} className="flex cursor-pointer items-center gap-3 text-sm">
                 <span
-                  className={`flex h-[18px] w-[18px] items-center justify-center border transition-colors ${
+                  className={`flex h-4.5 w-4.5 items-center justify-center border transition-colors ${
                     active ? "border-ink bg-ink text-paper" : "border-line-strong"
                   }`}
                 >

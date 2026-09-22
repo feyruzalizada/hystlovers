@@ -63,7 +63,7 @@ export function LoginForm({ resetDone = false }: { resetDone?: boolean }) {
         <p className="mt-6 bg-mist px-4 py-3 text-center text-xs">{t("auth.login.reset_success")}</p>
       ) : null}
 
-      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
+      <form onSubmit={onSubmit} className="mt-10 space-y-5">
         <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
         <Field
           label={t("auth.password")}
@@ -111,7 +111,7 @@ export function RegisterForm() {
       <h1 className="heading-brand text-center text-2xl">{t("auth.register.title")}</h1>
       <p className="mt-4 text-center text-sm text-ink/60">{t("auth.register.subtitle")}</p>
 
-      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
+      <form onSubmit={onSubmit} className="mt-10 space-y-5">
         <Field label={t("auth.register.name")} name="name" autoComplete="name" />
         <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
         <Field
@@ -161,7 +161,7 @@ export function ForgotPasswordForm() {
           </Link>
         </div>
       ) : (
-        <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
+        <form onSubmit={onSubmit} className="mt-10 space-y-5">
           <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
           {error && <p className="text-xs text-sale">{error}</p>}
           <button type="submit" className="btn-primary w-full" disabled={pending}>
@@ -184,7 +184,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
       <h1 className="heading-brand text-center text-2xl">{t("auth.reset.title")}</h1>
 
-      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-5">
+      <form onSubmit={onSubmit} className="mt-10 space-y-5">
         <input type="hidden" name="token" value={token} />
         <Field
           label={t("auth.reset.password")}
