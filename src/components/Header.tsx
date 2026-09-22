@@ -26,10 +26,25 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
   const [query, setQuery] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
 
-  // Always the account page: guests are redirected on to /login from there,
-  // which keeps this layout static instead of reading the session cookie.
-  const accountUrl = path("/account");
+  // The header ships inside prerendered pages, so the session is checked in the
+  // browser instead: until it answers, the guest wording the source shop shows
+  // stays put.
+  const [signedIn, setSignedIn] = useState(false);
+  const accountUrl = path(signedIn ? "/account" : "/login");
   const restOfPath = pathname.split("/").slice(2).join("/");
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/customers/me", { credentials: "include" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (active) setSignedIn(Boolean(data?.user));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (searchOpen) searchInput.current?.focus();
@@ -231,7 +246,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
               className="flex items-center gap-3 text-sm tracking-wide2 uppercase"
             >
               <Icon name="user" size={18} />
-              {t("nav.my_account")}
+              {t(signedIn ? "nav.my_account" : "nav.login")}
             </Link>
 
             <div>
