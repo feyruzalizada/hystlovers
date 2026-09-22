@@ -153,25 +153,23 @@ export function ForgotPasswordForm() {
       <h1 className="heading-brand text-center text-2xl">{t("auth.forgot.title")}</h1>
       <p className="mt-4 text-center text-sm text-ink/60">{t("auth.forgot.subtitle")}</p>
 
-      {done ? (
-        <div className="mt-10 text-center">
-          <p className="bg-mist px-4 py-3 text-xs">{t("auth.forgot.sent")}</p>
-          <Link href={path("/login")} className="btn-ghost mt-8 inline-block text-xs">
-            {t("auth.forgot.back")}
-          </Link>
-        </div>
-      ) : (
-        <form onSubmit={onSubmit} className="mt-10 space-y-5">
-          <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
-          {error && <p className="text-xs text-sale">{error}</p>}
-          <button type="submit" className="btn-primary w-full" disabled={pending}>
-            {pending ? t("auth.forgot.submitting") : t("auth.forgot.submit")}
-          </button>
-          <Link href={path("/login")} className="btn-ghost text-xs">
-            {t("auth.forgot.back")}
-          </Link>
-        </form>
+      {done && (
+        <p className="mt-6 bg-mist px-4 py-3 text-center text-xs">{t("auth.forgot.sent")}</p>
       )}
+
+      <form onSubmit={onSubmit} className="mt-10 space-y-5">
+        <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
+        {error && <p className="text-xs text-sale">{error}</p>}
+        <button type="submit" className="btn-primary w-full" disabled={pending}>
+          {pending ? t("auth.forgot.submitting") : t("auth.forgot.submit")}
+        </button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-ink/60">
+        <Link href={path("/login")} className="text-ink underline underline-offset-4">
+          {t("auth.forgot.back")}
+        </Link>
+      </p>
     </div>
   );
 }

@@ -9,9 +9,11 @@ const WRAPPER_OPEN = '<div class="payload-richtext">';
  */
 export function renderRichText(value: unknown): string {
   if (!value || typeof value !== "object") return "";
-  const html = convertLexicalToHTML({ data: value as SerializedEditorState });
+  let html = convertLexicalToHTML({ data: value as SerializedEditorState });
   if (html.startsWith(WRAPPER_OPEN) && html.endsWith("</div>")) {
-    return html.slice(WRAPPER_OPEN.length, -"</div>".length);
+    html = html.slice(WRAPPER_OPEN.length, -"</div>".length);
   }
-  return html;
+  // Lists come out tagged `list-bullet`/`list-number`; the source shop styled
+  // plain <ul> and <ol>, and `.page-body` still does.
+  return html.replace(/ class="list-(?:bullet|number)"/g, "");
 }

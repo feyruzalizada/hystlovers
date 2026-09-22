@@ -37,9 +37,8 @@ export default function Hero({ slides }: { slides: Slide[] }) {
       {slides.map((slide, index) => (
         <div
           key={`${slide.title}-${index}`}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            index === active ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+          data-hero-slide={index === active ? "active" : "idle"}
+          className="absolute inset-0"
         >
           <Image
             src={slide.imageMobile ?? slide.image}

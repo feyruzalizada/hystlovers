@@ -10,6 +10,8 @@ import { useCart } from "./CartProvider";
 import { useShop } from "./ShopProvider";
 import Icon from "./Icon";
 import PriceTag from "./PriceTag";
+import ProductCard from "./ProductCard";
+import SectionHeading from "./SectionHeading";
 
 const MAX_QTY = 20;
 
@@ -36,7 +38,10 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
           className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
-      {open && <div className="pb-5 text-sm leading-relaxed text-ink/70">{children}</div>}
+      {/* Hidden rather than unmounted, so the panel stays in the markup as it did. */}
+      <div className="pb-5 text-sm leading-relaxed text-ink/70" style={{ display: open ? undefined : "none" }}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -44,9 +49,11 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
 export default function ProductDetail({
   product,
   siblings,
+  related,
 }: {
   product: Product;
   siblings: ProductSibling[];
+  related: Product[];
 }) {
   const { t, path, locale } = useI18n();
   const cart = useCart();
@@ -176,9 +183,7 @@ export default function ProductDetail({
 
         <div className="lg:max-w-lg">
           <h1 className="heading-brand text-xl leading-snug sm:text-2xl">{product.name}</h1>
-          <div className="mt-3">
-            <PriceTag price={product.price} compareAt={product.compare_at} size="lg" />
-          </div>
+          <PriceTag price={product.price} compareAt={product.compare_at} size="lg" className="mt-3" />
 
           <fieldset className="mt-8">
             <legend className="text-xs font-medium tracking-wide2 uppercase">
@@ -375,6 +380,17 @@ export default function ProductDetail({
           </div>
         </div>
       </div>
+
+      {related.length > 0 && (
+        <section className="mt-16 sm:mt-24">
+          <SectionHeading title={t("product.related_heading")} />
+          <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-4">
+            {related.map((item) => (
+              <ProductCard key={item.slug} product={item} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {guideOpen && (
         <div

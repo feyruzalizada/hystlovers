@@ -176,6 +176,16 @@
   }
 }
 
+/* The slideshow crossfade the source shop drove from its own transition class. */
+[data-hero-slide] {
+  transition: opacity 0.7s ease;
+}
+
+[data-hero-slide="idle"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @utility scrollbar-none {
   scrollbar-width: none;
   &::-webkit-scrollbar {
