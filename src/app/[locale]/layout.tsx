@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { getShop, getSiteTexts } from "@/lib/cms";
-import { buildTranslator, isLocale, locales } from "@/lib/i18n";
+import { isLocale, locales } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nProvider";
 import { ShopProvider } from "@/components/ShopProvider";
 import { CartProvider } from "@/components/CartProvider";
@@ -21,10 +21,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  const t = buildTranslator(await getSiteTexts(locale));
   return {
+    // No description here: the source shop sets one only on the six pages that
+    // have their own, and a layout-wide default would leak onto the rest.
     title: { default: "Hystlovers", template: "%s — Hystlovers" },
-    description: t("home.meta_description"),
   };
 }
 

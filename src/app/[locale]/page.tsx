@@ -19,7 +19,9 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const t = await getTranslator(locale);
   return {
-    title: t("home.title"),
+    // A title template only reaches child segments, so the home page spells the
+    // suffix out the way the source shop's layout did.
+    title: { absolute: `${t("home.title")} — Hystlovers` },
     description: t("home.meta_description"),
     alternates: localeAlternates("/"),
   };

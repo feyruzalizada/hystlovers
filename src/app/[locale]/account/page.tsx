@@ -4,6 +4,20 @@ import { getCustomer } from "@/lib/auth";
 import { getOrdersFor } from "@/lib/orders";
 import { getTranslator } from "@/lib/server-i18n";
 import { isLocale, localePath } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { localeAlternates } from "@/lib/alternates";
+
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const t = await getTranslator(locale);
+  return { title: t("account.title"), alternates: localeAlternates("/account") };
+}
 
 export default async function AccountPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

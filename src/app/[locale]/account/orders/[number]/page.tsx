@@ -3,6 +3,19 @@ import { OrderDetail } from "@/components/AccountView";
 import { getCustomer } from "@/lib/auth";
 import { getBankTransferDetails, getOrderFor } from "@/lib/orders";
 import { isLocale, localePath } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { localeAlternates } from "@/lib/alternates";
+
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; number: string }>;
+}): Promise<Metadata> {
+  const { locale, number } = await params;
+  if (!isLocale(locale)) return {};
+  return { title: number, alternates: localeAlternates(`/account/orders/${number}`) };
+}
 
 export default async function OrderPage({
   params,

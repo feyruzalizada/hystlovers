@@ -4,6 +4,7 @@ import SearchView from "@/components/SearchView";
 import { getProducts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { isLocale } from "@/lib/i18n";
+import { localeAlternates } from "@/lib/alternates";
 import type { Product } from "@/lib/types";
 
 export async function generateMetadata({
@@ -17,7 +18,10 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const { q } = await searchParams;
   const t = await getTranslator(locale);
-  return { title: q ? t("search.results_title", { query: q }) : t("search.title") };
+  return {
+    title: q ? t("search.results_title", { query: q }) : t("search.title"),
+    alternates: localeAlternates("/search"),
+  };
 }
 
 /** Case-insensitive match over the columns the PHP scope searched. */
