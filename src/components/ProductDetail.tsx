@@ -95,6 +95,7 @@ export default function ProductDetail({
         image: product.images[0] ?? null,
         color: product.color.name,
         size,
+        isPreorder: product.is_preorder,
       },
       qty,
     );

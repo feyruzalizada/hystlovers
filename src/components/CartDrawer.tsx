@@ -68,6 +68,11 @@ export default function CartDrawer() {
                     <p className="mt-1 text-xs text-ink/50">
                       {line.color} · {line.size}
                     </p>
+                    {line.isPreorder && (
+                      <p className="mt-1 inline-block bg-ink px-1.5 py-0.5 text-[10px] tracking-wide2 text-paper uppercase">
+                        {t("product.preorder.badge")}
+                      </p>
+                    )}
                   </div>
                   <button
                     type="button"

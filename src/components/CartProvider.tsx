@@ -10,6 +10,7 @@ export type CartLine = {
   image: string | null;
   color: string;
   size: string;
+  isPreorder: boolean;
   qty: number;
 };
 

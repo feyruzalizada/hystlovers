@@ -136,14 +136,31 @@ export async function resetPassword(formData: FormData): Promise<AuthResult> {
   const t = await getTranslator(locale);
 
   const token = String(formData.get("token") ?? "");
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("password_confirmation") ?? "");
 
-  if (password.length < 8 || password !== confirm) {
+  if (!email.includes("@") || password.length < 8 || password !== confirm) {
     return { ok: false, message: t("form.error.invalid") };
   }
 
   const payload = await payloadClient();
+
+  // The source shop asks for the address alongside the link, so a stray token
+  // is useless on its own.
+  const owner = await payload.find({
+    collection: "customers",
+    where: { resetPasswordToken: { equals: token } },
+    limit: 1,
+    overrideAccess: true,
+  });
+
+  if (owner.docs[0]?.email?.toLowerCase() !== email) {
+    return { ok: false, message: t("auth.reset_invalid") };
+  }
+
   try {
     await payload.resetPassword({
       collection: "customers",

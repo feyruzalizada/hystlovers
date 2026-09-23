@@ -184,6 +184,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
       <form onSubmit={onSubmit} className="mt-10 space-y-5">
         <input type="hidden" name="token" value={token} />
+        <Field label={t("auth.email")} name="email" type="email" autoComplete="email" />
         <Field
           label={t("auth.reset.password")}
           name="password"

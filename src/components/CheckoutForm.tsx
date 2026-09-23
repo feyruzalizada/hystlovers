@@ -174,6 +174,11 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                     <p className="mt-1 text-xs text-ink/50">
                       {line.color} · {line.size} · {line.qty} {t("checkout.qty_suffix")}
                     </p>
+                    {line.isPreorder && (
+                      <p className="mt-1 inline-block bg-ink px-1.5 py-0.5 text-[10px] tracking-wide2 text-paper uppercase">
+                        {t("product.preorder.badge")}
+                      </p>
+                    )}
                   </div>
                   <p className="self-center text-sm">{formatPrice(line.price * line.qty)}</p>
                 </li>
@@ -194,6 +199,12 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                 <dd>{formatPrice(total)}</dd>
               </div>
             </dl>
+
+            {cart.lines.some((line) => line.isPreorder) && (
+              <p className="mt-4 bg-mist px-4 py-3 text-[11px] leading-relaxed text-ink/70">
+                {t("product.preorder.note")}
+              </p>
+            )}
           </aside>
         </div>
       )}
