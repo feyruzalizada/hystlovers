@@ -41,7 +41,7 @@ export default async function LocaleLayout({
   const [shop, messages] = await Promise.all([getShop(locale), getSiteTexts(locale)]);
 
   return (
-    <html lang={locale} className="h-full">
+    <html lang={locale} className="h-full" data-scroll-behavior="smooth">
       <head>
         <meta name="theme-color" content="#1c1c1c" />
       </head>
