@@ -14,7 +14,7 @@ export const Slides: CollectionConfig = {
   labels: { singular: "Slide", plural: "Slider" },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "isActive", "sortOrder"],
+    defaultColumns: ["image", "title", "ctaLabel", "isActive", "startsAt", "updatedAt"],
     group: "Content",
   },
   access: adminAccess,
@@ -52,7 +52,11 @@ export const HomeSections: CollectionConfig = {
   slug: "home-sections",
   hooks: revalidateHooks,
   labels: { singular: "Homepage section", plural: "Homepage" },
-  admin: { useAsTitle: "title", group: "Content" },
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "category", "productLimit", "isActive"],
+    group: "Content",
+  },
   access: adminAccess,
   defaultSort: "sortOrder",
   fields: [
@@ -71,7 +75,11 @@ export const HomeSections: CollectionConfig = {
 
 export const Pages: CollectionConfig = {
   slug: "pages",
-  admin: { useAsTitle: "title", defaultColumns: ["title", "slug", "footerGroup"], group: "Content" },
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "slug", "footerGroup", "isActive", "updatedAt"],
+    group: "Content",
+  },
   access: adminAccess,
   defaultSort: "sortOrder",
   hooks: {
@@ -102,7 +110,11 @@ export const Pages: CollectionConfig = {
 export const Posts: CollectionConfig = {
   slug: "posts",
   labels: { singular: "Post", plural: "Blog" },
-  admin: { useAsTitle: "title", defaultColumns: ["title", "slug", "publishedAt"], group: "Content" },
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["coverImage", "title", "isActive", "publishedAt"],
+    group: "Content",
+  },
   access: adminAccess,
   defaultSort: "-publishedAt",
   hooks: {

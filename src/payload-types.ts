@@ -68,15 +68,15 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    categories: Category;
+    orders: Order;
+    customers: Customer;
     products: Product;
+    categories: Category;
     slides: Slide;
     'home-sections': HomeSection;
     pages: Page;
     posts: Post;
     'site-texts': SiteText;
-    customers: Customer;
-    orders: Order;
     'contact-messages': ContactMessage;
     'newsletter-subscribers': NewsletterSubscriber;
     'stock-notifications': StockNotification;
@@ -89,15 +89,15 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     slides: SlidesSelect<false> | SlidesSelect<true>;
     'home-sections': HomeSectionsSelect<false> | HomeSectionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     'site-texts': SiteTextsSelect<false> | SiteTextsSelect<true>;
-    customers: CustomersSelect<false> | CustomersSelect<true>;
-    orders: OrdersSelect<false> | OrdersSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'stock-notifications': StockNotificationsSelect<false> | StockNotificationsSelect<true>;
@@ -166,67 +166,65 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
+ * via the `definition` "orders".
  */
-export interface Category {
+export interface Order {
   id: number;
-  name: string;
-  slug: string;
-  description?: string | null;
-  /**
-   * Leave empty for a top-level category.
-   */
-  parent?: (number | null) | Category;
-  image?: (number | null) | Media;
-  isActive?: boolean | null;
-  sortOrder?: number | null;
+  number: string;
+  customer?: (number | null) | Customer;
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod: 'cod' | 'bank_transfer';
+  paymentStatus: 'pending' | 'paid';
+  customerName: string;
+  customerEmail: string;
+  phone: string;
+  city: string;
+  address: string;
+  note?: string | null;
+  items: {
+    product?: (number | null) | Product;
+    name: string;
+    colorName: string;
+    size: string;
+    unitPrice: number;
+    qty: number;
+    lineTotal: number;
+    isPreorder?: boolean | null;
+    id?: string | null;
+  }[];
+  subtotal: number;
+  shippingTotal: number;
+  total: number;
+  currency: string;
+  locale: string;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "customers".
  */
-export interface Media {
+export interface Customer {
   id: number;
-  alt?: string | null;
+  name: string;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    detail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'customers';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -291,6 +289,70 @@ export interface Product {
   sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  /**
+   * Leave empty for a top-level category.
+   */
+  parent?: (number | null) | Category;
+  image?: (number | null) | Media;
+  isActive?: boolean | null;
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    detail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -416,68 +478,6 @@ export interface SiteText {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers".
- */
-export interface Customer {
-  id: number;
-  name: string;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'customers';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders".
- */
-export interface Order {
-  id: number;
-  number: string;
-  customer?: (number | null) | Customer;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: 'cod' | 'bank_transfer';
-  paymentStatus: 'pending' | 'paid';
-  customerName: string;
-  customerEmail: string;
-  phone: string;
-  city: string;
-  address: string;
-  note?: string | null;
-  items: {
-    product?: (number | null) | Product;
-    name: string;
-    colorName: string;
-    size: string;
-    unitPrice: number;
-    qty: number;
-    lineTotal: number;
-    isPreorder?: boolean | null;
-    id?: string | null;
-  }[];
-  subtotal: number;
-  shippingTotal: number;
-  total: number;
-  currency: string;
-  locale: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-messages".
  */
 export interface ContactMessage {
@@ -566,12 +566,20 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'categories';
-        value: number | Category;
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
       } | null)
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'slides';
@@ -592,14 +600,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'site-texts';
         value: number | SiteText;
-      } | null)
-    | ({
-        relationTo: 'customers';
-        value: number | Customer;
-      } | null)
-    | ({
-        relationTo: 'orders';
-        value: number | Order;
       } | null)
     | ({
         relationTo: 'contact-messages';
@@ -675,18 +675,63 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
+ * via the `definition` "orders_select".
  */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  parent?: T;
-  image?: T;
-  isActive?: T;
-  sortOrder?: T;
+export interface OrdersSelect<T extends boolean = true> {
+  number?: T;
+  customer?: T;
+  status?: T;
+  paymentMethod?: T;
+  paymentStatus?: T;
+  customerName?: T;
+  customerEmail?: T;
+  phone?: T;
+  city?: T;
+  address?: T;
+  note?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        name?: T;
+        colorName?: T;
+        size?: T;
+        unitPrice?: T;
+        qty?: T;
+        lineTotal?: T;
+        isPreorder?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  shippingTotal?: T;
+  total?: T;
+  currency?: T;
+  locale?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -734,6 +779,21 @@ export interface ProductsSelect<T extends boolean = true> {
   isActive?: T;
   isPreorder?: T;
   preorderShipsAt?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  parent?: T;
+  image?: T;
+  isActive?: T;
   sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -815,66 +875,6 @@ export interface SiteTextsSelect<T extends boolean = true> {
   en?: T;
   ru?: T;
   hint?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers_select".
- */
-export interface CustomersSelect<T extends boolean = true> {
-  name?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders_select".
- */
-export interface OrdersSelect<T extends boolean = true> {
-  number?: T;
-  customer?: T;
-  status?: T;
-  paymentMethod?: T;
-  paymentStatus?: T;
-  customerName?: T;
-  customerEmail?: T;
-  phone?: T;
-  city?: T;
-  address?: T;
-  note?: T;
-  items?:
-    | T
-    | {
-        product?: T;
-        name?: T;
-        colorName?: T;
-        size?: T;
-        unitPrice?: T;
-        qty?: T;
-        lineTotal?: T;
-        isPreorder?: T;
-        id?: T;
-      };
-  subtotal?: T;
-  shippingTotal?: T;
-  total?: T;
-  currency?: T;
-  locale?: T;
   updatedAt?: T;
   createdAt?: T;
 }

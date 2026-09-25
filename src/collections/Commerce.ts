@@ -19,7 +19,7 @@ export const Customers: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    defaultColumns: ["email", "name", "createdAt"],
+    defaultColumns: ["name", "email", "createdAt"],
     group: "Shop",
   },
   access: {
@@ -39,7 +39,7 @@ export const Orders: CollectionConfig = {
   slug: "orders",
   admin: {
     useAsTitle: "number",
-    defaultColumns: ["number", "customerName", "total", "status", "createdAt"],
+    defaultColumns: ["number", "customerName", "total", "paymentMethod", "status", "createdAt"],
     group: "Shop",
   },
   access: {
@@ -138,7 +138,7 @@ export const ContactMessages: CollectionConfig = {
   labels: { singular: "Contact message", plural: "Contact messages" },
   admin: {
     useAsTitle: "subject",
-    defaultColumns: ["name", "email", "subject", "readAt", "createdAt"],
+    defaultColumns: ["name", "subject", "message", "readAt", "createdAt"],
     group: "Contact",
   },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
@@ -178,7 +178,7 @@ export const ContactMessages: CollectionConfig = {
 export const NewsletterSubscribers: CollectionConfig = {
   slug: "newsletter-subscribers",
   labels: { singular: "Newsletter subscriber", plural: "Newsletter" },
-  admin: { useAsTitle: "email", group: "Contact" },
+  admin: { useAsTitle: "email", defaultColumns: ["email", "createdAt"], group: "Contact" },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [{ name: "email", type: "email", required: true, unique: true, index: true }],
@@ -187,7 +187,7 @@ export const NewsletterSubscribers: CollectionConfig = {
 export const StockNotifications: CollectionConfig = {
   slug: "stock-notifications",
   labels: { singular: "Stock alert", plural: "Stock alerts" },
-  admin: { useAsTitle: "email", defaultColumns: ["email", "product", "createdAt"], group: "Contact" },
+  admin: { useAsTitle: "email", defaultColumns: ["product", "email", "createdAt"], group: "Contact" },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [

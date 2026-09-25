@@ -16,7 +16,8 @@ test("admin panel: login, dashboard stats and collections", async ({ page }) => 
 
   await page.goto("/admin/collections/products");
   await page.waitForLoadState("networkidle");
-  await expect(page.locator("body")).toContainText("t-shirt-brown");
+  // The list shows the source panel's columns: series, category, price and the flags.
+  await expect(page.locator("body")).toContainText("LOVE");
   await expect(page.getByRole("link", { name: /create new/i })).toHaveCount(1);
 
   // Orders, customers and site texts only ever arrive from the storefront or

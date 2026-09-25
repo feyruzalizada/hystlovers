@@ -64,16 +64,18 @@ export default buildConfig({
       beforeDashboard: ["/components/admin/DashboardStats#default"],
     },
   },
+  // Order matters: the panel groups by `admin.group` and keeps this order
+  // inside each group, which is how the source panel was arranged.
   collections: [
-    Categories,
+    Orders,
+    Customers,
     Products,
+    Categories,
     Slides,
     HomeSections,
     Pages,
     Posts,
     SiteTexts,
-    Customers,
-    Orders,
     ContactMessages,
     NewsletterSubscribers,
     StockNotifications,
