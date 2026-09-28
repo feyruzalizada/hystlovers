@@ -171,6 +171,7 @@ export interface UserAuthOperations {
 export interface Order {
   id: number;
   number: string;
+  itemsCount?: number | null;
   customer?: (number | null) | Customer;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
   paymentMethod: 'cod' | 'bank_transfer';
@@ -207,6 +208,8 @@ export interface Order {
 export interface Customer {
   id: number;
   name: string;
+  ordersCount?: number | null;
+  spent?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -234,6 +237,7 @@ export interface Product {
   id: number;
   series: string;
   item: string;
+  stock?: string | null;
   slug: string;
   category?: (number | null) | Category;
   colorName: string;
@@ -297,6 +301,7 @@ export interface Product {
 export interface Category {
   id: number;
   name: string;
+  childrenCount?: number | null;
   slug: string;
   description?: string | null;
   /**
@@ -679,6 +684,7 @@ export interface PayloadMigration {
  */
 export interface OrdersSelect<T extends boolean = true> {
   number?: T;
+  itemsCount?: T;
   customer?: T;
   status?: T;
   paymentMethod?: T;
@@ -716,6 +722,8 @@ export interface OrdersSelect<T extends boolean = true> {
  */
 export interface CustomersSelect<T extends boolean = true> {
   name?: T;
+  ordersCount?: T;
+  spent?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -740,6 +748,7 @@ export interface CustomersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   series?: T;
   item?: T;
+  stock?: T;
   slug?: T;
   category?: T;
   colorName?: T;
@@ -789,6 +798,7 @@ export interface ProductsSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
+  childrenCount?: T;
   slug?: T;
   description?: T;
   parent?: T;

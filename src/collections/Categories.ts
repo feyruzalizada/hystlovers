@@ -7,7 +7,7 @@ export const Categories: CollectionConfig = {
   slug: "categories",
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "slug", "isActive", "updatedAt"],
+    defaultColumns: ["name", "slug", "childrenCount", "isActive", "updatedAt"],
     group: "Shop",
   },
   access: adminAccess,
@@ -24,6 +24,26 @@ export const Categories: CollectionConfig = {
   },
   fields: [
     { name: "name", type: "text", required: true, localized: true },
+    {
+      name: "childrenCount",
+      type: "number",
+      virtual: true,
+      label: "Subcategories",
+      admin: { readOnly: true },
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!data?.id) return 0;
+            const { totalDocs } = await req.payload.count({
+              collection: "categories",
+              where: { parent: { equals: data.id } },
+              overrideAccess: true,
+            });
+            return totalDocs;
+          },
+        ],
+      },
+    },
     { name: "slug", type: "text", required: true, unique: true, index: true },
     { name: "description", type: "textarea", localized: true },
     {

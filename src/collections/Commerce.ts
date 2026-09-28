@@ -19,7 +19,7 @@ export const Customers: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    defaultColumns: ["name", "email", "createdAt"],
+    defaultColumns: ["name", "email", "ordersCount", "spent", "createdAt"],
     group: "Shop",
   },
   access: {
@@ -34,14 +34,62 @@ export const Customers: CollectionConfig = {
   },
   defaultSort: "-createdAt",
   // The source panel only ever shows a customer, never an edit form.
-  fields: [{ name: "name", type: "text", required: true, admin: { readOnly: true } }],
+  fields: [
+    { name: "name", type: "text", required: true, admin: { readOnly: true } },
+    {
+      name: "ordersCount",
+      type: "number",
+      virtual: true,
+      label: "Orders",
+      admin: { readOnly: true },
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!data?.id) return 0;
+            const { totalDocs } = await req.payload.count({
+              collection: "orders",
+              where: { customer: { equals: data.id } },
+              overrideAccess: true,
+            });
+            return totalDocs;
+          },
+        ],
+      },
+    },
+    {
+      // Cancelled orders are left out, as in the source panel.
+      name: "spent",
+      type: "number",
+      virtual: true,
+      label: "Spent",
+      admin: { readOnly: true },
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!data?.id) return 0;
+            const { docs } = await req.payload.find({
+              collection: "orders",
+              where: {
+                and: [{ customer: { equals: data.id } }, { status: { not_equals: "cancelled" } }],
+              },
+              limit: 0,
+              pagination: false,
+              depth: 0,
+              overrideAccess: true,
+            });
+            return docs.reduce((sum, order) => sum + Number(order.total ?? 0), 0);
+          },
+        ],
+      },
+    },
+  ],
 };
 
 export const Orders: CollectionConfig = {
   slug: "orders",
   admin: {
     useAsTitle: "number",
-    defaultColumns: ["number", "customerName", "total", "paymentMethod", "status", "createdAt"],
+    defaultColumns: ["number", "customerName", "itemsCount", "total", "paymentMethod", "status", "createdAt"],
     group: "Shop",
   },
   access: {
@@ -60,6 +108,16 @@ export const Orders: CollectionConfig = {
   defaultSort: "-createdAt",
   fields: [
     { name: "number", type: "text", required: true, unique: true, index: true, admin: { readOnly: true } },
+    {
+      name: "itemsCount",
+      type: "number",
+      virtual: true,
+      label: "Items",
+      admin: { readOnly: true },
+      hooks: {
+        afterRead: [({ siblingData }) => ((siblingData?.items ?? []) as unknown[]).length],
+      },
+    },
     { name: "customer", type: "relationship", relationTo: "customers", index: true, admin: { readOnly: true } },
     {
       type: "row",

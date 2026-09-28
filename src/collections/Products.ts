@@ -14,7 +14,7 @@ export const Products: CollectionConfig = {
   slug: "products",
   admin: {
     useAsTitle: "slug",
-    defaultColumns: ["series", "category", "price", "inStock", "isPreorder", "isNew", "isActive"],
+    defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive"],
     group: "Shop",
   },
   access: adminAccess,
@@ -38,6 +38,27 @@ export const Products: CollectionConfig = {
         { name: "series", type: "text", required: true, index: true, admin: { width: "50%" } },
         { name: "item", type: "text", required: true, index: true, admin: { width: "50%" } },
       ],
+    },
+    {
+      // Mirrors the source panel's "Units" column: a per-size breakdown, or a
+      // dash when no size is stock-tracked (those sell without a limit).
+      name: "stock",
+      type: "text",
+      virtual: true,
+      label: "Units",
+      admin: { readOnly: true },
+      hooks: {
+        afterRead: [
+          ({ siblingData }) => {
+            const sizes = (siblingData?.sizes ?? []) as { size?: string; quantity?: number | null }[];
+            const tracked = sizes.filter(
+              (row) => row.quantity !== null && row.quantity !== undefined,
+            );
+            if (tracked.length === 0) return "—";
+            return tracked.map((row) => `${row.size}: ${row.quantity}`).join(" · ");
+          },
+        ],
+      },
     },
     { name: "slug", type: "text", required: true, unique: true, index: true },
     { name: "category", type: "relationship", relationTo: "categories", index: true },
