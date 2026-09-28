@@ -5,13 +5,15 @@ import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
 export const Categories: CollectionConfig = {
   slug: "categories",
+  // Rows are dragged into place in the panel, as they were in the source.
+  orderable: true,
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "slug", "childrenCount", "isActive", "updatedAt"],
     group: "Shop",
   },
   access: adminAccess,
-  defaultSort: "sortOrder",
+  defaultSort: "_order",
   hooks: {
     afterChange: [revalidateAfterChange],
     afterDelete: [revalidateAfterDelete],
@@ -54,6 +56,5 @@ export const Categories: CollectionConfig = {
     },
     { name: "image", type: "upload", relationTo: "media" },
     { name: "isActive", type: "checkbox", defaultValue: true, index: true },
-    { name: "sortOrder", type: "number", defaultValue: 0, index: true },
   ],
 };

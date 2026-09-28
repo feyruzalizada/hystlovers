@@ -10,6 +10,8 @@ export const FOOTER_GROUPS = [
 
 export const Slides: CollectionConfig = {
   slug: "slides",
+  // Rows are dragged into place in the panel, as they were in the source.
+  orderable: true,
   hooks: revalidateHooks,
   labels: { singular: "Slide", plural: "Slider" },
   admin: {
@@ -18,7 +20,7 @@ export const Slides: CollectionConfig = {
     group: "Content",
   },
   access: adminAccess,
-  defaultSort: "sortOrder",
+  defaultSort: "_order",
   fields: [
     { name: "title", type: "text", required: true },
     { name: "subtitle", type: "text" },
@@ -42,7 +44,6 @@ export const Slides: CollectionConfig = {
       type: "row",
       fields: [
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
-        { name: "sortOrder", type: "number", defaultValue: 0, admin: { width: "50%" } },
       ],
     },
   ],
@@ -50,6 +51,8 @@ export const Slides: CollectionConfig = {
 
 export const HomeSections: CollectionConfig = {
   slug: "home-sections",
+  // Rows are dragged into place in the panel, as they were in the source.
+  orderable: true,
   hooks: revalidateHooks,
   labels: { singular: "Homepage section", plural: "Homepage" },
   admin: {
@@ -58,7 +61,7 @@ export const HomeSections: CollectionConfig = {
     group: "Content",
   },
   access: adminAccess,
-  defaultSort: "sortOrder",
+  defaultSort: "_order",
   fields: [
     { name: "category", type: "relationship", relationTo: "categories", required: true },
     { name: "title", type: "text", admin: { description: "Leave empty to use the category name." } },
@@ -67,7 +70,6 @@ export const HomeSections: CollectionConfig = {
       type: "row",
       fields: [
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
-        { name: "sortOrder", type: "number", defaultValue: 0, admin: { width: "50%" } },
       ],
     },
   ],
@@ -75,13 +77,15 @@ export const HomeSections: CollectionConfig = {
 
 export const Pages: CollectionConfig = {
   slug: "pages",
+  // Rows are dragged into place in the panel, as they were in the source.
+  orderable: true,
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "footerGroup", "isActive", "updatedAt"],
     group: "Content",
   },
   access: adminAccess,
-  defaultSort: "sortOrder",
+  defaultSort: "_order",
   hooks: {
     afterChange: [revalidateAfterChange],
     afterDelete: [revalidateAfterDelete],
@@ -101,7 +105,6 @@ export const Pages: CollectionConfig = {
       type: "row",
       fields: [
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
-        { name: "sortOrder", type: "number", defaultValue: 0, admin: { width: "50%" } },
       ],
     },
   ],

@@ -5,6 +5,7 @@ import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import sharp from "sharp";
 
 import { Users } from "./collections/Users";
@@ -20,7 +21,6 @@ import {
   StockNotifications,
 } from "./collections/Commerce";
 import { Settings } from "./globals/Settings";
-import { seed } from "./seed/seed";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // Without DATABASE_URI the app opens the read-only demo database that ships
@@ -29,15 +29,21 @@ const databaseUri = process.env.DATABASE_URI || "file:./src/seed/demo.sqlite";
 
 /**
  * Postgres in production, SQLite locally — the same split the PHP app used, so
- * a developer needs no database server to run the shop.
+ * a developer needs no database server to run the shop. Schema changes go
+ * through migrations (`npm run migrate`), never through Payload's dev push,
+ * which stops to ask about every renamed column.
  */
-// The seed runs under `next build`, where Payload would otherwise skip the
-// schema push and leave the database without tables.
-const push = process.env.RUN_SEED === "1" || process.env.NODE_ENV !== "production";
-
 const db = databaseUri.startsWith("postgres")
-  ? postgresAdapter({ pool: { connectionString: databaseUri }, push })
-  : sqliteAdapter({ client: { url: databaseUri }, push });
+  ? postgresAdapter({
+      pool: { connectionString: databaseUri },
+      push: false,
+      migrationDir: path.resolve(dirname, "migrations/postgres"),
+    })
+  : sqliteAdapter({
+      client: { url: databaseUri },
+      push: false,
+      migrationDir: path.resolve(dirname, "migrations/sqlite"),
+    });
 
 /** SMTP when it is configured, otherwise Payload logs the message to the console. */
 const email = process.env.SMTP_HOST
@@ -102,8 +108,15 @@ export default buildConfig({
   // CSRF at their defaults keeps cookie auth working on every origin the app
   // is actually served from.
   serverURL: process.env.SERVER_URL,
-  // `npm run seed` starts the app with RUN_SEED=1 for a one-off content import.
-  onInit: async (payload) => {
-    if (process.env.RUN_SEED === "1") await seed(payload);
-  },
+  plugins: [
+    // Vercel's filesystem is read-only, so panel uploads go to Blob there.
+    // Without the token files stay in public/media.
+    vercelBlobStorage({
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      collections: { media: { disablePayloadAccessControl: true } },
+      clientUploads: true,
+      // Keeps the schema, and so the migrations, the same with or without Blob.
+      alwaysInsertFields: true,
+    }),
+  ],
 });

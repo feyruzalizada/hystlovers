@@ -10,7 +10,7 @@ export default defineConfig({
   workers: 1,
   use: { baseURL: `http://localhost:${port}`, locale: "az-AZ" },
   webServer: {
-    command: `cross-env NODE_OPTIONS=--no-deprecation next dev -p ${port}`,
+    command: `npm run migrate && cross-env NODE_OPTIONS=--no-deprecation next dev -p ${port}`,
     url: `http://localhost:${port}/az`,
     // SERVER_URL is Payload's CSRF origin: it has to match where the tests run.
     env: { SERVER_URL: `http://localhost:${port}` },

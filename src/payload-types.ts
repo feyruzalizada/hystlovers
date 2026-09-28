@@ -235,6 +235,7 @@ export interface Customer {
  */
 export interface Product {
   id: number;
+  _order?: string | null;
   series: string;
   item: string;
   stock?: string | null;
@@ -290,7 +291,6 @@ export interface Product {
   isActive?: boolean | null;
   isPreorder?: boolean | null;
   preorderShipsAt?: string | null;
-  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -300,6 +300,7 @@ export interface Product {
  */
 export interface Category {
   id: number;
+  _order?: string | null;
   name: string;
   childrenCount?: number | null;
   slug: string;
@@ -310,7 +311,6 @@ export interface Category {
   parent?: (number | null) | Category;
   image?: (number | null) | Media;
   isActive?: boolean | null;
-  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -321,6 +321,7 @@ export interface Category {
 export interface Media {
   id: number;
   alt?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -365,6 +366,7 @@ export interface Media {
  */
 export interface Slide {
   id: number;
+  _order?: string | null;
   title: string;
   subtitle?: string | null;
   ctaLabel?: string | null;
@@ -377,7 +379,6 @@ export interface Slide {
   startsAt?: string | null;
   endsAt?: string | null;
   isActive?: boolean | null;
-  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -387,6 +388,7 @@ export interface Slide {
  */
 export interface HomeSection {
   id: number;
+  _order?: string | null;
   category: number | Category;
   /**
    * Leave empty to use the category name.
@@ -394,7 +396,6 @@ export interface HomeSection {
   title?: string | null;
   productLimit?: number | null;
   isActive?: boolean | null;
-  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -404,6 +405,7 @@ export interface HomeSection {
  */
 export interface Page {
   id: number;
+  _order?: string | null;
   title: string;
   slug: string;
   body?: {
@@ -423,7 +425,6 @@ export interface Page {
   } | null;
   footerGroup?: ('company' | 'help') | null;
   isActive?: boolean | null;
-  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -746,6 +747,7 @@ export interface CustomersSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  _order?: T;
   series?: T;
   item?: T;
   stock?: T;
@@ -788,7 +790,6 @@ export interface ProductsSelect<T extends boolean = true> {
   isActive?: T;
   isPreorder?: T;
   preorderShipsAt?: T;
-  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -797,6 +798,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  _order?: T;
   name?: T;
   childrenCount?: T;
   slug?: T;
@@ -804,7 +806,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   parent?: T;
   image?: T;
   isActive?: T;
-  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -813,6 +814,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "slides_select".
  */
 export interface SlidesSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   subtitle?: T;
   ctaLabel?: T;
@@ -822,7 +824,6 @@ export interface SlidesSelect<T extends boolean = true> {
   startsAt?: T;
   endsAt?: T;
   isActive?: T;
-  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -831,11 +832,11 @@ export interface SlidesSelect<T extends boolean = true> {
  * via the `definition` "home-sections_select".
  */
 export interface HomeSectionsSelect<T extends boolean = true> {
+  _order?: T;
   category?: T;
   title?: T;
   productLimit?: T;
   isActive?: T;
-  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -844,12 +845,12 @@ export interface HomeSectionsSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   slug?: T;
   body?: T;
   footerGroup?: T;
   isActive?: T;
-  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -927,6 +928,7 @@ export interface StockNotificationsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

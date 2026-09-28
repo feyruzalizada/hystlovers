@@ -53,6 +53,9 @@ export async function seed(payload: Payload) {
       collection: "media",
       data: { alt: path.basename(publicPath, path.extname(publicPath)) },
       filePath: file,
+      // The source images already sit in public/media; without this every
+      // re-seed would add a "-1" copy next to them.
+      overwriteExistingFiles: true,
     });
 
     media.set(publicPath, created.id as number);
@@ -61,15 +64,15 @@ export async function seed(payload: Payload) {
 
   // ---- admin user -------------------------------------------------------
   const email = process.env.ADMIN_EMAIL ?? "admin@hystlovers.com";
+  // A build never plants the well-known dev password; without ADMIN_PASSWORD
+  // the first administrator signs up on /admin instead.
+  const password =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? null : "hystlovers123");
   const existingUsers = await payload.count({ collection: "users" });
-  if (existingUsers.totalDocs === 0) {
+  if (existingUsers.totalDocs === 0 && password) {
     await payload.create({
       collection: "users",
-      data: {
-        email,
-        password: process.env.ADMIN_PASSWORD ?? "hystlovers123",
-        name: "Administrator",
-      },
+      data: { email, password, name: "Administrator" },
     });
     payload.logger.info(`admin user created: ${email}`);
   }
@@ -179,7 +182,6 @@ export async function seed(payload: Payload) {
   const existingCategories = await payload.count({ collection: "categories" });
 
   if (existingCategories.totalDocs === 0) {
-    let order = 0;
     for (const pass of [null, "parent"]) {
       for (const category of categorySeed) {
         const isRoot = category.parent === null;
@@ -193,7 +195,6 @@ export async function seed(payload: Payload) {
             slug: category.slug,
             parent: category.parent ? categoryIds.get(category.parent) : undefined,
             isActive: true,
-            sortOrder: ++order,
           },
         });
         categoryIds.set(category.slug, created.id as number);
@@ -210,7 +211,6 @@ export async function seed(payload: Payload) {
   const existingProducts = await payload.count({ collection: "products" });
 
   if (existingProducts.totalDocs === 0) {
-    let order = 0;
     for (const product of products) {
       const images: { image: number }[] = [];
       for (const image of product.images) {
@@ -244,7 +244,6 @@ export async function seed(payload: Payload) {
           isNew: product.is_new,
           isPreorder: product.is_preorder,
           isActive: true,
-          sortOrder: ++order,
         },
       });
     }
@@ -258,7 +257,6 @@ export async function seed(payload: Payload) {
   const existingSlides = await payload.count({ collection: "slides" });
 
   if (existingSlides.totalDocs === 0) {
-    let order = 0;
     for (const slide of slides) {
       const image = await uploadImage(slide.image);
       if (!image) continue;
@@ -272,7 +270,6 @@ export async function seed(payload: Payload) {
           image,
           imageMobile: slide.imageMobile ? await uploadImage(slide.imageMobile) : null,
           isActive: true,
-          sortOrder: ++order,
         },
       });
     }
@@ -284,14 +281,13 @@ export async function seed(payload: Payload) {
   const existingSections = await payload.count({ collection: "home-sections" });
 
   if (existingSections.totalDocs === 0) {
-    let order = 0;
     for (const block of featured) {
       const slug = block.url.split("/collections/")[1];
       const category = categoryIds.get(slug);
       if (!category) continue;
       await payload.create({
         collection: "home-sections",
-        data: { category, title: block.title, productLimit: 8, isActive: true, sortOrder: ++order },
+        data: { category, title: block.title, productLimit: 8, isActive: true },
       });
     }
     payload.logger.info(`${featured.length} home sections imported`);
@@ -310,7 +306,6 @@ export async function seed(payload: Payload) {
 
   const existingPages = await payload.count({ collection: "pages" });
   if (existingPages.totalDocs === 0) {
-    let order = 0;
     for (const [slug, variants] of Object.entries(pages)) {
       const base = variants.az ?? variants.en;
       const created = await payload.create({
@@ -322,7 +317,6 @@ export async function seed(payload: Payload) {
           body: htmlToLexical(base.body),
           footerGroup: groupOf(slug),
           isActive: true,
-          sortOrder: ++order,
         },
       });
 

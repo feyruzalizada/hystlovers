@@ -40,14 +40,17 @@ function resolve<T>(value: Related<T>): T | null {
   return value && typeof value === "object" ? value : null;
 }
 
+const BLOB_HOST = /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\//;
+
 /**
- * Payload returns absolute URLs once SERVER_URL is set; next/image only accepts
- * remote hosts that are allow-listed, and the files are served by this app
- * anyway, so they are reduced back to a path.
+ * Files in Vercel Blob keep their own URL. Local ones come back absolute once
+ * SERVER_URL is set; next/image only accepts allow-listed remote hosts, and
+ * this app serves the files anyway, so they are reduced back to a path.
  */
 function mediaUrl(value: Related<Media>): string | null {
   const url = resolve(value)?.url;
   if (!url) return null;
+  if (BLOB_HOST.test(url)) return url;
   let path = url;
   if (url.startsWith("http")) {
     const parsed = URL.parse(url);
@@ -129,7 +132,7 @@ export const getProducts = cache(async (locale: Locale): Promise<Product[]> => {
     collection: "products",
     locale,
     where: { isActive: { equals: true } },
-    sort: "sortOrder",
+    sort: "_order",
     depth: 2,
     ...ALL,
   });
@@ -142,7 +145,7 @@ export const getCategories = cache(async (locale: Locale): Promise<Category[]> =
     collection: "categories",
     locale,
     where: { isActive: { equals: true } },
-    sort: "sortOrder",
+    sort: "_order",
     depth: 1,
     ...ALL,
   });
@@ -221,7 +224,7 @@ const getFooterPages = cache(async (locale: Locale) => {
     collection: "pages",
     locale,
     where: { isActive: { equals: true } },
-    sort: "sortOrder",
+    sort: "_order",
     ...ALL,
   });
   return result.docs.map((doc: CmsPage) => ({
@@ -249,7 +252,7 @@ export const getSlides = cache(async (): Promise<Slide[]> => {
       isActive: { equals: true },
       or: [{ startsAt: { exists: false } }, { startsAt: { less_than_equal: now } }],
     },
-    sort: "sortOrder",
+    sort: "_order",
     depth: 1,
     ...ALL,
   });
@@ -288,7 +291,7 @@ export const getHomeSections = cache(async (locale: Locale) => {
     collection: "home-sections",
     locale,
     where: { isActive: { equals: true } },
-    sort: "sortOrder",
+    sort: "_order",
     depth: 1,
     ...ALL,
   });
@@ -353,7 +356,7 @@ export const getStaticPages = cache(async (locale: Locale): Promise<(StaticPage 
     collection: "pages",
     locale,
     where: { isActive: { equals: true } },
-    sort: "sortOrder",
+    sort: "_order",
     ...ALL,
   });
 

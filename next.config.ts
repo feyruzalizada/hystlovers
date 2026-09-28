@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: { "/**": ["./src/seed/demo.sqlite"] },
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
   },
   async redirects() {
     return [

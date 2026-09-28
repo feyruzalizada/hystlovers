@@ -12,13 +12,15 @@ export const FABRIC_SUGGESTIONS = ["Bamboo", "Cotton", "Lycra", "Modal", "Terry 
  */
 export const Products: CollectionConfig = {
   slug: "products",
+  // Rows are dragged into place in the panel, as they were in the source.
+  orderable: true,
   admin: {
     useAsTitle: "slug",
     defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive"],
     group: "Shop",
   },
   access: adminAccess,
-  defaultSort: "sortOrder",
+  defaultSort: "_order",
   hooks: {
     afterChange: [revalidateAfterChange],
     afterDelete: [revalidateAfterDelete],
@@ -147,6 +149,5 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    { name: "sortOrder", type: "number", defaultValue: 0, index: true },
   ],
 };
