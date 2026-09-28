@@ -32,7 +32,9 @@ export const Customers: CollectionConfig = {
       req.user?.collection === "users" ? true : req.user ? { id: { equals: req.user.id } } : false,
     delete: adminOnly,
   },
-  fields: [{ name: "name", type: "text", required: true }],
+  defaultSort: "-createdAt",
+  // The source panel only ever shows a customer, never an edit form.
+  fields: [{ name: "name", type: "text", required: true, admin: { readOnly: true } }],
 };
 
 export const Orders: CollectionConfig = {
@@ -57,8 +59,8 @@ export const Orders: CollectionConfig = {
   },
   defaultSort: "-createdAt",
   fields: [
-    { name: "number", type: "text", required: true, unique: true, index: true },
-    { name: "customer", type: "relationship", relationTo: "customers", index: true },
+    { name: "number", type: "text", required: true, unique: true, index: true, admin: { readOnly: true } },
+    { name: "customer", type: "relationship", relationTo: "customers", index: true, admin: { readOnly: true } },
     {
       type: "row",
       fields: [
@@ -76,7 +78,7 @@ export const Orders: CollectionConfig = {
           type: "select",
           options: options(PAYMENT_METHODS),
           required: true,
-          admin: { width: "33%" },
+          admin: { width: "33%", readOnly: true },
         },
         {
           name: "paymentStatus",
@@ -84,7 +86,7 @@ export const Orders: CollectionConfig = {
           options: options(PAYMENT_STATUSES),
           defaultValue: "pending",
           required: true,
-          admin: { width: "33%" },
+          admin: { width: "33%", readOnly: true },
         },
       ],
     },
@@ -92,18 +94,19 @@ export const Orders: CollectionConfig = {
       type: "collapsible",
       label: "Delivery",
       fields: [
-        { name: "customerName", type: "text", required: true },
-        { name: "customerEmail", type: "email", required: true },
-        { name: "phone", type: "text", required: true },
-        { name: "city", type: "text", required: true },
-        { name: "address", type: "textarea", required: true },
-        { name: "note", type: "textarea" },
+        { name: "customerName", type: "text", required: true, admin: { readOnly: true } },
+        { name: "customerEmail", type: "email", required: true, admin: { readOnly: true } },
+        { name: "phone", type: "text", required: true, admin: { readOnly: true } },
+        { name: "city", type: "text", required: true, admin: { readOnly: true } },
+        { name: "address", type: "textarea", required: true, admin: { readOnly: true } },
+        { name: "note", type: "textarea", admin: { readOnly: true } },
       ],
     },
     {
       name: "items",
       type: "array",
       required: true,
+      admin: { readOnly: true },
       fields: [
         { name: "product", type: "relationship", relationTo: "products" },
         { name: "name", type: "text", required: true },
@@ -118,16 +121,16 @@ export const Orders: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "subtotal", type: "number", required: true, admin: { width: "33%" } },
-        { name: "shippingTotal", type: "number", required: true, defaultValue: 0, admin: { width: "33%" } },
-        { name: "total", type: "number", required: true, admin: { width: "33%" } },
+        { name: "subtotal", type: "number", required: true, admin: { width: "33%", readOnly: true } },
+        { name: "shippingTotal", type: "number", required: true, defaultValue: 0, admin: { width: "33%", readOnly: true } },
+        { name: "total", type: "number", required: true, admin: { width: "33%", readOnly: true } },
       ],
     },
     {
       type: "row",
       fields: [
-        { name: "currency", type: "text", required: true, admin: { width: "50%" } },
-        { name: "locale", type: "text", required: true, admin: { width: "50%" } },
+        { name: "currency", type: "text", required: true, admin: { width: "50%", readOnly: true } },
+        { name: "locale", type: "text", required: true, admin: { width: "50%", readOnly: true } },
       ],
     },
   ],
@@ -167,10 +170,10 @@ export const ContactMessages: CollectionConfig = {
     ],
   },
   fields: [
-    { name: "name", type: "text", required: true },
-    { name: "email", type: "email", required: true },
-    { name: "subject", type: "select", options: options(CONTACT_SUBJECTS), required: true },
-    { name: "message", type: "textarea", required: true },
+    { name: "name", type: "text", required: true, admin: { readOnly: true } },
+    { name: "email", type: "email", required: true, admin: { readOnly: true } },
+    { name: "subject", type: "select", options: options(CONTACT_SUBJECTS), required: true, admin: { readOnly: true } },
+    { name: "message", type: "textarea", required: true, admin: { readOnly: true } },
     { name: "readAt", type: "date", admin: { readOnly: true } },
   ],
 };
@@ -181,7 +184,17 @@ export const NewsletterSubscribers: CollectionConfig = {
   admin: { useAsTitle: "email", defaultColumns: ["email", "createdAt"], group: "Contact" },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
-  fields: [{ name: "email", type: "email", required: true, unique: true, index: true }],
+  // Subscriptions come from the storefront; the panel only lists them.
+  fields: [
+    {
+      name: "email",
+      type: "email",
+      required: true,
+      unique: true,
+      index: true,
+      admin: { readOnly: true },
+    },
+  ],
 };
 
 export const StockNotifications: CollectionConfig = {
@@ -191,8 +204,8 @@ export const StockNotifications: CollectionConfig = {
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   fields: [
-    { name: "product", type: "relationship", relationTo: "products", required: true },
-    { name: "email", type: "email", required: true },
+    { name: "product", type: "relationship", relationTo: "products", required: true, admin: { readOnly: true } },
+    { name: "email", type: "email", required: true, admin: { readOnly: true } },
     { name: "notifiedAt", type: "date", admin: { description: "Set once the back-in-stock mail goes out." } },
   ],
 };
