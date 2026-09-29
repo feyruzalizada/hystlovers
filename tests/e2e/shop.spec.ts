@@ -28,6 +28,39 @@ test("language switch keeps the visitor on the same page", async ({ page }) => {
   await expect(page).toHaveURL(/\/ru\/collections\/all-products/);
 });
 
+test("language switch keeps the search terms", async ({ page }) => {
+  await page.goto("/az/search?q=love");
+  await page.getByRole("link", { name: "EN", exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/search\?q=love$/);
+  await expect(page.locator("a[href*='/products/']").first()).toBeVisible();
+});
+
+test("cart lines follow the language they are viewed in", async ({ page, request }) => {
+  const login = await request.post("/api/users/login", {
+    data: { email: "admin@hystlovers.com", password: "hystlovers123" },
+  });
+  const headers = { Authorization: `JWT ${(await login.json()).token}` };
+  const found = await (await request.get("/api/products?where[slug][equals]=t-shirt-brown&depth=0")).json();
+  const url = `/api/products/${found.docs[0].id}?locale=ru`;
+  await request.patch(url, { headers, data: { colorName: "Коричневый" } });
+
+  try {
+    await page.goto("/en/products/t-shirt-brown");
+    await page.getByRole("button", { name: "XS/S", exact: true }).click();
+    await page.getByRole("button", { name: /add to (cart|bag)/i }).click();
+    await expect(page.getByText("Brown · XS/S")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await page.getByRole("link", { name: "RU", exact: true }).click();
+    await page.waitForURL(/\/ru\//);
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem("hystlovers-cart")))
+      .toContain("Коричневый");
+  } finally {
+    await request.patch(url, { headers, data: { colorName: null } });
+  }
+});
+
 test("collection filters narrow the grid without leaving the page", async ({ page }) => {
   await page.goto("/az/collections/all-products");
   const cards = page.locator("a[href*='/products/']");

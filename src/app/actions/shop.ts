@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { payloadClient } from "@/lib/cms";
+import { getProducts, payloadClient } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { availableIn, hit, tooManyAttempts } from "@/lib/rate-limit";
 import { isLocale, defaultLocale } from "@/lib/i18n";
@@ -148,4 +148,18 @@ export async function notifyWhenInStock(formData: FormData): Promise<ActionResul
   }
 
   return { ok: true };
+}
+
+/** The cart keeps names from the page they were added on; this returns them in the current language. */
+export async function cartLabels(
+  slugs: string[],
+  locale: string,
+): Promise<Record<string, { name: string; color: string }>> {
+  const wanted = new Set(slugs);
+  const products = await getProducts(isLocale(locale) ? locale : defaultLocale);
+  return Object.fromEntries(
+    products
+      .filter((product) => wanted.has(product.slug))
+      .map((product) => [product.slug, { name: product.name, color: product.color.name }]),
+  );
 }

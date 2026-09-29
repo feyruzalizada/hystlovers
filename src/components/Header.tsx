@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState, type ComponentProps } from "react";
 import type { NavItem } from "@/lib/types";
 import { localeNames, locales } from "@/lib/i18n";
 import { useI18n } from "./I18nProvider";
@@ -12,6 +12,23 @@ import Icon from "./Icon";
 
 function label(item: NavItem, t: (key: string) => string) {
   return item.labelKey ? t(item.labelKey) : (item.label ?? "");
+}
+
+type LocaleLinkProps = Omit<ComponentProps<typeof Link>, "href"> & { href: string };
+
+/** Keeps the query (search terms, ?color=) when the language changes, as the source shop did. */
+function WithQuery({ href, ...props }: LocaleLinkProps) {
+  const query = useSearchParams().toString();
+  return <Link href={query ? `${href}?${query}` : href} {...props} />;
+}
+
+// Reading the query suspends prerendered pages, so the plain link stands in until it hydrates.
+function LocaleLink(props: LocaleLinkProps) {
+  return (
+    <Suspense fallback={<Link {...props} />}>
+      <WithQuery {...props} />
+    </Suspense>
+  );
 }
 
 export default function Header({ navigation }: { navigation: NavItem[] }) {
@@ -123,7 +140,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
           <div className="flex items-center gap-1 sm:gap-2">
             <nav className="hidden items-center gap-1 sm:flex" aria-label={t("general.language")}>
               {locales.map((code) => (
-                <Link
+                <LocaleLink
                   key={code}
                   href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
                   hrefLang={code}
@@ -133,7 +150,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                   }`}
                 >
                   {localeNames[code].short}
-                </Link>
+                </LocaleLink>
               ))}
             </nav>
 
@@ -255,7 +272,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
               </p>
               <div className="mt-2 flex gap-2">
                 {locales.map((code) => (
-                  <Link
+                  <LocaleLink
                     key={code}
                     href={`/${code}${restOfPath ? `/${restOfPath}` : ""}`}
                     hrefLang={code}
@@ -265,7 +282,7 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
                     }`}
                   >
                     {localeNames[code].short}
-                  </Link>
+                  </LocaleLink>
                 ))}
               </div>
             </div>

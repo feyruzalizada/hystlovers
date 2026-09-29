@@ -1,6 +1,16 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { cartLabels } from "@/app/actions/shop";
+import { useI18n } from "./I18nProvider";
 
 export type CartLine = {
   slug: string;
@@ -93,6 +103,26 @@ export function CartProvider({
 }) {
   const lines = useSyncExternalStore(subscribe, readStore, () => EMPTY);
   const [isOpen, setIsOpen] = useState(false);
+  const { locale } = useI18n();
+  const slugs = [...new Set(lines.map((l) => l.slug))].sort().join(",");
+
+  useEffect(() => {
+    if (!slugs) return;
+    let active = true;
+    cartLabels(slugs.split(","), locale)
+      .then((labels) => {
+        if (!active) return;
+        const current = readStore();
+        const next = current.map((l) => (labels[l.slug] ? { ...l, ...labels[l.slug] } : l));
+        if (next.some((l, i) => l.name !== current[i].name || l.color !== current[i].color)) writeStore(next);
+      })
+      .catch(() => {
+        // offline: the stored names stay
+      });
+    return () => {
+      active = false;
+    };
+  }, [locale, slugs]);
 
   const add = useCallback<CartValue["add"]>((line, qty = 1) => {
     const current = readStore();
