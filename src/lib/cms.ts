@@ -3,6 +3,7 @@ import { cache } from "react";
 import { getPayload, type Payload } from "payload";
 import config from "@payload-config";
 import { slugify } from "./slug";
+import { defaultLocale } from "./i18n";
 import type {
   Category as CmsCategory,
   HomeSection,
@@ -62,9 +63,9 @@ function mediaUrl(value: Related<Media>): string | null {
 }
 
 /** "LOVE T-SHIRT - BROWN (SHIRT, TROUSERS)" — the source shop's naming. */
-function displayName(doc: CmsProduct): string {
+function displayName(doc: CmsProduct, locale: Locale): string {
   const setParts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
-  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toUpperCase();
+  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toLocaleUpperCase(locale);
   if (setParts.length > 0) name += ` (${setParts.join(", ").toUpperCase()})`;
   return name;
 }
@@ -83,7 +84,7 @@ function isOrderable(doc: CmsProduct, size: string, qty = 1): boolean {
   return remaining === null || remaining >= qty;
 }
 
-function toProduct(doc: CmsProduct): Product {
+function toProduct(doc: CmsProduct, colorSlug: string, locale: Locale): Product {
   const sizes = (doc.sizes ?? []).map((entry) => entry.size);
   const category = resolve(doc.category);
   const images = (doc.images ?? [])
@@ -95,7 +96,7 @@ function toProduct(doc: CmsProduct): Product {
 
   return {
     slug: doc.slug,
-    name: displayName(doc),
+    name: displayName(doc, locale),
     series: doc.series,
     item: doc.item,
     type: (doc.setParts ?? []).length > 0 ? "set" : "single",
@@ -104,7 +105,7 @@ function toProduct(doc: CmsProduct): Product {
     fabric: doc.fabric ?? "",
     price: Number(doc.price),
     compare_at: doc.compareAtPrice != null ? Number(doc.compareAtPrice) : null,
-    color: { slug: slugify(doc.colorName ?? ""), name: doc.colorName ?? "", hex: doc.colorHex ?? "#000000" },
+    color: { slug: colorSlug, name: doc.colorName ?? "", hex: doc.colorHex ?? "#000000" },
     sizes,
     size_stock: Object.fromEntries(
       sizes.map((size) => [
@@ -136,7 +137,14 @@ export const getProducts = cache(async (locale: Locale): Promise<Product[]> => {
     depth: 2,
     ...ALL,
   });
-  return result.docs.map(toProduct);
+  // Colour slugs come from the default language, as in the source shop, so
+  // ?color=brown keeps working once the names are translated.
+  const base =
+    locale === defaultLocale
+      ? result
+      : await payload.find({ collection: "products", locale: defaultLocale, select: { colorName: true }, ...ALL });
+  const names = new Map(base.docs.map((doc) => [doc.id, doc.colorName ?? ""]));
+  return result.docs.map((doc) => toProduct(doc, slugify(names.get(doc.id) ?? doc.colorName ?? ""), locale));
 });
 
 export const getCategories = cache(async (locale: Locale): Promise<Category[]> => {
@@ -243,11 +251,12 @@ const countPosts = cache(async () => {
   return result.totalDocs;
 });
 
-export const getSlides = cache(async (): Promise<Slide[]> => {
+export const getSlides = cache(async (locale: Locale): Promise<Slide[]> => {
   const payload = await payloadClient();
   const now = new Date().toISOString();
   const result = await payload.find({
     collection: "slides",
+    locale,
     where: {
       isActive: { equals: true },
       or: [{ startsAt: { exists: false } }, { startsAt: { less_than_equal: now } }],

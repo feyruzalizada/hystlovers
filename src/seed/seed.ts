@@ -153,25 +153,29 @@ export async function seed(payload: Payload) {
   const social = (name: string) =>
     contact.details.socials.find((s) => s.name.toLowerCase() === name)?.handle ?? null;
 
-  await payload.updateGlobal({
-    slug: "settings",
-    data: {
-      shopName: "Hystlovers",
-      currencyCode: shop.currency.code,
-      currencySymbol: shop.currency.symbol,
-      freeShippingThreshold: shop.freeShippingThreshold,
-      shippingFee: shop.shippingFee,
-      contactEmail: contact.details.email,
-      contactPhone: contact.details.phone,
-      contactWhatsapp: contact.details.whatsapp,
-      contactAddress: contact.details.address,
-      workingHours: contact.details.workingHours,
-      instagram: social("instagram"),
-      facebook: social("facebook"),
-      tiktok: social("tiktok"),
-      x: social("x"),
-    },
-  });
+  // Only on the first run: every build seeds, and the panel owns these afterwards.
+  const settings = await payload.findGlobal({ slug: "settings" });
+  if (!settings.updatedAt) {
+    await payload.updateGlobal({
+      slug: "settings",
+      data: {
+        shopName: "Hystlovers",
+        currencyCode: shop.currency.code,
+        currencySymbol: shop.currency.symbol,
+        freeShippingThreshold: shop.freeShippingThreshold,
+        shippingFee: shop.shippingFee,
+        contactEmail: contact.details.email,
+        contactPhone: contact.details.phone,
+        contactWhatsapp: contact.details.whatsapp,
+        contactAddress: contact.details.address,
+        workingHours: contact.details.workingHours,
+        instagram: social("instagram"),
+        facebook: social("facebook"),
+        tiktok: social("tiktok"),
+        x: social("x"),
+      },
+    });
+  }
 
   // ---- categories -------------------------------------------------------
   const categorySeed = read<{ slug: string; name: string | null; parent: string | null }[]>(

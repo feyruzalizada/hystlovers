@@ -67,7 +67,7 @@ test("collection filters narrow the grid without leaving the page", async ({ pag
   const before = await cards.count();
 
   // Filtering happens in the browser, as in the source shop: the URL stays put.
-  await page.getByTitle("Brown", { exact: true }).click();
+  await page.getByTitle("Qəhvəyi", { exact: true }).click();
   await expect(cards).not.toHaveCount(before);
 
   const after = await cards.count();
@@ -101,7 +101,7 @@ test("a shopper can register, buy and see the order", async ({ page }) => {
 
   await page.waitForURL(/\/az\/account\/orders\/HL/);
   await expect(page.locator("h1")).toContainText(/HL\d{6}-\d{4}/);
-  await expect(page.locator("body")).toContainText("LOVE T-SHIRT - BROWN");
+  await expect(page.locator("body")).toContainText("LOVE T-SHIRT - QƏHVƏYİ");
 
   await page.goto("/az/account");
   await expect(page.locator("body")).toContainText(/HL\d{6}-\d{4}/);

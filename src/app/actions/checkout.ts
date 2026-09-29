@@ -24,7 +24,8 @@ function localeOf(value: string): Locale {
 
 function displayName(doc: Product): string {
   const parts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
-  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toUpperCase();
+  // Orders keep the colour in the default language, where "i" becomes "İ".
+  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toLocaleUpperCase(defaultLocale);
   if (parts.length > 0) name += ` (${parts.join(", ").toUpperCase()})`;
   return name;
 }

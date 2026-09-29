@@ -22,12 +22,12 @@ export const Slides: CollectionConfig = {
   access: adminAccess,
   defaultSort: "_order",
   fields: [
-    { name: "title", type: "text", required: true },
-    { name: "subtitle", type: "text" },
+    { name: "title", type: "text", required: true, localized: true },
+    { name: "subtitle", type: "text", localized: true },
     {
       type: "row",
       fields: [
-        { name: "ctaLabel", type: "text", admin: { width: "50%" } },
+        { name: "ctaLabel", type: "text", localized: true, admin: { width: "50%" } },
         { name: "ctaUrl", type: "text", admin: { width: "50%", description: "e.g. /collections/kai" } },
       ],
     },
@@ -64,7 +64,7 @@ export const HomeSections: CollectionConfig = {
   defaultSort: "_order",
   fields: [
     { name: "category", type: "relationship", relationTo: "categories", required: true },
-    { name: "title", type: "text", admin: { description: "Leave empty to use the category name." } },
+    { name: "title", type: "text", localized: true, admin: { description: "Leave empty to use the category name." } },
     { name: "productLimit", type: "number", defaultValue: 8, min: 1, max: 24 },
     {
       type: "row",

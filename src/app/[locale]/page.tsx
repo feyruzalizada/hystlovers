@@ -33,7 +33,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const [t, slides, colorTiles, sections] = await Promise.all([
     getTranslator(locale),
-    getSlides(),
+    getSlides(locale),
     getColorTiles(locale),
     getHomeSections(locale),
   ]);
