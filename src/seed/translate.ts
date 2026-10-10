@@ -3,6 +3,7 @@ import { htmlToLexical } from "./html-to-lexical";
 import {
   categoryNames,
   colorNames,
+  corrections,
   fabrics,
   pages,
   productDescription,
@@ -59,6 +60,16 @@ const paragraphs = (value: unknown): string | null => {
   if (!root?.children?.length) return null;
   const text = (node: LexicalNode): string => node.text ?? (node.children ?? []).map(text).join("");
   return JSON.stringify(root.children.map(text));
+};
+const replaceText = (value: unknown, from: string, to: string): unknown => {
+  if (Array.isArray(value)) return value.map((entry) => replaceText(entry, from, to));
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [
+      key,
+      key === "text" && typeof entry === "string" ? entry.replaceAll(from, to) : replaceText(entry, from, to),
+    ]),
+  );
 };
 const escape = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -143,6 +154,16 @@ export async function translateContent(payload: Payload) {
           updates++;
         }
       }
+    }
+  }
+
+  for (const fix of corrections) {
+    for (const doc of await read(payload, fix.collection, fix.locale)) {
+      const value = doc[fix.field];
+      const fixed = typeof value === "string" ? value.replaceAll(fix.from, fix.to) : replaceText(value, fix.from, fix.to);
+      if (JSON.stringify(fixed) === JSON.stringify(value)) continue;
+      await payload.update({ collection: fix.collection, id: doc.id, locale: fix.locale, data: { [fix.field]: fixed } });
+      updates++;
     }
   }
 

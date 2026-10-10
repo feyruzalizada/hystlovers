@@ -18,7 +18,7 @@ export const categoryNames: Text[] = [
 export const colorNames: Text[] = [
   { en: "Brown", az: "Qəhvəyi", ru: "Коричневый" },
   { en: "Mint", az: "Nanə", ru: "Мятный" },
-  { en: "PASTEL", az: "Pastel", ru: "Пастельный" },
+  { en: "Pastel", az: "Pastel", ru: "Пастельный", was: ["PASTEL"] },
   { en: "Black", az: "Qara", ru: "Чёрный" },
   { en: "Blue", az: "Mavi", ru: "Голубой" },
   { en: "Gray", az: "Boz", ru: "Серый" },
@@ -45,27 +45,35 @@ export const productPhrases: Text[] = [
 ];
 
 const DESCRIPTION =
-  /^From the (\S+) series, where carefully selected (\S+) fabric meets an elegant design language\. Crafted for all-day comfort and a timeless silhouette\.$/;
+  /^From the (\S+) series, where carefully selected (cotton|modal) fabric meets an elegant design language\. Crafted for all-day comfort and a timeless silhouette\.$/i;
 
 const fabricIn = {
-  az: { Cotton: "pambıq", Modal: "modal" } as Record<string, string>,
-  ru: { Cotton: "хлопка", Modal: "модала" } as Record<string, string>,
+  az: { cotton: "pambıq", modal: "modal" } as Record<string, string>,
+  ru: { cotton: "хлопка", modal: "модала" } as Record<string, string>,
 };
 
 /** Every seeded description follows one template; anything else is left alone. */
-export function productDescription(en: string): Text | null {
-  const match = DESCRIPTION.exec(en);
+export function productDescription(value: string): Text | null {
+  const match = DESCRIPTION.exec(value);
   if (!match) return null;
-  const [, series, fabric] = match;
-  if (!fabricIn.az[fabric]) return null;
+  const [, series] = match;
+  const fabric = match[2].toLowerCase();
+  // The imported English capitalised the fabric mid-sentence.
+  const en = value.replace(match[2], fabric);
   return {
     en,
+    was: en === value ? [] : [value],
     az: `${series} seriyasından: diqqətlə seçilmiş ${fabricIn.az[fabric]} parça zərif dizayn dili ilə birləşir. Bütün gün rahatlıq və zamansız siluet üçün yaradılıb.`,
     ru: `Из серии ${series}: тщательно отобранная ткань из ${fabricIn.ru[fabric]} в элегантном дизайне. Создано для комфорта на весь день и вневременного силуэта.`,
   };
 }
 
-export const workingHours: Text = { en: "Weekdays 9 AM — 6 PM", az: "Həftəiçi 09:00 — 18:00", ru: "Будни 9:00 — 18:00" };
+export const workingHours: Text = {
+  en: "Weekdays 9 AM — 6 PM",
+  az: "Həftə içi 09:00 — 18:00",
+  ru: "Будни 9:00 — 18:00",
+  was: ["Həftəiçi 09:00 — 18:00"],
+};
 
 export const slideTexts: Text[] = [{ en: "Order Now", az: "İndi sifariş et", ru: "Заказать сейчас" }];
 
@@ -234,3 +242,27 @@ export const pages: Record<string, { title: Text; body: Paragraphs }> = {
     },
   },
 };
+
+/** Wording fixes for text that was already translated: `from` is replaced wherever it still appears. */
+export const corrections: {
+  collection: "posts";
+  field: "title" | "excerpt" | "body";
+  locale: "az" | "en" | "ru";
+  from: string;
+  to: string;
+}[] = [
+  {
+    collection: "posts",
+    field: "body",
+    locale: "az",
+    from: "Ev geyimi gündəlik həyatınızın ən çox vaxt keçirdiyiniz hissəsidir. Ona görə də seçim təsadüfi olmamalıdır.",
+    to: "Ev geyimində həyatınızın böyük hissəsini keçirirsiniz, ona görə də seçim təsadüfi olmamalıdır.",
+  },
+  {
+    collection: "posts",
+    field: "body",
+    locale: "az",
+    from: "Ölçünü bir beden böyük seçməkdən çəkinməyin.",
+    to: "Bir ölçü böyük seçməkdən çəkinməyin.",
+  },
+];
