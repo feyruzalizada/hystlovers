@@ -108,8 +108,8 @@ export async function getOrderFor(
   return doc ? toView(doc, locale) : null;
 }
 
-export async function getBankTransferDetails(): Promise<string | null> {
+export async function getBankTransferDetails(locale: Locale): Promise<string | null> {
   const payload = await payloadClient();
-  const settings: Setting = await payload.findGlobal({ slug: "settings" });
+  const settings: Setting = await payload.findGlobal({ slug: "settings", locale });
   return settings.bankTransferDetails || null;
 }

@@ -87,7 +87,7 @@ export async function placeOrder(input: {
   }
 
   const payload = await payloadClient();
-  const settings: Setting = await payload.findGlobal({ slug: "settings" });
+  const settings: Setting = await payload.findGlobal({ slug: "settings", locale });
 
   const lines: OrderItem[] = [];
   const shopperLines: { name: string; colorName: string }[] = [];

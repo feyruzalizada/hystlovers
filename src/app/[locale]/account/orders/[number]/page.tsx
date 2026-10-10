@@ -34,7 +34,7 @@ export default async function OrderPage({
   if (!order) notFound();
 
   const { placed } = await searchParams;
-  const bankDetails = order.paymentMethod === "bank_transfer" ? await getBankTransferDetails() : null;
+  const bankDetails = order.paymentMethod === "bank_transfer" ? await getBankTransferDetails(locale) : null;
 
   return <OrderDetail order={order} bankDetails={bankDetails} justPlaced={placed === "1"} />;
 }

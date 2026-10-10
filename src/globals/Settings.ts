@@ -34,7 +34,7 @@ export const Settings: GlobalConfig = {
                 { name: "shippingFee", type: "number", defaultValue: 5, admin: { width: "50%" } },
               ],
             },
-            { name: "bankTransferDetails", type: "textarea" },
+            { name: "bankTransferDetails", type: "textarea", localized: true },
           ],
         },
         {
@@ -43,7 +43,7 @@ export const Settings: GlobalConfig = {
             { name: "contactEmail", type: "email" },
             { name: "contactPhone", type: "text" },
             { name: "contactWhatsapp", type: "text" },
-            { name: "contactAddress", type: "textarea" },
+            { name: "contactAddress", type: "textarea", localized: true },
             { name: "workingHours", type: "text", localized: true },
           ],
         },
