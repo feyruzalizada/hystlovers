@@ -3,6 +3,7 @@ import { cache } from "react";
 import { getPayload, type Payload } from "payload";
 import config from "@payload-config";
 import { slugify } from "./slug";
+import { productName } from "./product-name";
 import { defaultLocale } from "./i18n";
 import type {
   Category as CmsCategory,
@@ -62,14 +63,6 @@ function mediaUrl(value: Related<Media>): string | null {
   return path.replace(/^\/api\/media\/file\//, "/media/");
 }
 
-/** "LOVE T-SHIRT - BROWN (SHIRT, TROUSERS)" — the source shop's naming. */
-function displayName(doc: CmsProduct, locale: Locale): string {
-  const setParts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
-  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toLocaleUpperCase(locale);
-  if (setParts.length > 0) name += ` (${setParts.join(", ").toUpperCase()})`;
-  return name;
-}
-
 function remainingFor(doc: CmsProduct, size: string): number | null {
   const quantity = (doc.sizes ?? []).find((entry) => entry.size === size)?.quantity;
   return quantity === null || quantity === undefined ? null : Math.max(0, quantity);
@@ -96,7 +89,7 @@ function toProduct(doc: CmsProduct, colorSlug: string, locale: Locale): Product 
 
   return {
     slug: doc.slug,
-    name: displayName(doc, locale),
+    name: productName(doc, locale),
     series: doc.series,
     item: doc.item,
     type: (doc.setParts ?? []).length > 0 ? "set" : "single",

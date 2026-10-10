@@ -1,6 +1,8 @@
 import "server-only";
 import { payloadClient } from "./cms";
+import { productName } from "./product-name";
 import type { Order, Setting } from "@/payload-types";
+import type { Locale } from "./types";
 
 export type OrderItemView = {
   name: string;
@@ -34,10 +36,11 @@ export type OrderView = {
   items: OrderItemView[];
 };
 
-function toView(doc: Order): OrderView {
+/** Orders store names in the default language; a product that still exists is named in the shopper's. */
+function toView(doc: Order, locale: Locale): OrderView {
   const items: OrderItemView[] = (doc.items ?? []).map((item) => ({
-    name: item.name,
-    color: item.colorName,
+    name: item.product && typeof item.product === "object" ? productName(item.product, locale) : item.name,
+    color: item.product && typeof item.product === "object" ? item.product.colorName : item.colorName,
     size: item.size,
     qty: item.qty,
     isPreorder: Boolean(item.isPreorder),
@@ -72,34 +75,37 @@ function toView(doc: Order): OrderView {
   };
 }
 
-export async function getOrdersFor(customerId: string | number): Promise<OrderView[]> {
+export async function getOrdersFor(customerId: string | number, locale: Locale): Promise<OrderView[]> {
   const payload = await payloadClient();
   const result = await payload.find({
     collection: "orders",
     where: { customer: { equals: customerId } },
     sort: "-createdAt",
     depth: 2,
+    locale,
     limit: 0,
     pagination: false,
     overrideAccess: true,
   });
-  return result.docs.map(toView);
+  return result.docs.map((doc) => toView(doc, locale));
 }
 
 export async function getOrderFor(
   customerId: string | number,
   number: string,
+  locale: Locale,
 ): Promise<OrderView | null> {
   const payload = await payloadClient();
   const result = await payload.find({
     collection: "orders",
     where: { number: { equals: number }, customer: { equals: customerId } },
     depth: 2,
+    locale,
     limit: 1,
     overrideAccess: true,
   });
   const doc = result.docs[0];
-  return doc ? toView(doc) : null;
+  return doc ? toView(doc, locale) : null;
 }
 
 export async function getBankTransferDetails(): Promise<string | null> {

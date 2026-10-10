@@ -26,7 +26,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
   const customer = await getCustomer();
   if (!customer) redirect(localePath(locale, "/login"));
 
-  const [t, orders] = await Promise.all([getTranslator(locale), getOrdersFor(customer.id)]);
+  const [t, orders] = await Promise.all([getTranslator(locale), getOrdersFor(customer.id, locale)]);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">

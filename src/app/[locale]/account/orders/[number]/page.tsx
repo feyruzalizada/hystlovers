@@ -30,7 +30,7 @@ export default async function OrderPage({
   const customer = await getCustomer();
   if (!customer) redirect(localePath(locale, "/login"));
 
-  const order = await getOrderFor(customer.id, number);
+  const order = await getOrderFor(customer.id, number, locale);
   if (!order) notFound();
 
   const { placed } = await searchParams;

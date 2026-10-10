@@ -9,6 +9,7 @@ import { PAYMENT_METHODS } from "@/collections/Commerce";
 import type { Order, Product, Setting } from "@/payload-types";
 import type { Locale } from "@/lib/types";
 import { renderOrderEmail } from "@/lib/order-email";
+import { productName } from "@/lib/product-name";
 
 type OrderItem = NonNullable<Order["items"]>[number];
 type PaymentMethod = Order["paymentMethod"];
@@ -20,14 +21,6 @@ const PHONE = /^\+?[0-9 ()-]{7,}$/;
 
 function localeOf(value: string): Locale {
   return isLocale(value) ? value : defaultLocale;
-}
-
-function displayName(doc: Product): string {
-  const parts = (doc.setParts ?? []).map((part) => part.value).filter(Boolean);
-  // Orders keep the colour in the default language, where "i" becomes "İ".
-  let name = `${doc.series} ${doc.item}`.toUpperCase() + " - " + String(doc.colorName ?? "").toLocaleUpperCase(defaultLocale);
-  if (parts.length > 0) name += ` (${parts.join(", ").toUpperCase()})`;
-  return name;
 }
 
 function remainingFor(doc: Product, size: string): number | null {
@@ -97,6 +90,7 @@ export async function placeOrder(input: {
   const settings: Setting = await payload.findGlobal({ slug: "settings" });
 
   const lines: OrderItem[] = [];
+  const shopperLines: { name: string; colorName: string }[] = [];
   const stockWrites: { id: number; sizes: Product["sizes"]; inStock: boolean }[] = [];
 
   for (const item of input.items) {
@@ -104,6 +98,7 @@ export async function placeOrder(input: {
     const found = await payload.find({
       collection: "products",
       where: { slug: { equals: item.slug }, isActive: { equals: true } },
+      locale,
       limit: 1,
       overrideAccess: true,
     });
@@ -114,16 +109,23 @@ export async function placeOrder(input: {
     if (!isOrderable(doc, item.size, qty)) {
       return {
         ok: false,
-        message: t("checkout.error.out_of_stock", { product: displayName(doc), size: item.size }),
+        message: t("checkout.error.out_of_stock", { product: productName(doc, locale), size: item.size }),
       };
     }
+
+    // The order keeps the shop's default language; the shopper reads their own.
+    const stored =
+      locale === defaultLocale
+        ? doc
+        : await payload.findByID({ collection: "products", id: doc.id, locale: defaultLocale, depth: 0, overrideAccess: true });
+    shopperLines.push({ name: productName(doc, locale), colorName: doc.colorName });
 
     // Prices always come from the database, never from the submitted cart.
     const unitPrice = doc.price;
     lines.push({
       product: doc.id,
-      name: displayName(doc),
-      colorName: doc.colorName,
+      name: productName(stored, defaultLocale),
+      colorName: stored.colorName,
       size: item.size,
       unitPrice,
       qty,
@@ -194,7 +196,7 @@ export async function placeOrder(input: {
       to: customer.email,
       subject: t("mail.order.subject", { number }),
       html: renderOrderEmail({
-        order,
+        order: { ...order, items: (order.items ?? []).map((line, index) => ({ ...line, ...shopperLines[index] })) },
         t,
         locale,
         currencySymbol: settings.currencySymbol ?? "",
