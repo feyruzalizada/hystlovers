@@ -1,6 +1,8 @@
 import "server-only";
 import type { Order } from "@/payload-types";
 import type { Translator } from "./i18n";
+import { formatMoney } from "./money";
+import type { Locale } from "./types";
 
 const escape = (value: string) =>
   value
@@ -9,12 +11,6 @@ const escape = (value: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-/** Matches the PHP app's number_format($value, 2, ',', '.'). */
-function money(value: number, symbol: string): string {
-  const [whole, cents] = value.toFixed(2).split(".");
-  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `${grouped},${cents} ${symbol}`;
-}
 
 /**
  * The order confirmation, rebuilt from the Blade template: every string comes
@@ -29,10 +25,11 @@ export function renderOrderEmail({
 }: {
   order: Order;
   t: Translator;
-  locale: string;
+  locale: Locale;
   currencySymbol: string;
   bankDetails: string | null;
 }): string {
+  const money = (value: number, symbol: string) => formatMoney(value, locale, symbol);
   const items = (order.items ?? [])
     .map(
       (item) => `
