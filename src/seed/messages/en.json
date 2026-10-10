@@ -235,5 +235,10 @@
   "mail.order.bank_intro": "Bank transfer details:",
   "mail.order.bank_reference": "Please remember to quote your order number (:number) in the payment reference.",
   "mail.order.preorder_note": "Your order contains a pre-order item, which ships as soon as it arrives.",
-  "mail.order.automated": "This e-mail was sent automatically."
+  "mail.order.automated": "This e-mail was sent automatically.",
+  "mail.reset.subject": "Reset your password",
+  "mail.reset.intro": "We received a request to reset the password for your account. Use the button below to choose a new one.",
+  "mail.reset.cta": "Choose a new password",
+  "mail.reset.expires": "The link is valid for 1 hour.",
+  "mail.reset.ignore": "If you did not ask for this, ignore this e-mail — your password will stay the same."
 }

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminOnly } from "./access";
+import { resetEmailHtml, resetEmailSubject } from "@/lib/reset-email";
 
 export const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 export const PAYMENT_METHODS = ["cod", "bank_transfer"] as const;
@@ -16,6 +17,11 @@ export const Customers: CollectionConfig = {
     tokenExpiration: 60 * 60 * 24 * 30,
     maxLoginAttempts: 5,
     lockTime: 60 * 1000,
+    // The reset link goes to the storefront, not the panel, in the shopper's language.
+    forgotPassword: {
+      generateEmailSubject: (args) => resetEmailSubject(args?.req),
+      generateEmailHTML: (args) => resetEmailHtml(args?.req, args?.token ?? ""),
+    },
   },
   admin: {
     useAsTitle: "email",

@@ -235,5 +235,10 @@
   "mail.order.bank_intro": "Bank köçürməsi üçün rekvizitlər:",
   "mail.order.bank_reference": "Ödəniş qeydində sifariş nömrənizi (:number) göstərməyi unutmayın.",
   "mail.order.preorder_note": "Sifarişinizdə ön sifariş məhsulu var və o, stoka daxil olan kimi göndəriləcək.",
-  "mail.order.automated": "Bu məktub avtomatik göndərilib."
+  "mail.order.automated": "Bu məktub avtomatik göndərilib.",
+  "mail.reset.subject": "Şifrənin sıfırlanması",
+  "mail.reset.intro": "Hesabınız üçün şifrənin sıfırlanması tələb olunub. Yeni şifrə təyin etmək üçün aşağıdakı düyməyə klikləyin.",
+  "mail.reset.cta": "Yeni şifrə təyin et",
+  "mail.reset.expires": "Keçid 1 saat ərzində etibarlıdır.",
+  "mail.reset.ignore": "Əgər bunu siz tələb etməmisinizsə, bu məktubu nəzərə almayın — şifrəniz dəyişməyəcək."
 }

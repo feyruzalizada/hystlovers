@@ -123,7 +123,7 @@ export async function requestPasswordReset(formData: FormData): Promise<AuthResu
 
   const payload = await payloadClient();
   try {
-    await payload.forgotPassword({ collection: "customers", data: { email } });
+    await payload.forgotPassword({ collection: "customers", data: { email }, context: { locale } });
   } catch {
     // Always report success so the form cannot be used to probe for accounts.
   }
