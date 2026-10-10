@@ -4,6 +4,7 @@ import "../globals.css";
 import { getShop, getSiteTexts } from "@/lib/cms";
 import { isLocale, locales } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nProvider";
+import { FormValidation } from "@/components/FormValidation";
 import { ShopProvider } from "@/components/ShopProvider";
 import { CartProvider } from "@/components/CartProvider";
 import CartDrawer from "@/components/CartDrawer";
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
               <main className="flex-1">{children}</main>
               <Footer groups={shop.footer} />
               <CartDrawer />
+              <FormValidation />
             </CartProvider>
           </ShopProvider>
         </I18nProvider>

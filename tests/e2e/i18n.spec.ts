@@ -77,3 +77,15 @@ test("counts use the plural form of each language", () => {
   const en = buildTranslator({ cart: ":count item|:count items" }, "en");
   expect([en("cart", { count: 1 }), en("cart", { count: 2 })]).toEqual(["1 item", "2 items"]);
 });
+
+test("form hints follow the page language, not the browser's", async ({ page }) => {
+  for (const [locale, hint] of [
+    ["az", "Zəhmət olmasa bu xananı doldurun."],
+    ["ru", "Пожалуйста, заполните это поле."],
+  ]) {
+    await page.goto(`/${locale}/contact`);
+    await page.locator("main form button[type=submit]").click();
+    const message = await page.locator("main form input:invalid").first().evaluate((input: HTMLInputElement) => input.validationMessage);
+    expect(message).toBe(hint);
+  }
+});
