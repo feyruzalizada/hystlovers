@@ -26,6 +26,8 @@ export async function generateMetadata({
     // No description here: the source shop sets one only on the six pages that
     // have their own, and a layout-wide default would leak onto the rest.
     title: { default: "Hystlovers", template: "%s — Hystlovers" },
+    // Search engines need hreflang links with the full address, not just the path.
+    metadataBase: process.env.SERVER_URL ? new URL(process.env.SERVER_URL) : undefined,
   };
 }
 
