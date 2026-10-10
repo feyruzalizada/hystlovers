@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
@@ -16,7 +17,7 @@ export const Products: CollectionConfig = {
   orderable: true,
   admin: {
     useAsTitle: "slug",
-    defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive"],
+    defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive", "missingTranslations"],
     group: "Shop",
   },
   access: adminAccess,
@@ -149,5 +150,6 @@ export const Products: CollectionConfig = {
         },
       ],
     },
+    missingTranslations("products", ["colorName", "fabric", "composition", "description", "features", "setParts"]),
   ],
 };

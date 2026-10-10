@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete, revalidateHooks } from "./revalidate";
 
@@ -16,7 +17,7 @@ export const Slides: CollectionConfig = {
   labels: { singular: "Slide", plural: "Slider" },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["image", "title", "ctaLabel", "isActive", "startsAt", "updatedAt"],
+    defaultColumns: ["image", "title", "ctaLabel", "missingTranslations", "isActive", "startsAt", "updatedAt"],
     group: "Content",
   },
   access: adminAccess,
@@ -46,6 +47,7 @@ export const Slides: CollectionConfig = {
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
       ],
     },
+    missingTranslations("slides", ["title", "subtitle", "ctaLabel"]),
   ],
 };
 
@@ -57,7 +59,7 @@ export const HomeSections: CollectionConfig = {
   labels: { singular: "Homepage section", plural: "Homepage" },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "category", "productLimit", "isActive"],
+    defaultColumns: ["title", "category", "productLimit", "missingTranslations", "isActive"],
     group: "Content",
   },
   access: adminAccess,
@@ -72,6 +74,7 @@ export const HomeSections: CollectionConfig = {
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
       ],
     },
+    missingTranslations("home-sections", ["title"]),
   ],
 };
 
@@ -81,7 +84,7 @@ export const Pages: CollectionConfig = {
   orderable: true,
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "slug", "footerGroup", "isActive", "updatedAt"],
+    defaultColumns: ["title", "slug", "footerGroup", "missingTranslations", "isActive", "updatedAt"],
     group: "Content",
   },
   access: adminAccess,
@@ -107,6 +110,7 @@ export const Pages: CollectionConfig = {
         { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
       ],
     },
+    missingTranslations("pages", ["title", "body"]),
   ],
 };
 
@@ -115,7 +119,7 @@ export const Posts: CollectionConfig = {
   labels: { singular: "Post", plural: "Blog" },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["coverImage", "title", "isActive", "publishedAt"],
+    defaultColumns: ["coverImage", "title", "missingTranslations", "isActive", "publishedAt"],
     group: "Content",
   },
   access: adminAccess,
@@ -149,6 +153,7 @@ export const Posts: CollectionConfig = {
         { name: "publishedAt", type: "date", admin: { width: "50%" } },
       ],
     },
+    missingTranslations("posts", ["title", "excerpt", "body"]),
   ],
 };
 

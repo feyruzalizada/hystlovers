@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
@@ -9,7 +10,7 @@ export const Categories: CollectionConfig = {
   orderable: true,
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "slug", "childrenCount", "isActive", "updatedAt"],
+    defaultColumns: ["name", "slug", "childrenCount", "missingTranslations", "isActive", "updatedAt"],
     group: "Shop",
   },
   access: adminAccess,
@@ -56,5 +57,6 @@ export const Categories: CollectionConfig = {
     },
     { name: "image", type: "upload", relationTo: "media" },
     { name: "isActive", type: "checkbox", defaultValue: true, index: true },
+    missingTranslations("categories", ["name", "description"]),
   ],
 };

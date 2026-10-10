@@ -291,6 +291,7 @@ export interface Product {
   isActive?: boolean | null;
   isPreorder?: boolean | null;
   preorderShipsAt?: string | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -311,6 +312,7 @@ export interface Category {
   parent?: (number | null) | Category;
   image?: (number | null) | Media;
   isActive?: boolean | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -379,6 +381,7 @@ export interface Slide {
   startsAt?: string | null;
   endsAt?: string | null;
   isActive?: boolean | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -396,6 +399,7 @@ export interface HomeSection {
   title?: string | null;
   productLimit?: number | null;
   isActive?: boolean | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -425,6 +429,7 @@ export interface Page {
   } | null;
   footerGroup?: ('company' | 'help') | null;
   isActive?: boolean | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -464,6 +469,7 @@ export interface Post {
     | null;
   isActive?: boolean | null;
   publishedAt?: string | null;
+  missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -790,6 +796,7 @@ export interface ProductsSelect<T extends boolean = true> {
   isActive?: T;
   isPreorder?: T;
   preorderShipsAt?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -806,6 +813,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   parent?: T;
   image?: T;
   isActive?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -824,6 +832,7 @@ export interface SlidesSelect<T extends boolean = true> {
   startsAt?: T;
   endsAt?: T;
   isActive?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -837,6 +846,7 @@ export interface HomeSectionsSelect<T extends boolean = true> {
   title?: T;
   productLimit?: T;
   isActive?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -851,6 +861,7 @@ export interface PagesSelect<T extends boolean = true> {
   body?: T;
   footerGroup?: T;
   isActive?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -872,6 +883,7 @@ export interface PostsSelect<T extends boolean = true> {
       };
   isActive?: T;
   publishedAt?: T;
+  missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
