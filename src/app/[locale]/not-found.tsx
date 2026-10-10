@@ -12,6 +12,7 @@ export default function NotFound() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-24 text-center sm:py-32">
+      <title>{`${t("error.404.title")} — Hystlovers`}</title>
       <p className="heading-brand text-6xl text-ink/15">404</p>
       <h1 className="heading-brand mt-6 text-xl">{t("error.404.title")}</h1>
       <p className="mt-4 text-sm text-ink/60">{t("error.404.body")}</p>
