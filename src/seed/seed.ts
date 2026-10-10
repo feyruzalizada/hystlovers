@@ -82,56 +82,34 @@ export async function seed(payload: Payload) {
     LOCALES.map((locale) => [locale, read<Record<string, string>>(`messages/${locale}.json`)]),
   ) as Record<Locale, Record<string, string>>;
 
-  const existingTexts = await payload.count({ collection: "site-texts" });
-  if (existingTexts.totalDocs === 0) {
-    for (const key of Object.keys(messages.az)) {
+  // Earlier seeded values that may be replaced; anything else was edited in the panel.
+  const replaced = read<Record<string, Partial<Record<Locale, string[]>>>>("messages/replaced.json");
+  const stored = await payload.find({ collection: "site-texts", limit: 0, pagination: false, depth: 0 });
+  const byKey = new Map(stored.docs.map((doc) => [doc.key, doc]));
+  let textWrites = 0;
+
+  for (const key of Object.keys(messages.az)) {
+    const doc = byKey.get(key);
+    if (!doc) {
       await payload.create({
         collection: "site-texts",
-        data: {
-          key,
-          group: key.split(".")[0],
-          az: messages.az[key],
-          en: messages.en[key] ?? null,
-          ru: messages.ru[key] ?? null,
-        },
+        data: { key, group: key.split(".")[0], az: messages.az[key], en: messages.en[key], ru: messages.ru[key] },
       });
+      textWrites++;
+      continue;
     }
-    payload.logger.info(`${Object.keys(messages.az).length} site texts imported`);
-  }
-
-
-  // Strings the rewrite introduced that the PHP shop had no key for.
-  const EXTRA_TEXTS: Record<string, [string, string, string]> = {
-    "form.error.invalid": [
-      "Zəhmət olmasa formu düzgün doldurun.",
-      "Please check the form and try again.",
-      "Пожалуйста, проверьте форму и попробуйте снова.",
-    ],
-    "auth.email_taken": [
-      "Bu e-poçt ünvanı artıq qeydiyyatdan keçib.",
-      "That email address is already registered.",
-      "Этот адрес электронной почты уже зарегистрирован.",
-    ],
-    "form.error.unexpected": [
-      "Gözlənilməz xəta baş verdi. Bir az sonra yenidən cəhd edin.",
-      "Something went wrong. Please try again in a moment.",
-      "Произошла ошибка. Попробуйте ещё раз чуть позже.",
-    ],
-  };
-
-  for (const [key, [az, en, ru]] of Object.entries(EXTRA_TEXTS)) {
-    const found = await payload.find({
-      collection: "site-texts",
-      where: { key: { equals: key } },
-      limit: 1,
-    });
-    if (found.totalDocs === 0) {
-      await payload.create({
-        collection: "site-texts",
-        data: { key, group: key.split(".")[0], az, en, ru },
-      });
+    const data: Partial<Record<Locale, string>> = {};
+    for (const locale of LOCALES) {
+      const now = doc[locale];
+      if (now === messages[locale][key]) continue;
+      if (!now || replaced[key]?.[locale]?.includes(now)) data[locale] = messages[locale][key];
+    }
+    if (Object.keys(data).length > 0) {
+      await payload.update({ collection: "site-texts", id: doc.id, data });
+      textWrites++;
     }
   }
+  if (textWrites > 0) payload.logger.info(`site texts: ${textWrites} added or updated`);
 
   // ---- settings ---------------------------------------------------------
   const shop = read<{

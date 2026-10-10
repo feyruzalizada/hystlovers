@@ -1,0 +1,70 @@
+{
+  "home.manifesto": {
+    "az": [
+      "Diqqətlə seçilmiş parçaların zərif dizayn dili ilə görüşdüyü, keyfiyyətin sadəliklə birləşdiyi zamansız bir dünya."
+    ],
+    "ru": [
+      "Вневременной мир, где тщательно выбранные ткани встречают сдержанный язык дизайна, а качество — простоту."
+    ]
+  },
+  "checkout.error.phone": {
+    "az": [
+      "Telefon nömrəsi etibarsızdır."
+    ]
+  },
+  "footer.brand_text": {
+    "az": [
+      "Sakit zəriflik, şüurlu istehsal və detala dərin hörmət. Mövsümi dəb deyil — sizə məxsus bir yaşam tərzi."
+    ]
+  },
+  "nav.cart_open": {
+    "en": [
+      "Open cart (:count items)"
+    ],
+    "ru": [
+      "Открыть корзину (:count товаров)"
+    ]
+  },
+  "collection.count": {
+    "en": [
+      ":count products"
+    ],
+    "ru": [
+      "Товаров: :count"
+    ]
+  },
+  "collection.view_count": {
+    "en": [
+      "View :count products"
+    ],
+    "ru": [
+      "Показать товары (:count)"
+    ]
+  },
+  "account.items_count": {
+    "en": [
+      ":count items"
+    ],
+    "ru": [
+      "Товаров: :count"
+    ]
+  },
+  "search.count": {
+    "en": [
+      ":count results for \":query\""
+    ],
+    "ru": [
+      "Найдено результатов по «:query»: :count"
+    ]
+  },
+  "home.meta_description": {
+    "ru": [
+      "Вневременная одежда, где тщательно выбранные ткани встречают сдержанный дизайн. Комплекты, отдельные вещи и не только."
+    ]
+  },
+  "contact.subtitle": {
+    "ru": [
+      "Мы здесь по вопросам заказов, возвратов и всему остальному."
+    ]
+  }
+}

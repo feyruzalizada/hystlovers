@@ -101,7 +101,8 @@ export default async function CollectionPage({
   const path = (p: string) => localePath(locale, p);
 
   // Facets come from the whole active catalogue, as in the source controller.
-  const facets = buildFacets(await getProducts(locale));
+  const [t, products] = await Promise.all([getTranslator(locale), getProducts(locale)]);
+  const facets = buildFacets(products);
 
   return (
     <>
@@ -109,7 +110,7 @@ export default async function CollectionPage({
         <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
           {collection.parent && (
             <nav
-              aria-label="Breadcrumb"
+              aria-label={t("nav.breadcrumb")}
               className="mb-3 text-[11px] tracking-wide2 text-ink/50 uppercase"
             >
               <Link href={path(collection.parent.url)} className="transition-colors hover:text-ink">

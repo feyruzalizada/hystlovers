@@ -24,7 +24,7 @@ export function I18nProvider({
   const value = useMemo<I18nValue>(
     () => ({
       locale,
-      t: buildTranslator(messages),
+      t: buildTranslator(messages, locale),
       path: (path: string) => localePath(locale, path),
     }),
     [locale, messages],

@@ -100,7 +100,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                   type="text"
                   required
                   autoComplete="address-level2"
-                  placeholder="Bakı"
+                  placeholder={t("checkout.city_placeholder")}
                   className="input-brand"
                 />
               </label>

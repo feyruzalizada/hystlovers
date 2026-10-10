@@ -117,7 +117,7 @@ export default function ProductDetail({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
-      <nav aria-label="Breadcrumb" className="mb-5 text-[11px] tracking-wide2 text-ink/50 uppercase">
+      <nav aria-label={t("nav.breadcrumb")} className="mb-5 text-[11px] tracking-wide2 text-ink/50 uppercase">
         <Link href={path("/")} className="hover:text-ink">
           {t("product.breadcrumb_home")}
         </Link>

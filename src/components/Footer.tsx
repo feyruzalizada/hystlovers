@@ -51,7 +51,7 @@ export default function Footer({ groups }: { groups: FooterGroup[] }) {
             © {new Date().getFullYear()} Hystlovers. {t("general.rights")}
           </p>
           <p>
-            Developed by{" "}
+            {t("general.developed_by")}{" "}
             <a
               href="https://burncode.org"
               target="_blank"
