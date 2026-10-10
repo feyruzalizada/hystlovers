@@ -21,7 +21,7 @@ export const colorNames: Text[] = [
   { en: "Pastel", az: "Pastel", ru: "Пастельный", was: ["PASTEL"] },
   { en: "Black", az: "Qara", ru: "Чёрный" },
   { en: "Blue", az: "Mavi", ru: "Голубой" },
-  { en: "Gray", az: "Boz", ru: "Серый" },
+  { en: "Grey", az: "Boz", ru: "Серый", was: ["Gray"] },
 ];
 
 export const fabrics: Text[] = [
@@ -37,9 +37,10 @@ export const productPhrases: Text[] = [
   { en: "80% cotton, 20% polyester", az: "80% pambıq, 20% poliester", ru: "80% хлопок, 20% полиэстер" },
   { en: "Soft, breathable fabric", az: "Yumşaq, nəfəs alan parça", ru: "Мягкая, дышащая ткань" },
   {
-    en: "Model is 1.75m tall and wears size XS/S",
+    en: "The model is 1.75 m tall and wears size XS/S",
     az: "Modelin boyu 1,75 m-dir, əynində XS/S ölçüsüdür",
     ru: "Рост модели 1,75 м, на ней размер XS/S",
+    was: ["Model is 1.75m tall and wears size XS/S"],
   },
   { en: "Consciously made in Türkiye", az: "Türkiyədə şüurlu şəkildə istehsal olunub", ru: "Осознанно произведено в Турции" },
 ];
@@ -83,12 +84,12 @@ export const pages: Record<string, { title: Text; body: Paragraphs }> = {
     body: {
       en: [
         "A timeless world where carefully selected fabrics meet an elegant design language, and quality blends with simplicity.",
-        "Our brand is built on quiet elegance, conscious production and a deep respect for detail. Unnoticed touches of luxury, thoughtful manufacturing and devotion to craftsmanship are at the heart of every piece we make.",
+        "Our brand is built on quiet elegance, conscious production and a deep respect for detail. Understated touches of luxury, thoughtful manufacturing and devotion to craftsmanship are at the heart of every piece we make.",
         "Hystlovers is not seasonal fashion — it is a lifestyle you own. Our pieces are designed not for trends, but to stay with you for years.",
       ],
       az: [
         "Diqqətlə seçilmiş parçaların zərif dizayn dili ilə qovuşduğu, keyfiyyətin sadəliklə birləşdiyi zamansız bir dünya.",
-        "Brendimiz sakit zəriflik, şüurlu istehsal və detallara dərin hörmət üzərində qurulub. Gözə çarpmayan lüks toxunuşları, düşünülmüş istehsal və ustalığa sədaqət yaratdığımız hər məhsulun əsasındadır.",
+        "Brendimiz sakit zəriflik, şüurlu istehsal və detallara dərin hörmət üzərində qurulub. Gözə çarpmayan lüks toxunuşlar, düşünülmüş istehsal və ustalığa sədaqət yaratdığımız hər məhsulun əsasındadır.",
         "Hystlovers mövsümi dəb deyil — sizə məxsus bir həyat tərzidir. Məhsullarımız trendlər üçün deyil, illərlə sizinlə qalmaq üçün yaradılır.",
       ],
       ru: [
@@ -119,7 +120,7 @@ export const pages: Record<string, { title: Text; body: Paragraphs }> = {
     title: { en: "Washing & Care Instructions", az: "Yuma və qulluq qaydaları", ru: "Стирка и уход" },
     body: {
       en: [
-        "To extend the life of your garments, wash at 30 degrees on a delicate cycle with similar colors.",
+        "To extend the life of your garments, wash at 30 degrees on a delicate cycle with similar colours.",
         "Do not tumble dry. Iron inside out at low temperature.",
         "Lay viscose and modal pieces flat to dry instead of hanging them.",
       ],
@@ -245,7 +246,7 @@ export const pages: Record<string, { title: Text; body: Paragraphs }> = {
 
 /** Wording fixes for text that was already translated: `from` is replaced wherever it still appears. */
 export const corrections: {
-  collection: "posts";
+  collection: "posts" | "pages";
   field: "title" | "excerpt" | "body";
   locale: "az" | "en" | "ru";
   from: string;
@@ -265,4 +266,9 @@ export const corrections: {
     from: "Ölçünü bir beden böyük seçməkdən çəkinməyin.",
     to: "Bir ölçü böyük seçməkdən çəkinməyin.",
   },
+  { collection: "posts", field: "body", locale: "az", from: "ilk yuyuşdan sonra", to: "ilk yumadan sonra" },
+  { collection: "posts", field: "body", locale: "ru", from: "приятной коже", to: "приятной для кожи" },
+  { collection: "pages", field: "body", locale: "az", from: "lüks toxunuşları,", to: "lüks toxunuşlar," },
+  { collection: "pages", field: "body", locale: "en", from: "Unnoticed touches", to: "Understated touches" },
+  { collection: "pages", field: "body", locale: "en", from: "similar colors.", to: "similar colours." },
 ];

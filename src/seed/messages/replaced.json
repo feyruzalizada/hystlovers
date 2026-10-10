@@ -60,11 +60,120 @@
   "home.meta_description": {
     "ru": [
       "Вневременная одежда, где тщательно выбранные ткани встречают сдержанный дизайн. Комплекты, отдельные вещи и не только."
+    ],
+    "az": [
+      "Diqqətlə seçilmiş parçaların zərif dizaynla birləşdiyi zamansız geyimlər. Dəstlər, tək parçalar və daha çoxu."
     ]
   },
   "contact.subtitle": {
     "ru": [
-      "Мы здесь по вопросам заказов, возвратов и всему остальному."
+      "Мы здесь по вопросам заказов, возвратов и всему остальному.",
+      "Мы на связи по вопросам заказов, возвратов и всему, о чём вы хотите спросить."
+    ]
+  },
+  "home.title": {
+    "az": [
+      "Zamansız parçalar"
+    ]
+  },
+  "collection.all_products.description": {
+    "az": [
+      "Zamansız parçalar. Sadəlik və rahatlıq düşünülərək dizayn edilib."
+    ]
+  },
+  "collection.new_in.description": {
+    "az": [
+      "Ən yeni parçalar, ilk olaraq burada."
+    ],
+    "ru": [
+      "Самые новые вещи — сначала здесь."
+    ]
+  },
+  "nav.home_aria": {
+    "az": [
+      "Hystlovers ana səhifə"
+    ]
+  },
+  "product.card_cta": {
+    "az": [
+      "Seçimləri müəyyən et"
+    ]
+  },
+  "product.notify_cta": {
+    "az": [
+      "Xəbər ver"
+    ],
+    "ru": [
+      "Сообщить"
+    ]
+  },
+  "product.notify_sent": {
+    "az": [
+      "Stoka qayıdanda sizə xəbər verəcəyik"
+    ],
+    "en": [
+      "We will let you know when it is back"
+    ]
+  },
+  "product.related_heading": {
+    "az": [
+      "Görünüşü tamamlayın"
+    ]
+  },
+  "product.care.body": {
+    "az": [
+      "30 dərəcədə zərif rejimdə yuyun. Quruducu istifadə etməyin. Tərs üzünə çevirib aşağı temperaturda ütüləyin."
+    ]
+  },
+  "product.size_guide.note": {
+    "az": [
+      "Modelin boyu 1.75 m-dir və XS/S ölçüsü geyinib."
+    ]
+  },
+  "checkout.note": {
+    "az": [
+      "Qeyd (istəyə bağlı)"
+    ]
+  },
+  "checkout.error.out_of_stock": {
+    "az": [
+      "«:product» məhsulunun :size ölçüsü kifayət qədər deyil. Zəhmət olmasa səbətinizi yeniləyin."
+    ],
+    "ru": [
+      "Товара «:product» размера :size недостаточно. Пожалуйста, проверьте корзину."
+    ]
+  },
+  "blog.meta_description": {
+    "az": [
+      "Hystlovers dünyasından hekayələr, baxım məsləhətləri və kolleksiya xəbərləri."
+    ]
+  },
+  "mail.order.greeting": {
+    "az": [
+      "Salam :name,"
+    ]
+  },
+  "mail.order.automated": {
+    "az": [
+      "Bu e-poçt avtomatik göndərilib."
+    ]
+  },
+  "product.shipping.body": {
+    "ru": [
+      "Заказы отправляются в течение 1-3 рабочих дней. Бесплатная доставка при заказе от :threshold."
+    ]
+  },
+  "mail.order.intro": {
+    "ru": [
+      "Мы получили ваш заказ :number. Мы свяжемся с вами, как только он будет подтверждён."
+    ],
+    "az": [
+      ":number nömrəli sifarişiniz qəbul edildi. Sifarişiniz təsdiqlənən kimi sizinlə əlaqə saxlayacağıq."
+    ]
+  },
+  "mail.order.subject": {
+    "en": [
+      "Your order is confirmed — :number"
     ]
   }
 }
