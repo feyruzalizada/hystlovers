@@ -1,20 +1,7 @@
 {
-  "home.manifesto": {
-    "az": [
-      "Diqqətlə seçilmiş parçaların zərif dizayn dili ilə görüşdüyü, keyfiyyətin sadəliklə birləşdiyi zamansız bir dünya."
-    ],
-    "ru": [
-      "Вневременной мир, где тщательно выбранные ткани встречают сдержанный язык дизайна, а качество — простоту."
-    ]
-  },
   "checkout.error.phone": {
     "az": [
       "Telefon nömrəsi etibarsızdır."
-    ]
-  },
-  "footer.brand_text": {
-    "az": [
-      "Sakit zəriflik, şüurlu istehsal və detala dərin hörmət. Mövsümi dəb deyil — sizə məxsus bir yaşam tərzi."
     ]
   },
   "nav.cart_open": {

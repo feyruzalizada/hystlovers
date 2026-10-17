@@ -113,9 +113,11 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('az' | 'en' | 'ru') | ('az' | 'en' | 'ru')[];
   globals: {
+    brand: Brand;
     settings: Setting;
   };
   globalsSelect: {
+    brand: BrandSelect<false> | BrandSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: 'az' | 'en' | 'ru';
@@ -1052,6 +1054,25 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brand".
+ */
+export interface Brand {
+  id: number;
+  homeLabel?: string | null;
+  homeText?: string | null;
+  homeButton?: string | null;
+  /**
+   * A path like /pages/about-us, or a full https:// address.
+   */
+  homeButtonUrl?: string | null;
+  footerTitle?: string | null;
+  footerText?: string | null;
+  newsletterTitle?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "settings".
  */
 export interface Setting {
@@ -1073,6 +1094,22 @@ export interface Setting {
   x?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brand_select".
+ */
+export interface BrandSelect<T extends boolean = true> {
+  homeLabel?: T;
+  homeText?: T;
+  homeButton?: T;
+  homeButtonUrl?: T;
+  footerTitle?: T;
+  footerText?: T;
+  newsletterTitle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -6,6 +6,7 @@ import { slugify } from "./slug";
 import { productName } from "./product-name";
 import { defaultLocale } from "./i18n";
 import type {
+  Brand,
   Category as CmsCategory,
   HomeSection,
   Media,
@@ -172,6 +173,11 @@ export const getSiteTexts = cache(async (locale: Locale): Promise<Record<string,
 export const getSettings = cache(async (locale: Locale): Promise<Setting> => {
   const payload = await payloadClient();
   return payload.findGlobal({ slug: "settings", locale });
+});
+
+export const getBrand = cache(async (locale: Locale): Promise<Brand> => {
+  const payload = await payloadClient();
+  return payload.findGlobal({ slug: "brand", locale });
 });
 
 export const getShop = cache(async (locale: Locale): Promise<ShopSettings> => {

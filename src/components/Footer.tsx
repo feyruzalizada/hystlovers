@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import type { Brand } from "@/payload-types";
 import type { FooterGroup, NavItem } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import NewsletterForm from "./NewsletterForm";
 
-export default function Footer({ groups }: { groups: FooterGroup[] }) {
+export default function Footer({ groups, brand }: { groups: FooterGroup[]; brand: Brand }) {
   const { t, path } = useI18n();
   const label = (link: NavItem) => (link.labelKey ? t(link.labelKey) : link.label);
 
@@ -13,13 +14,13 @@ export default function Footer({ groups }: { groups: FooterGroup[] }) {
     <footer className="bg-ink text-paper">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-4 lg:gap-8 lg:py-16">
         <div className="lg:col-span-2 lg:max-w-md">
-          <p className="heading-brand text-lg">Hystlovers</p>
-          <p className="mt-4 text-sm leading-relaxed text-paper/60">{t("footer.brand_text")}</p>
+          {brand.footerTitle && <p className="heading-brand text-lg">{brand.footerTitle}</p>}
+          {brand.footerText && <p className="mt-4 text-sm leading-relaxed text-paper/60">{brand.footerText}</p>}
 
           <div className="mt-8">
-            <p className="text-xs font-medium tracking-brand uppercase">
-              {t("footer.newsletter.title")}
-            </p>
+            {brand.newsletterTitle && (
+              <p className="text-xs font-medium tracking-brand uppercase">{brand.newsletterTitle}</p>
+            )}
             <NewsletterForm />
           </div>
         </div>

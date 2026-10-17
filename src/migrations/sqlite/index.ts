@@ -3,6 +3,7 @@ import * as migration_20260928_154235_orderable_rows from './20260928_154235_ord
 import * as migration_20260928_155352_media_prefix from './20260928_155352_media_prefix';
 import * as migration_20260929_141307_localized_slides from './20260929_141307_localized_slides';
 import * as migration_20261010_081250_localized_contact from './20261010_081250_localized_contact';
+import * as migration_20261017_151424_brand_block from './20261017_151424_brand_block';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261010_081250_localized_contact.up,
     down: migration_20261010_081250_localized_contact.down,
-    name: '20261010_081250_localized_contact'
+    name: '20261010_081250_localized_contact',
+  },
+  {
+    up: migration_20261017_151424_brand_block.up,
+    down: migration_20261017_151424_brand_block.down,
+    name: '20261017_151424_brand_block'
   },
 ];

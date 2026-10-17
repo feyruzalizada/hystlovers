@@ -5,7 +5,7 @@ import ColorTiles from "@/components/ColorTiles";
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
 import SectionHeading from "@/components/SectionHeading";
-import { getColorTiles, getHomeSections, getSlides } from "@/lib/cms";
+import { getBrand, getColorTiles, getHomeSections, getSlides } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath } from "@/lib/i18n";
@@ -31,11 +31,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [t, slides, colorTiles, sections] = await Promise.all([
+  const [t, slides, colorTiles, sections, brand] = await Promise.all([
     getTranslator(locale),
     getSlides(locale),
     getColorTiles(locale),
     getHomeSections(locale),
+    getBrand(locale),
   ]);
 
   const featured = sections.filter((section) => section.products.length > 0);
@@ -63,11 +64,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       ))}
 
       <section className="mx-auto max-w-2xl px-4 py-16 text-center sm:py-24">
-        <p className="heading-brand text-sm text-ink/50">Hystlovers</p>
-        <p className="mt-6 text-lg leading-relaxed font-light sm:text-2xl">{t("home.manifesto")}</p>
-        <Link href={localePath(locale, "/pages/about-us")} className="btn-ghost mt-8">
-          {t("home.story_cta")}
-        </Link>
+        {brand.homeLabel && <p className="heading-brand text-sm text-ink/50">{brand.homeLabel}</p>}
+        {brand.homeText && (
+          <p className="mt-6 text-lg leading-relaxed font-light sm:text-2xl">{brand.homeText}</p>
+        )}
+        {brand.homeButton && brand.homeButtonUrl && (
+          <Link
+            href={brand.homeButtonUrl.startsWith("/") ? localePath(locale, brand.homeButtonUrl) : brand.homeButtonUrl}
+            className="btn-ghost mt-8"
+          >
+            {brand.homeButton}
+          </Link>
+        )}
       </section>
     </>
   );

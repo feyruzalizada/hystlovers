@@ -111,6 +111,28 @@ export async function seed(payload: Payload) {
   }
   if (textWrites > 0) payload.logger.info(`site texts: ${textWrites} added or updated`);
 
+  // ---- homepage & footer block ------------------------------------------
+  // These used to be site texts; their current values move over once, panel edits included.
+  const brand = await payload.findGlobal({ slug: "brand" });
+  if (!brand.updatedAt) {
+    const defaults = read<Record<Locale, Record<string, string>>>("content/brand.json");
+    const moved = {
+      homeText: "home.manifesto",
+      homeButton: "home.story_cta",
+      footerText: "footer.brand_text",
+      newsletterTitle: "footer.newsletter.title",
+    } as const;
+    for (const locale of LOCALES) {
+      const data: Record<string, string> = { homeLabel: "Hystlovers", footerTitle: "Hystlovers" };
+      for (const [field, key] of Object.entries(moved)) {
+        const value = byKey.get(key)?.[locale] || defaults[locale][key];
+        if (value) data[field] = value;
+      }
+      await payload.updateGlobal({ slug: "brand", locale, data });
+    }
+    await payload.delete({ collection: "site-texts", where: { key: { in: Object.values(moved) } } });
+  }
+
   // ---- settings ---------------------------------------------------------
   const shop = read<{
     currency: { code: string; symbol: string };

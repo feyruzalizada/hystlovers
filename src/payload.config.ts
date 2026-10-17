@@ -20,6 +20,7 @@ import {
   NewsletterSubscribers,
   StockNotifications,
 } from "./collections/Commerce";
+import { Brand } from "./globals/Brand";
 import { Settings } from "./globals/Settings";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -88,7 +89,7 @@ export default buildConfig({
     Media,
     Users,
   ],
-  globals: [Settings],
+  globals: [Brand, Settings],
   localization: {
     locales: [
       { label: "Azərbaycan", code: "az" },

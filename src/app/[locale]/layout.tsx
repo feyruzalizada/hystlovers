@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import { getShop, getSiteTexts } from "@/lib/cms";
+import { getBrand, getShop, getSiteTexts } from "@/lib/cms";
 import { isLocale, locales } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nProvider";
 import { FormValidation } from "@/components/FormValidation";
@@ -41,7 +41,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [shop, messages] = await Promise.all([getShop(locale), getSiteTexts(locale)]);
+  const [shop, messages, brand] = await Promise.all([getShop(locale), getSiteTexts(locale), getBrand(locale)]);
 
   return (
     <html lang={locale} className="h-full" data-scroll-behavior="smooth">
@@ -59,7 +59,7 @@ export default async function LocaleLayout({
             >
               <Header navigation={shop.navigation} />
               <main className="flex-1">{children}</main>
-              <Footer groups={shop.footer} />
+              <Footer groups={shop.footer} brand={brand} />
               <CartDrawer />
               <FormValidation />
             </CartProvider>
