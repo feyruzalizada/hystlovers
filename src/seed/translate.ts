@@ -5,6 +5,7 @@ import {
   colorNames,
   corrections,
   fabrics,
+  itemNames,
   pages,
   productDescription,
   productPhrases,
@@ -80,6 +81,7 @@ const COLLECTIONS: [CollectionSlug, Record<string, Field>][] = [
   [
     "products",
     {
+      item: text(itemNames),
       colorName: text(colorNames),
       fabric: text(fabrics),
       composition: text(productPhrases),

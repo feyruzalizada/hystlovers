@@ -4,6 +4,8 @@ import * as migration_20260928_155352_media_prefix from './20260928_155352_media
 import * as migration_20260929_141307_localized_slides from './20260929_141307_localized_slides';
 import * as migration_20261010_081250_localized_contact from './20261010_081250_localized_contact';
 import * as migration_20261017_151424_brand_block from './20261017_151424_brand_block';
+import * as migration_20261019_195227_localized_item from './20261019_195227_localized_item';
+import * as migration_20261019_200553_brand_announcement from './20261019_200553_brand_announcement';
 
 export const migrations = [
   {
@@ -34,6 +36,16 @@ export const migrations = [
   {
     up: migration_20261017_151424_brand_block.up,
     down: migration_20261017_151424_brand_block.down,
-    name: '20261017_151424_brand_block'
+    name: '20261017_151424_brand_block',
+  },
+  {
+    up: migration_20261019_195227_localized_item.up,
+    down: migration_20261019_195227_localized_item.down,
+    name: '20261019_195227_localized_item',
+  },
+  {
+    up: migration_20261019_200553_brand_announcement.up,
+    down: migration_20261019_200553_brand_announcement.down,
+    name: '20261019_200553_brand_announcement'
   },
 ];

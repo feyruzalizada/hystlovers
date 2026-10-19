@@ -31,7 +31,7 @@ function LocaleLink(props: LocaleLinkProps) {
   );
 }
 
-export default function Header({ navigation }: { navigation: NavItem[] }) {
+export default function Header({ navigation, announcement }: { navigation: NavItem[]; announcement?: string | null }) {
   const { t, path, locale } = useI18n();
   const cart = useCart();
   const router = useRouter();
@@ -77,9 +77,11 @@ export default function Header({ navigation }: { navigation: NavItem[] }) {
 
   return (
     <div className="sticky top-0 z-30">
-      <p className="bg-ink px-4 py-2 text-center text-[11px] tracking-wide2 text-paper uppercase">
-        {t("general.announcement")}
-      </p>
+      {announcement && (
+        <p className="bg-ink px-4 py-2 text-center text-[11px] tracking-wide2 text-paper uppercase">
+          {announcement}
+        </p>
+      )}
 
       <header className="border-b border-line bg-paper">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:py-5">

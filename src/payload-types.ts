@@ -1058,6 +1058,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Brand {
   id: number;
+  /**
+   * The line above the menu. Leave empty to hide the bar.
+   */
+  announcement?: string | null;
   homeLabel?: string | null;
   homeText?: string | null;
   homeButton?: string | null;
@@ -1100,6 +1104,7 @@ export interface Setting {
  * via the `definition` "brand_select".
  */
 export interface BrandSelect<T extends boolean = true> {
+  announcement?: T;
   homeLabel?: T;
   homeText?: T;
   homeButton?: T;

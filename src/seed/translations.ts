@@ -15,6 +15,12 @@ export const categoryNames: Text[] = [
   { en: "Accessories", az: "Aksesuarlar", ru: "Аксессуары" },
 ];
 
+export const itemNames: Text[] = [
+  { en: "T-Shirt", az: "Futbolka", ru: "Футболка" },
+  { en: "Tank Top", az: "Mayka", ru: "Майка" },
+  { en: "Sweatshirt", az: "Svitşot", ru: "Свитшот" },
+];
+
 export const colorNames: Text[] = [
   { en: "Brown", az: "Qəhvəyi", ru: "Коричневый" },
   { en: "Mint", az: "Nanə", ru: "Мятный" },

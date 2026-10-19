@@ -101,7 +101,7 @@ test("a shopper can register, buy and see the order", async ({ page }) => {
 
   await page.waitForURL(/\/az\/account\/orders\/HL/);
   await expect(page.locator("h1")).toContainText(/HL\d{6}-\d{4}/);
-  await expect(page.locator("body")).toContainText("LOVE T-SHIRT - QƏHVƏYİ");
+  await expect(page.locator("body")).toContainText("LOVE FUTBOLKA - QƏHVƏYİ");
 
   await page.goto("/az/account");
   await expect(page.locator("body")).toContainText(/HL\d{6}-\d{4}/);

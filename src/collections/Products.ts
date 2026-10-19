@@ -39,7 +39,7 @@ export const Products: CollectionConfig = {
       type: "row",
       fields: [
         { name: "series", type: "text", required: true, index: true, admin: { width: "50%" } },
-        { name: "item", type: "text", required: true, index: true, admin: { width: "50%" } },
+        { name: "item", type: "text", required: true, localized: true, index: true, admin: { width: "50%" } },
       ],
     },
     {
@@ -150,6 +150,6 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    missingTranslations("products", ["colorName", "fabric", "composition", "description", "features", "setParts"]),
+    missingTranslations("products", ["item", "colorName", "fabric", "composition", "description", "features", "setParts"]),
   ],
 };

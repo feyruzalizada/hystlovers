@@ -111,26 +111,30 @@ export async function seed(payload: Payload) {
   }
   if (textWrites > 0) payload.logger.info(`site texts: ${textWrites} added or updated`);
 
-  // ---- homepage & footer block ------------------------------------------
-  // These used to be site texts; their current values move over once, panel edits included.
+  // ---- header, homepage & footer block -----------------------------------
+  // These used to be site texts: a value still stored there moves over once, panel edits
+  // included. Defaults only fill a fresh block, so a field emptied in the panel stays empty.
   const brand = await payload.findGlobal({ slug: "brand" });
-  if (!brand.updatedAt) {
-    const defaults = read<Record<Locale, Record<string, string>>>("content/brand.json");
-    const moved = {
-      homeText: "home.manifesto",
-      homeButton: "home.story_cta",
-      footerText: "footer.brand_text",
-      newsletterTitle: "footer.newsletter.title",
-    } as const;
+  const defaults = read<Record<Locale, Record<string, string>>>("content/brand.json");
+  const moved = {
+    announcement: "general.announcement",
+    homeText: "home.manifesto",
+    homeButton: "home.story_cta",
+    footerText: "footer.brand_text",
+    newsletterTitle: "footer.newsletter.title",
+  } as const;
+  const pending = Object.values(moved).filter((key) => byKey.has(key));
+  if (!brand.updatedAt || pending.length > 0) {
     for (const locale of LOCALES) {
-      const data: Record<string, string> = { homeLabel: "Hystlovers", footerTitle: "Hystlovers" };
+      const data: Record<string, string> = brand.updatedAt ? {} : { homeLabel: "Hystlovers", footerTitle: "Hystlovers" };
       for (const [field, key] of Object.entries(moved)) {
+        if (brand.updatedAt && !byKey.has(key)) continue;
         const value = byKey.get(key)?.[locale] || defaults[locale][key];
         if (value) data[field] = value;
       }
       await payload.updateGlobal({ slug: "brand", locale, data });
     }
-    await payload.delete({ collection: "site-texts", where: { key: { in: Object.values(moved) } } });
+    await payload.delete({ collection: "site-texts", where: { key: { in: pending } } });
   }
 
   // ---- settings ---------------------------------------------------------

@@ -1,17 +1,20 @@
 {
   "az": {
+    "general.announcement": "100 ₼-dən yuxarı bütün sifarişlərə çatdırılma pulsuzdur",
     "home.manifesto": "Diqqətlə seçilmiş parçaların zərif dizayn dili ilə qovuşduğu, keyfiyyətin sadəliklə birləşdiyi zamansız bir dünya.",
     "home.story_cta": "Hekayəmiz",
     "footer.brand_text": "Sakit zəriflik, şüurlu istehsal və detala dərin hörmət. Mövsümi dəb deyil — sizə məxsus bir həyat tərzi.",
     "footer.newsletter.title": "İlk siz xəbərdar olun!"
   },
   "en": {
+    "general.announcement": "Free shipping on all orders over 100 ₼",
     "home.manifesto": "A timeless world where carefully chosen fabrics meet a quiet design language, and quality meets simplicity.",
     "home.story_cta": "Our story",
     "footer.brand_text": "Quiet elegance, considered making and a deep respect for detail. Not seasonal fashion — a way of living that is yours.",
     "footer.newsletter.title": "Be the first to know"
   },
   "ru": {
+    "general.announcement": "Бесплатная доставка при заказе от 100 ₼",
     "home.manifesto": "Вневременной мир, где тщательно подобранные ткани сочетаются со сдержанным дизайном, а качество — с простотой.",
     "home.story_cta": "Наша история",
     "footer.brand_text": "Спокойная элегантность, осознанное производство и внимание к деталям. Не сезонная мода — ваш образ жизни.",

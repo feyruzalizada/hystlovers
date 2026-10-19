@@ -57,7 +57,7 @@ export default async function LocaleLayout({
                 shippingFee: shop.shippingFee,
               }}
             >
-              <Header navigation={shop.navigation} />
+              <Header navigation={shop.navigation} announcement={brand.announcement} />
               <main className="flex-1">{children}</main>
               <Footer groups={shop.footer} brand={brand} />
               <CartDrawer />

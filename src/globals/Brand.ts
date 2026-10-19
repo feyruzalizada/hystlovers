@@ -4,7 +4,7 @@ import { revalidateGlobalAfterChange } from "@/collections/revalidate";
 
 export const Brand: GlobalConfig = {
   slug: "brand",
-  label: "Homepage & footer",
+  label: "Header, homepage & footer",
   admin: { group: "Content" },
   access: { read: publicRead, update: adminOnly },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
@@ -12,6 +12,18 @@ export const Brand: GlobalConfig = {
     {
       type: "tabs",
       tabs: [
+        {
+          label: "Header",
+          fields: [
+            {
+              name: "announcement",
+              label: "Announcement bar",
+              type: "text",
+              localized: true,
+              admin: { description: "The line above the menu. Leave empty to hide the bar." },
+            },
+          ],
+        },
         {
           label: "Homepage",
           description: "The text block under the product sections.",
