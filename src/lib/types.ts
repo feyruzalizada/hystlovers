@@ -52,8 +52,6 @@ export type Slide = {
   imageMobile: string | null;
 };
 
-export type ColorTile = Color & { url: string; image: string };
-
 export type FeaturedBlock = {
   title: string;
   url: string;

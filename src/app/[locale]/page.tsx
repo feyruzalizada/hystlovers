@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import ColorTiles from "@/components/ColorTiles";
 import Hero from "@/components/Hero";
+import NewInGrid from "@/components/NewInGrid";
 import ProductCard from "@/components/ProductCard";
 import SectionHeading from "@/components/SectionHeading";
-import { getBrand, getColorTiles, getHomeSections, getSlides } from "@/lib/cms";
+import { getBrand, getHomeSections, getProducts, getSlides } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath } from "@/lib/i18n";
@@ -31,23 +31,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [t, slides, colorTiles, sections, brand] = await Promise.all([
+  const [t, slides, products, sections, brand] = await Promise.all([
     getTranslator(locale),
     getSlides(locale),
-    getColorTiles(locale),
+    getProducts(locale),
     getHomeSections(locale),
     getBrand(locale),
   ]);
 
   const featured = sections.filter((section) => section.products.length > 0);
+  const newIn = products.filter((product) => product.is_new);
 
   return (
     <>
       <Hero slides={slides} />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        <SectionHeading title={t("home.new_in_heading")} url="/collections/new-in" />
-        <ColorTiles tiles={colorTiles} />
+        <NewInGrid
+          title={t("home.new_in_heading")}
+          url="/collections/new-in"
+          products={newIn.length > 0 ? newIn : products}
+        />
       </section>
 
       {featured.map((block, index) => (

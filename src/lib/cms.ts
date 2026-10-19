@@ -20,7 +20,6 @@ import type {
 import type {
   BlogPost,
   Category,
-  ColorTile,
   ContactDetails,
   Facets,
   FooterGroup,
@@ -276,21 +275,6 @@ export const getSlides = cache(async (locale: Locale): Promise<Slide[]> => {
       imageMobile: mediaUrl(doc.imageMobile),
     }))
     .filter((slide) => slide.image);
-});
-
-export const getColorTiles = cache(async (locale: Locale): Promise<ColorTile[]> => {
-  const products = await getProducts(locale);
-  const seen = new Map<string, ColorTile>();
-
-  for (const product of products) {
-    if (seen.has(product.color.slug)) continue;
-    seen.set(product.color.slug, {
-      ...product.color,
-      url: `/collections/all-products?color=${product.color.slug}`,
-      image: product.images[0] ?? "",
-    });
-  }
-  return [...seen.values()].filter((tile) => tile.image);
 });
 
 export const getHomeSections = cache(async (locale: Locale) => {
