@@ -10,8 +10,14 @@ import { useShop } from "./ShopProvider";
 import Icon from "./Icon";
 
 const PAGE = 4;
-// Wide, narrow / narrow, wide — the second row mirrors the first.
-const SPANS = ["col-span-2", "col-span-1", "col-span-1", "col-span-2"];
+// Wide, narrow / narrow, wide — the second row mirrors the first. A shorter
+// last page stretches its cards so no row is left with a hole.
+const LAYOUTS: Record<number, string[]> = {
+  1: ["col-span-2 lg:col-span-3"],
+  2: ["col-span-1 lg:col-span-2", "col-span-1"],
+  3: ["col-span-2", "col-span-1", "col-span-1 lg:col-span-3"],
+  4: ["col-span-2", "col-span-1", "col-span-1", "col-span-2"],
+};
 
 function Card({ product, wide }: { product: Product; wide: boolean }) {
   const { t, path } = useI18n();
@@ -140,10 +146,10 @@ export default function NewInGrid({ title, url, products }: { title: string; url
       <div className="grid auto-rows-[16rem] grid-cols-2 gap-3 sm:auto-rows-[20rem] sm:gap-4 lg:grid-cols-3 lg:auto-rows-[24rem]">
         {shown.map((product, index) => {
           // On phones the narrow pair shares a row between two full-width cards.
-          const span = SPANS[index];
+          const span = LAYOUTS[shown.length][index];
           return (
             <div key={product.slug} className={span}>
-              <Card product={product} wide={span === "col-span-2"} />
+              <Card product={product} wide={span !== "col-span-1"} />
             </div>
           );
         })}
