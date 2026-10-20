@@ -165,5 +165,16 @@
     "en": [
       "Your order is confirmed — :number"
     ]
+  },
+  "home.new_in_heading": {
+    "az": [
+      "Yeni gələnlər"
+    ],
+    "en": [
+      "New In"
+    ],
+    "ru": [
+      "Новинки"
+    ]
   }
 }
