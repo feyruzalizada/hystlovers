@@ -62,6 +62,34 @@ export async function seed(payload: Payload) {
     return created.id;
   };
 
+  // ---- media files in Blob ------------------------------------------------
+  // A build without the Blob token records the images but leaves the files on
+  // Vercel's throwaway disk; the next build with the token uploads them again.
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const sources = ["storage/products", "storage/slides", "media"].map((dir) =>
+      path.join(root, "public", dir),
+    );
+    const stored = await payload.find({ collection: "media", limit: 0, pagination: false, depth: 0 });
+    let reuploaded = 0;
+    for (const doc of stored.docs) {
+      if (!doc.url || !doc.filename) continue;
+      const head = await fetch(doc.url, { method: "HEAD" }).catch(() => null);
+      if (head?.ok) continue;
+
+      const stem = path.basename(doc.filename, path.extname(doc.filename));
+      const file = sources
+        .flatMap((dir) => [path.join(dir, `${stem}.png`), path.join(dir, doc.filename!)])
+        .find((candidate) => fs.existsSync(candidate));
+      if (!file) {
+        payload.logger.warn(`no source for media ${doc.filename}`);
+        continue;
+      }
+      await payload.update({ collection: "media", id: doc.id, data: {}, filePath: file, overwriteExistingFiles: true });
+      reuploaded++;
+    }
+    if (reuploaded) payload.logger.info(`re-uploaded ${reuploaded} media files to Blob`);
+  }
+
   // ---- admin user -------------------------------------------------------
   const email = process.env.ADMIN_EMAIL ?? "admin@hystlovers.com";
   // A build never plants the well-known dev password; without ADMIN_PASSWORD
