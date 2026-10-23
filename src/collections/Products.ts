@@ -106,12 +106,15 @@ export const Products: CollectionConfig = {
       type: "array",
       required: true,
       labels: { singular: "Size", plural: "Sizes" },
-      admin: { description: SIZE_SUGGESTIONS.join(", ") },
+      admin: {
+        description: `${SIZE_SUGGESTIONS.join(", ")}. A size with an empty quantity is not counted and stays on sale indefinitely. Tracked sizes count down with each order, and the product sells out on its own when every tracked size reaches zero.`,
+      },
       fields: [
         { name: "size", type: "text", required: true },
         {
           name: "quantity",
           type: "number",
+          label: "Units in stock",
           min: 0,
           admin: { description: "Leave empty for untracked stock (always available)." },
         },
@@ -134,7 +137,13 @@ export const Products: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "inStock", type: "checkbox", defaultValue: true, admin: { width: "33%" } },
+        {
+          name: "inStock",
+          type: "checkbox",
+          label: "On sale",
+          defaultValue: true,
+          admin: { width: "33%", description: "Turn off to pull the product from sale regardless of stock." },
+        },
         { name: "isNew", type: "checkbox", defaultValue: false, index: true, admin: { width: "33%" } },
         { name: "isActive", type: "checkbox", defaultValue: true, index: true, admin: { width: "33%" } },
       ],
@@ -142,11 +151,25 @@ export const Products: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "isPreorder", type: "checkbox", defaultValue: false, admin: { width: "50%" } },
+        {
+          name: "isPreorder",
+          type: "checkbox",
+          label: "Sell as pre-order",
+          defaultValue: false,
+          admin: {
+            width: "50%",
+            description: "A pre-order product can be bought while it is out of stock; stock is not counted down for it.",
+          },
+        },
         {
           name: "preorderShipsAt",
           type: "date",
-          admin: { width: "50%", condition: (data) => Boolean(data?.isPreorder) },
+          label: "Expected dispatch date",
+          admin: {
+            width: "50%",
+            condition: (data) => Boolean(data?.isPreorder),
+            description: "Shown on the product page. Leave empty if the date is not known yet.",
+          },
         },
       ],
     },

@@ -91,19 +91,24 @@ export async function placeOrder(input: {
 
   const lines: OrderItem[] = [];
   const shopperLines: { name: string; colorName: string }[] = [];
-  const stockWrites: { id: number; sizes: Product["sizes"]; inStock: boolean }[] = [];
+  const stockWrites = new Map<number, { sizes: Product["sizes"]; inStock: boolean }>();
+  // Two lines of one product share a doc, so the second sees the first's decrement.
+  const docs = new Map<string, Product>();
 
   for (const item of input.items) {
     const qty = Math.max(1, Math.min(20, Math.trunc(item.qty)));
-    const found = await payload.find({
-      collection: "products",
-      where: { slug: { equals: item.slug }, isActive: { equals: true } },
-      locale,
-      limit: 1,
-      overrideAccess: true,
-    });
-
-    const doc = found.docs[0];
+    let doc = docs.get(item.slug);
+    if (!doc) {
+      const found = await payload.find({
+        collection: "products",
+        where: { slug: { equals: item.slug }, isActive: { equals: true } },
+        locale,
+        limit: 1,
+        overrideAccess: true,
+      });
+      doc = found.docs[0];
+      if (doc) docs.set(item.slug, doc);
+    }
     if (!doc) return { ok: false, message: t("checkout.error.unavailable") };
 
     if (!isOrderable(doc, item.size, qty)) {
@@ -143,11 +148,10 @@ export async function placeOrder(input: {
         .map((row) => row.quantity)
         .filter((quantity): quantity is number => quantity !== null && quantity !== undefined);
 
-      stockWrites.push({
-        id: doc.id,
-        sizes,
-        inStock: tracked.length > 0 ? Math.max(...tracked) > 0 : Boolean(doc.inStock),
-      });
+      const inStock = tracked.length > 0 ? Math.max(...tracked) > 0 : Boolean(doc.inStock);
+      doc.sizes = sizes;
+      doc.inStock = inStock;
+      stockWrites.set(doc.id, { sizes, inStock });
     }
   }
 
@@ -181,10 +185,10 @@ export async function placeOrder(input: {
     },
   });
 
-  for (const write of stockWrites) {
+  for (const [id, write] of stockWrites) {
     await payload.update({
       collection: "products",
-      id: write.id,
+      id,
       overrideAccess: true,
       data: { sizes: write.sizes, inStock: write.inStock },
     });

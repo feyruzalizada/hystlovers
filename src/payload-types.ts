@@ -257,7 +257,7 @@ export interface Product {
   composition?: string | null;
   description?: string | null;
   /**
-   * XS/S, M/L, One Size
+   * XS/S, M/L, One Size. A size with an empty quantity is not counted and stays on sale indefinitely. Tracked sizes count down with each order, and the product sells out on its own when every tracked size reaches zero.
    */
   sizes: {
     size: string;
@@ -288,10 +288,19 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Turn off to pull the product from sale regardless of stock.
+   */
   inStock?: boolean | null;
   isNew?: boolean | null;
   isActive?: boolean | null;
+  /**
+   * A pre-order product can be bought while it is out of stock; stock is not counted down for it.
+   */
   isPreorder?: boolean | null;
+  /**
+   * Shown on the product page. Leave empty if the date is not known yet.
+   */
   preorderShipsAt?: string | null;
   missingTranslations?: string | null;
   updatedAt: string;

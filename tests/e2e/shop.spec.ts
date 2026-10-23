@@ -107,6 +107,41 @@ test("a shopper can register, buy and see the order", async ({ page }) => {
   await expect(page.locator("body")).toContainText(/HL\d{6}-\d{4}/);
 });
 
+test("two sizes of one product both count down and sell it out", async ({ page, request }) => {
+  const login = await request.post("/api/users/login", {
+    data: { email: "admin@hystlovers.com", password: "hystlovers123" },
+  });
+  const headers = { Authorization: `JWT ${(await login.json()).token}` };
+  const found = await (await request.get("/api/products?where[slug][equals]=t-shirt-brown&depth=0")).json();
+  const product = found.docs[0];
+  const url = `/api/products/${product.id}`;
+  const sizes = product.sizes.map((row: { size: string }) => ({ size: row.size, quantity: 1 }));
+  await request.patch(url, { headers, data: { sizes, inStock: true } });
+
+  try {
+    await register(page, uniqueEmail());
+    await page.goto("/az/products/t-shirt-brown");
+    for (const row of sizes) {
+      await page.getByRole("button", { name: row.size, exact: true }).click();
+      await page.getByRole("button", { name: /səbətə/i }).click();
+      await page.keyboard.press("Escape");
+    }
+
+    await page.goto("/az/checkout");
+    await page.locator('input[name="phone"]').fill("+994 50 123 45 67");
+    await page.locator('input[name="city"]').fill("Bakı");
+    await page.locator('textarea[name="address"]').fill("Nizami küçəsi 1");
+    await page.getByRole("button", { name: /sifarişi təsdiqlə/i }).click();
+    await page.waitForURL(/\/az\/account\/orders\/HL/);
+
+    const after = await (await request.get(`${url}?depth=0`, { headers })).json();
+    expect(after.sizes.map((row: { quantity: number }) => row.quantity)).toEqual(sizes.map(() => 0));
+    expect(after.inStock).toBe(false);
+  } finally {
+    await request.patch(url, { headers, data: { sizes: product.sizes, inStock: product.inStock } });
+  }
+});
+
 test("checkout and account require a signed-in shopper", async ({ page }) => {
   await page.context().clearCookies();
   await page.goto("/az/account");
