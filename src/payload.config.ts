@@ -26,7 +26,9 @@ import { Settings } from "./globals/Settings";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // Without DATABASE_URI the app opens the read-only demo database that ships
 // with the repository, so a deployment needs no database server.
-const databaseUri = process.env.DATABASE_URI || "file:./src/seed/demo.sqlite";
+// DATABASE_URL is what Vercel's Neon integration sets.
+const databaseUri =
+  process.env.DATABASE_URI || process.env.DATABASE_URL || "file:./src/seed/demo.sqlite";
 
 /**
  * Postgres in production, SQLite locally — the same split the PHP app used, so

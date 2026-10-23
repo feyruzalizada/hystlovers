@@ -46,7 +46,8 @@ npm run migrate                 # applies it to the database in DATABASE_URI
 
 ## Deploying to Vercel
 
-1. Add a Postgres database (Neon, Supabase, …) and set `DATABASE_URI`.
+1. Add a Postgres database (Neon, Supabase, …) and set `DATABASE_URI`. Vercel's Neon integration
+   sets `DATABASE_URL`, which is picked up as well.
 2. Set `PAYLOAD_SECRET`, `SERVER_URL` (the site's origin) and, optionally, `ADMIN_PASSWORD`.
 3. Create a Blob store in the project's Storage tab — Vercel adds `BLOB_READ_WRITE_TOKEN`, and
    images uploaded in the panel go there, since Vercel's filesystem is read-only.
