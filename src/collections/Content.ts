@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { LIST_FILTERS } from "./admin-components";
+import { copySlug, hiddenOnCopy } from "./duplicate";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete, revalidateHooks } from "./revalidate";
@@ -19,6 +21,8 @@ export const Slides: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["image", "title", "ctaLabel", "missingTranslations", "isActive", "startsAt", "updatedAt"],
     group: "Content",
+    components: { beforeListTable: [LIST_FILTERS] },
+    listSearchableFields: ["title"],
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -44,7 +48,13 @@ export const Slides: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
+        {
+          name: "isActive",
+          type: "checkbox",
+          defaultValue: true,
+          admin: { width: "50%" },
+          hooks: { beforeDuplicate: [hiddenOnCopy] },
+        },
       ],
     },
     missingTranslations("slides", ["title", "subtitle", "ctaLabel"]),
@@ -61,6 +71,7 @@ export const HomeSections: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "productLimit", "missingTranslations", "isActive"],
     group: "Content",
+    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -71,7 +82,13 @@ export const HomeSections: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
+        {
+          name: "isActive",
+          type: "checkbox",
+          defaultValue: true,
+          admin: { width: "50%" },
+          hooks: { beforeDuplicate: [hiddenOnCopy] },
+        },
       ],
     },
     missingTranslations("home-sections", ["title"]),
@@ -86,6 +103,8 @@ export const Pages: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "footerGroup", "missingTranslations", "isActive", "updatedAt"],
     group: "Content",
+    components: { beforeListTable: [LIST_FILTERS] },
+    listSearchableFields: ["title", "slug"],
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -101,13 +120,26 @@ export const Pages: CollectionConfig = {
   },
   fields: [
     { name: "title", type: "text", required: true, localized: true },
-    { name: "slug", type: "text", required: true, unique: true, index: true },
+    {
+      name: "slug",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+      hooks: { beforeDuplicate: [copySlug("pages")] },
+    },
     { name: "body", type: "richText", localized: true },
     { name: "footerGroup", type: "select", options: FOOTER_GROUPS, index: true },
     {
       type: "row",
       fields: [
-        { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
+        {
+          name: "isActive",
+          type: "checkbox",
+          defaultValue: true,
+          admin: { width: "50%" },
+          hooks: { beforeDuplicate: [hiddenOnCopy] },
+        },
       ],
     },
     missingTranslations("pages", ["title", "body"]),
@@ -121,6 +153,7 @@ export const Posts: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["coverImage", "title", "missingTranslations", "isActive", "publishedAt"],
     group: "Content",
+    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "-publishedAt",
@@ -136,7 +169,14 @@ export const Posts: CollectionConfig = {
   },
   fields: [
     { name: "title", type: "text", required: true, localized: true },
-    { name: "slug", type: "text", required: true, unique: true, index: true },
+    {
+      name: "slug",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+      hooks: { beforeDuplicate: [copySlug("posts")] },
+    },
     { name: "excerpt", type: "textarea", localized: true },
     { name: "body", type: "richText", localized: true },
     { name: "coverImage", type: "upload", relationTo: "media" },
@@ -149,7 +189,13 @@ export const Posts: CollectionConfig = {
     {
       type: "row",
       fields: [
-        { name: "isActive", type: "checkbox", defaultValue: true, admin: { width: "50%" } },
+        {
+          name: "isActive",
+          type: "checkbox",
+          defaultValue: true,
+          admin: { width: "50%" },
+          hooks: { beforeDuplicate: [hiddenOnCopy] },
+        },
         { name: "publishedAt", type: "date", admin: { width: "50%" } },
       ],
     },
@@ -166,8 +212,15 @@ export const SiteTexts: CollectionConfig = {
   slug: "site-texts",
   hooks: revalidateHooks,
   labels: { singular: "Site text", plural: "Site texts" },
-  admin: { useAsTitle: "key", defaultColumns: ["key", "group", "az", "en", "ru"], group: "Content" },
+  admin: {
+    useAsTitle: "key",
+    defaultColumns: ["key", "group", "az", "en", "ru"],
+    group: "Content",
+    components: { beforeListTable: [LIST_FILTERS] },
+    listSearchableFields: ["key", "az", "en", "ru"],
+  },
   access: { ...adminAccess, create: () => false },
+  disableDuplicate: true,
   defaultSort: "key",
   fields: [
     { name: "key", type: "text", required: true, unique: true, index: true },

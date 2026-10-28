@@ -87,7 +87,11 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    customers: {
+      orders: 'orders';
+    };
+  };
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
@@ -210,8 +214,17 @@ export interface Order {
 export interface Customer {
   id: number;
   name: string;
+  /**
+   * Lets this customer sign in to the admin panel with the same email and, at first, the same password.
+   */
+  panelAccess?: boolean | null;
   ordersCount?: number | null;
   spent?: number | null;
+  orders?: {
+    docs?: (number | Order)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -740,8 +753,10 @@ export interface OrdersSelect<T extends boolean = true> {
  */
 export interface CustomersSelect<T extends boolean = true> {
   name?: T;
+  panelAccess?: T;
   ordersCount?: T;
   spent?: T;
+  orders?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

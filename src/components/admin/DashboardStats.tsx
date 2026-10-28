@@ -1,5 +1,6 @@
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
+import * as qs from "qs-esm";
 
 /**
  * The stat row the Filament panel showed above its dashboard: what needs
@@ -39,6 +40,7 @@ export default async function DashboardStats() {
     categories,
     rootCategories,
     slides,
+    liveSlides,
     pages,
   ] = await Promise.all([
     count("orders"),
@@ -64,6 +66,13 @@ export default async function DashboardStats() {
     count("categories", { isActive: { equals: true } }),
     count("categories", { parent: { exists: false } }),
     count("slides"),
+    count("slides", {
+      and: [
+        { isActive: { equals: true } },
+        { or: [{ startsAt: { exists: false } }, { startsAt: { less_than_equal: new Date().toISOString() } }] },
+        { or: [{ endsAt: { exists: false } }, { endsAt: { greater_than_equal: new Date().toISOString() } }] },
+      ],
+    }),
     count("pages", { isActive: { equals: true } }),
   ]);
 
@@ -99,7 +108,7 @@ export default async function DashboardStats() {
       label: "Out of stock",
       value: String(outOfStock),
       description: outOfStock > 0 ? "Needs restocking" : "All products available",
-      href: "/admin/collections/products",
+      href: `/admin/collections/products${qs.stringify({ where: { and: [{ inStock: { equals: false } }] } }, { addQueryPrefix: true })}`,
       tone: outOfStock > 0 ? "warn" : "good",
     },
     {
@@ -122,7 +131,7 @@ export default async function DashboardStats() {
     {
       label: "Slides",
       value: String(slides),
-      description: "On the homepage slider",
+      description: `${liveSlides} live on the homepage`,
       href: "/admin/collections/slides",
       tone: "neutral",
     },

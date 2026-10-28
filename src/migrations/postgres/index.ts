@@ -4,6 +4,7 @@ import * as migration_20261010_081300_localized_contact from './20261010_081300_
 import * as migration_20261017_151442_brand_block from './20261017_151442_brand_block';
 import * as migration_20261019_195237_localized_item from './20261019_195237_localized_item';
 import * as migration_20261019_200605_brand_announcement from './20261019_200605_brand_announcement';
+import * as migration_20261028_100649_customer_admin_fields from './20261028_100649_customer_admin_fields';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261019_200605_brand_announcement.up,
     down: migration_20261019_200605_brand_announcement.down,
-    name: '20261019_200605_brand_announcement'
+    name: '20261019_200605_brand_announcement',
+  },
+  {
+    up: migration_20261028_100649_customer_admin_fields.up,
+    down: migration_20261028_100649_customer_admin_fields.down,
+    name: '20261028_100649_customer_admin_fields'
   },
 ];

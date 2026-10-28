@@ -1,0 +1,55 @@
+#nav-orders,
+#nav-contact-messages {
+  &[data-badge]::after {
+    content: attr(data-badge);
+    margin-left: auto;
+    padding: 0 0.45rem;
+    border-radius: 999px;
+    background: var(--theme-warning-500);
+    color: var(--theme-elevation-0);
+    font-size: 0.7rem;
+    line-height: 1.4rem;
+  }
+}
+
+#nav-contact-messages[data-badge]::after {
+  background: var(--theme-error-500);
+}
+
+.list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+
+  &__export {
+    margin: 0 0 0 auto;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--theme-elevation-600);
+  }
+
+  select {
+    min-width: 9rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--style-radius-s);
+    background: var(--theme-input-bg);
+    color: var(--theme-text);
+    font-size: 0.85rem;
+  }
+}
+
+.order-status-cell {
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: var(--style-radius-s);
+  background: var(--theme-input-bg);
+  color: var(--theme-text);
+}

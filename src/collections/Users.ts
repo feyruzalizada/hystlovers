@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { markCustomerAfterUserChange, markCustomerAfterUserDelete } from "./customer-sync";
 
 /** Admin panel accounts. Storefront shoppers live in `customers`. */
 export const Users: CollectionConfig = {
@@ -10,6 +11,10 @@ export const Users: CollectionConfig = {
     create: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
+  },
+  hooks: {
+    afterChange: [markCustomerAfterUserChange],
+    afterDelete: [markCustomerAfterUserDelete],
   },
   fields: [{ name: "name", type: "text", required: true }],
 };

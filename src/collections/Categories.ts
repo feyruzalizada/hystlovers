@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { LIST_FILTERS } from "./admin-components";
+import { copySlug, hiddenOnCopy } from "./duplicate";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
@@ -12,6 +14,8 @@ export const Categories: CollectionConfig = {
     useAsTitle: "name",
     defaultColumns: ["name", "slug", "childrenCount", "missingTranslations", "isActive", "updatedAt"],
     group: "Shop",
+    listSearchableFields: ["name", "slug"],
+    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -47,7 +51,14 @@ export const Categories: CollectionConfig = {
         ],
       },
     },
-    { name: "slug", type: "text", required: true, unique: true, index: true },
+    {
+      name: "slug",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+      hooks: { beforeDuplicate: [copySlug("categories")] },
+    },
     { name: "description", type: "textarea", localized: true },
     {
       name: "parent",
@@ -56,7 +67,13 @@ export const Categories: CollectionConfig = {
       admin: { description: "Leave empty for a top-level category." },
     },
     { name: "image", type: "upload", relationTo: "media" },
-    { name: "isActive", type: "checkbox", defaultValue: true, index: true },
+    {
+      name: "isActive",
+      type: "checkbox",
+      defaultValue: true,
+      index: true,
+      hooks: { beforeDuplicate: [hiddenOnCopy] },
+    },
     missingTranslations("categories", ["name", "description"]),
   ],
 };

@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
+import { LIST_FILTERS } from "./admin-components";
+import { copySlug, hiddenOnCopy } from "./duplicate";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
@@ -19,6 +21,8 @@ export const Products: CollectionConfig = {
     useAsTitle: "slug",
     defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive", "missingTranslations"],
     group: "Shop",
+    listSearchableFields: ["series", "item", "colorName"],
+    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -63,7 +67,14 @@ export const Products: CollectionConfig = {
         ],
       },
     },
-    { name: "slug", type: "text", required: true, unique: true, index: true },
+    {
+      name: "slug",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+      hooks: { beforeDuplicate: [copySlug("products")] },
+    },
     { name: "category", type: "relationship", relationTo: "categories", index: true },
     {
       type: "row",
@@ -145,7 +156,14 @@ export const Products: CollectionConfig = {
           admin: { width: "33%", description: "Turn off to pull the product from sale regardless of stock." },
         },
         { name: "isNew", type: "checkbox", defaultValue: false, index: true, admin: { width: "33%" } },
-        { name: "isActive", type: "checkbox", defaultValue: true, index: true, admin: { width: "33%" } },
+        {
+          name: "isActive",
+          type: "checkbox",
+          defaultValue: true,
+          index: true,
+          admin: { width: "33%" },
+          hooks: { beforeDuplicate: [hiddenOnCopy] },
+        },
       ],
     },
     {

@@ -22,6 +22,7 @@ import {
 } from "./collections/Commerce";
 import { Brand } from "./globals/Brand";
 import { Settings } from "./globals/Settings";
+import { navBadges } from "./endpoints/nav-badges";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // Without DATABASE_URI the app opens the read-only demo database that ships
@@ -71,6 +72,7 @@ export default buildConfig({
     meta: { titleSuffix: " — Hystlovers" },
     components: {
       beforeDashboard: ["/components/admin/DashboardStats#default"],
+      afterNavLinks: ["/components/admin/NavBadges#default"],
     },
   },
   // Order matters: the panel groups by `admin.group` and keeps this order
@@ -92,6 +94,7 @@ export default buildConfig({
     Users,
   ],
   globals: [Brand, Settings],
+  endpoints: [navBadges],
   localization: {
     locales: [
       { label: "Azərbaycan", code: "az" },

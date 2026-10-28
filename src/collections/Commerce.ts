@@ -1,5 +1,13 @@
 import type { CollectionConfig } from "payload";
 import { adminOnly } from "./access";
+import { LIST_FILTERS } from "./admin-components";
+import {
+  countOrdersAfterChange,
+  countOrdersAfterDelete,
+  guardOwnPanelAccess,
+  syncPanelAccount,
+} from "./customer-sync";
+import { ordersExport } from "@/endpoints/orders-export";
 import { resetEmailHtml, resetEmailSubject } from "@/lib/reset-email";
 
 export const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
@@ -7,8 +15,18 @@ export const PAYMENT_METHODS = ["cod", "bank_transfer"] as const;
 export const PAYMENT_STATUSES = ["pending", "paid"] as const;
 export const CONTACT_SUBJECTS = ["order", "return", "product", "other"] as const;
 
-const options = (values: readonly string[]) =>
-  values.map((value) => ({ label: value.replaceAll("_", " "), value }));
+// Wording the source panel used; anything not listed is just capitalised.
+const ADMIN_LABELS: Record<string, string> = {
+  cod: "Cash on delivery",
+  bank_transfer: "Bank transfer",
+  return: "Return / Exchange",
+  product: "Product question",
+};
+
+export const adminLabel = (value: string | null | undefined) =>
+  value ? (ADMIN_LABELS[value] ?? value.charAt(0).toUpperCase() + value.slice(1)) : "";
+
+const options = (values: readonly string[]) => values.map((value) => ({ label: adminLabel(value), value }));
 
 /** Storefront shoppers. Separate from `users`, which is admin-panel only. */
 export const Customers: CollectionConfig = {
@@ -25,8 +43,15 @@ export const Customers: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    defaultColumns: ["name", "email", "ordersCount", "spent", "createdAt"],
+    defaultColumns: ["name", "email", "ordersCount", "spent", "panelAccess", "createdAt"],
     group: "Shop",
+    listSearchableFields: ["name", "email"],
+    components: { beforeListTable: [LIST_FILTERS] },
+  },
+  disableDuplicate: true,
+  hooks: {
+    beforeChange: [guardOwnPanelAccess],
+    afterChange: [syncPanelAccount],
   },
   access: {
     // A shopper may read and update only their own record.
@@ -39,28 +64,27 @@ export const Customers: CollectionConfig = {
     delete: adminOnly,
   },
   defaultSort: "-createdAt",
-  // The source panel only ever shows a customer, never an edit form.
+  // The source panel shows a customer read-only; only panel access changes.
   fields: [
     { name: "name", type: "text", required: true, admin: { readOnly: true } },
     {
+      name: "panelAccess",
+      type: "checkbox",
+      defaultValue: false,
+      index: true,
+      admin: {
+        position: "sidebar",
+        description: "Lets this customer sign in to the admin panel with the same email and, at first, the same password.",
+      },
+    },
+    {
+      // Stored, not virtual, so the list can sort and filter on it.
       name: "ordersCount",
       type: "number",
-      virtual: true,
       label: "Orders",
+      defaultValue: 0,
+      index: true,
       admin: { readOnly: true },
-      hooks: {
-        afterRead: [
-          async ({ data, req }) => {
-            if (!data?.id) return 0;
-            const { totalDocs } = await req.payload.count({
-              collection: "orders",
-              where: { customer: { equals: data.id } },
-              overrideAccess: true,
-            });
-            return totalDocs;
-          },
-        ],
-      },
     },
     {
       // Cancelled orders are left out, as in the source panel.
@@ -88,6 +112,14 @@ export const Customers: CollectionConfig = {
         ],
       },
     },
+    {
+      name: "orders",
+      type: "join",
+      collection: "orders",
+      on: "customer",
+      defaultSort: "-createdAt",
+      admin: { defaultColumns: ["number", "status", "total", "createdAt"], allowCreate: false },
+    },
   ],
 };
 
@@ -97,6 +129,14 @@ export const Orders: CollectionConfig = {
     useAsTitle: "number",
     defaultColumns: ["number", "customerName", "itemsCount", "total", "paymentMethod", "status", "createdAt"],
     group: "Shop",
+    listSearchableFields: ["number", "customerName"],
+    components: { beforeListTable: [LIST_FILTERS] },
+  },
+  disableDuplicate: true,
+  endpoints: [ordersExport],
+  hooks: {
+    afterChange: [countOrdersAfterChange],
+    afterDelete: [countOrdersAfterDelete],
   },
   access: {
     read: ({ req }) =>
@@ -135,7 +175,8 @@ export const Orders: CollectionConfig = {
           defaultValue: "pending",
           required: true,
           index: true,
-          admin: { width: "33%" },
+          // Changed straight from the list, as the source table's select column allowed.
+          admin: { width: "33%", components: { Cell: "/components/admin/OrderStatusCell#default" } },
         },
         {
           name: "paymentMethod",
@@ -150,7 +191,7 @@ export const Orders: CollectionConfig = {
           options: options(PAYMENT_STATUSES),
           defaultValue: "pending",
           required: true,
-          admin: { width: "33%", readOnly: true },
+          admin: { width: "33%" },
         },
       ],
     },
@@ -207,7 +248,10 @@ export const ContactMessages: CollectionConfig = {
     useAsTitle: "subject",
     defaultColumns: ["name", "subject", "message", "readAt", "createdAt"],
     group: "Contact",
+    listSearchableFields: ["name", "message"],
+    components: { beforeListTable: [LIST_FILTERS] },
   },
+  disableDuplicate: true,
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   defaultSort: "-createdAt",
   hooks: {
@@ -247,6 +291,7 @@ export const NewsletterSubscribers: CollectionConfig = {
   labels: { singular: "Newsletter subscriber", plural: "Newsletter" },
   admin: { useAsTitle: "email", defaultColumns: ["email", "createdAt"], group: "Contact" },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
+  disableDuplicate: true,
   defaultSort: "-createdAt",
   // Subscriptions come from the storefront; the panel only lists them.
   fields: [
@@ -264,8 +309,14 @@ export const NewsletterSubscribers: CollectionConfig = {
 export const StockNotifications: CollectionConfig = {
   slug: "stock-notifications",
   labels: { singular: "Stock alert", plural: "Stock alerts" },
-  admin: { useAsTitle: "email", defaultColumns: ["product", "email", "createdAt"], group: "Contact" },
+  admin: {
+    useAsTitle: "email",
+    defaultColumns: ["product", "email", "createdAt"],
+    group: "Contact",
+    components: { beforeListTable: [LIST_FILTERS] },
+  },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
+  disableDuplicate: true,
   defaultSort: "-createdAt",
   fields: [
     { name: "product", type: "relationship", relationTo: "products", required: true, admin: { readOnly: true } },
