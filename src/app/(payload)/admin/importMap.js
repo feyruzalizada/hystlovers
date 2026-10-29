@@ -1,8 +1,11 @@
 import { default as default_6dac7502ced12b79824a8e14afabc344 } from '../../../components/admin/OrderStatusCell'
+import { default as default_21f0de5808c4f3a1c8ba75e4ea811a82 } from '../../../components/admin/NoteCell'
 import { default as default_744010add209a33c9051e78b813fcc64 } from '../../../components/admin/ListFilters'
+import { default as default_fa5fd88290fcbe1107a9eda47562b565 } from '../../../components/admin/SuggestField'
 import { default as default_d66ddfc75b0270bf9636e30c2125444d } from '../../../components/admin/SlugField'
-import { default as default_64240eacb8a74a7c6427f6acb10879a3 } from '../../../components/admin/ColorCell'
 import { default as default_f18d715b9f5ea63091d1361f9c46fa22 } from '../../../components/admin/ColorField'
+import { default as default_5f188057c22a5e8aba71e00e234c240a } from '../../../components/admin/ToggleCell'
+import { default as default_64240eacb8a74a7c6427f6acb10879a3 } from '../../../components/admin/ColorCell'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -34,10 +37,13 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 /** @type import('payload').ImportMap */
 export const importMap = {
   "/components/admin/OrderStatusCell#default": default_6dac7502ced12b79824a8e14afabc344,
+  "/components/admin/NoteCell#default": default_21f0de5808c4f3a1c8ba75e4ea811a82,
   "/components/admin/ListFilters#default": default_744010add209a33c9051e78b813fcc64,
+  "/components/admin/SuggestField#default": default_fa5fd88290fcbe1107a9eda47562b565,
   "/components/admin/SlugField#default": default_d66ddfc75b0270bf9636e30c2125444d,
-  "/components/admin/ColorCell#default": default_64240eacb8a74a7c6427f6acb10879a3,
   "/components/admin/ColorField#default": default_f18d715b9f5ea63091d1361f9c46fa22,
+  "/components/admin/ToggleCell#default": default_5f188057c22a5e8aba71e00e234c240a,
+  "/components/admin/ColorCell#default": default_64240eacb8a74a7c6427f6acb10879a3,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,

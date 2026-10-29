@@ -193,3 +193,53 @@ test("a new category's slug follows its name until typed by hand; built-in slugs
   await page.locator('input[name="name"]').fill("Payız");
   await expect(slug).toHaveValue("yay");
 });
+
+test("the panel refuses what the source forms refused", async ({ request }) => {
+  const headers = await adminHeaders(request);
+  const product = (await (await request.get("/api/products?where[slug][equals]=t-shirt-brown&depth=0", { headers })).json()).docs[0];
+  const cheaper = await request.patch(`/api/products/${product.id}`, { headers, data: { compareAtPrice: product.price } });
+  expect(cheaper.status()).toBe(400);
+
+  const slide = (await (await request.get("/api/slides?limit=1&depth=0", { headers })).json()).docs[0];
+  const script = await request.patch(`/api/slides/${slide.id}`, { headers, data: { ctaLabel: "Bax", ctaUrl: "javascript:alert(1)" } });
+  expect(script.status()).toBe(400);
+
+  const { docs: categories } = await (await request.get("/api/categories?limit=0&depth=0&locale=az", { headers })).json();
+  const child = categories.find((category: { parent: unknown }) => category.parent);
+  expect(child.pathName).toContain(" › ");
+  const loop = await request.patch(`/api/categories/${child.parent}`, { headers, data: { parent: child.id } });
+  expect(loop.status()).toBe(400);
+});
+
+test("contact details live on their own panel page and reach the contact page", async ({ page, request }) => {
+  const headers = await adminHeaders(request);
+  const before = await (await request.get("/api/globals/contact-details?depth=0", { headers })).json();
+  try {
+    await request.post("/api/globals/contact-details", { headers, data: { contactEmail: "salam@hystlovers.com" } });
+    await page.goto("/az/contact");
+    await expect(page.locator("main")).toContainText("salam@hystlovers.com");
+  } finally {
+    await request.post("/api/globals/contact-details", { headers, data: { contactEmail: before.contactEmail } });
+  }
+});
+
+test("list switches save straight from the table; category selects show the full path", async ({ page, request }) => {
+  test.setTimeout(180_000);
+  const headers = await adminHeaders(request);
+  const product = (await (await request.get("/api/products?where[slug][equals]=t-shirt-brown&depth=0", { headers })).json()).docs[0];
+  await adminLogin(page);
+  try {
+    await page.goto("/admin/collections/products?limit=100");
+    const row = page.locator("tbody tr", { has: page.locator(`a[href$="/products/${product.id}"]`) });
+    await row.getByRole("switch", { name: "New in" }).click();
+    await expect
+      .poll(async () => (await (await request.get(`/api/products/${product.id}?depth=0`, { headers })).json()).isNew)
+      .toBe(!product.isNew);
+
+    await page.goto(`/admin/collections/products/${product.id}`);
+    await page.locator("#field-category").click();
+    await expect(page.getByText(/ › /).first()).toBeVisible();
+  } finally {
+    await request.patch(`/api/products/${product.id}`, { headers, data: { isNew: product.isNew } });
+  }
+});

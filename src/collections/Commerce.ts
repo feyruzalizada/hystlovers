@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminOnly } from "./access";
-import { LIST_FILTERS } from "./admin-components";
+import { LIST_FILTERS, noteCell } from "./admin-components";
 import {
   countOrdersAfterChange,
   countOrdersAfterDelete,
@@ -181,9 +181,10 @@ export const Orders: CollectionConfig = {
         {
           name: "paymentMethod",
           type: "select",
+          label: "Payment",
           options: options(PAYMENT_METHODS),
           required: true,
-          admin: { width: "33%", readOnly: true },
+          admin: { width: "33%", readOnly: true, components: { Cell: noteCell("paymentStatus", { labels: true }) } },
         },
         {
           name: "paymentStatus",
@@ -199,7 +200,13 @@ export const Orders: CollectionConfig = {
       type: "collapsible",
       label: "Delivery",
       fields: [
-        { name: "customerName", type: "text", required: true, admin: { readOnly: true } },
+        {
+          name: "customerName",
+          type: "text",
+          label: "Customer",
+          required: true,
+          admin: { readOnly: true, components: { Cell: noteCell("phone") } },
+        },
         { name: "customerEmail", type: "email", required: true, admin: { readOnly: true } },
         { name: "phone", type: "text", required: true, admin: { readOnly: true } },
         { name: "city", type: "text", required: true, admin: { readOnly: true } },
@@ -243,7 +250,7 @@ export const Orders: CollectionConfig = {
 
 export const ContactMessages: CollectionConfig = {
   slug: "contact-messages",
-  labels: { singular: "Contact message", plural: "Contact messages" },
+  labels: { singular: "Message", plural: "Messages" },
   admin: {
     useAsTitle: "subject",
     defaultColumns: ["name", "subject", "message", "readAt", "createdAt"],
@@ -278,7 +285,7 @@ export const ContactMessages: CollectionConfig = {
     ],
   },
   fields: [
-    { name: "name", type: "text", required: true, admin: { readOnly: true } },
+    { name: "name", type: "text", required: true, admin: { readOnly: true, components: { Cell: noteCell("email") } } },
     { name: "email", type: "email", required: true, admin: { readOnly: true } },
     { name: "subject", type: "select", options: options(CONTACT_SUBJECTS), required: true, admin: { readOnly: true } },
     { name: "message", type: "textarea", required: true, admin: { readOnly: true } },

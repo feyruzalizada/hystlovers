@@ -196,6 +196,14 @@ export async function seed(payload: Payload) {
         currencySymbol: shop.currency.symbol,
         freeShippingThreshold: shop.freeShippingThreshold,
         shippingFee: shop.shippingFee,
+      },
+    });
+  }
+  const contactDetails = await payload.findGlobal({ slug: "contact-details" });
+  if (!contactDetails.updatedAt) {
+    await payload.updateGlobal({
+      slug: "contact-details",
+      data: {
         contactEmail: contact.details.email,
         contactPhone: contact.details.phone,
         contactWhatsapp: contact.details.whatsapp,

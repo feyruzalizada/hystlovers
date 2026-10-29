@@ -9,6 +9,7 @@ import * as migration_20261019_200553_brand_announcement from './20261019_200553
 import * as migration_20261028_100636_customer_admin_fields from './20261028_100636_customer_admin_fields';
 import * as migration_20261029_171412_filter_colors from './20261029_171412_filter_colors';
 import * as migration_20261029_215459_filter_fabrics from './20261029_215459_filter_fabrics';
+import * as migration_20261029_225426_admin_parity_forms from './20261029_225426_admin_parity_forms';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261029_215459_filter_fabrics.up,
     down: migration_20261029_215459_filter_fabrics.down,
-    name: '20261029_215459_filter_fabrics'
+    name: '20261029_215459_filter_fabrics',
+  },
+  {
+    up: migration_20261029_225426_admin_parity_forms.up,
+    down: migration_20261029_225426_admin_parity_forms.down,
+    name: '20261029_225426_admin_parity_forms'
   },
 ];

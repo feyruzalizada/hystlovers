@@ -23,6 +23,7 @@ import {
   StockNotifications,
 } from "./collections/Commerce";
 import { Brand } from "./globals/Brand";
+import { ContactDetails } from "./globals/ContactDetails";
 import { Settings } from "./globals/Settings";
 import { navBadges } from "./endpoints/nav-badges";
 
@@ -97,7 +98,7 @@ export default buildConfig({
     Media,
     Users,
   ],
-  globals: [Brand, Settings],
+  globals: [Settings, Brand, ContactDetails],
   endpoints: [navBadges],
   localization: {
     locales: [

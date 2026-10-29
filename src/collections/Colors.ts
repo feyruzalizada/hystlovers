@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS } from "./admin-components";
+import { LIST_FILTERS, TOGGLE_CELL } from "./admin-components";
 import { missingTranslations } from "./missing-translations";
 import { revalidateHooks } from "./revalidate";
 
@@ -66,6 +66,7 @@ export const Colors: CollectionConfig = {
       label: "Show in filter",
       defaultValue: true,
       index: true,
+      admin: { components: { Cell: TOGGLE_CELL } },
     },
     missingTranslations("colors", ["name"]),
   ],

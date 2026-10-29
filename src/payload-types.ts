@@ -121,12 +121,14 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('az' | 'en' | 'ru') | ('az' | 'en' | 'ru')[];
   globals: {
-    brand: Brand;
     settings: Setting;
+    brand: Brand;
+    'contact-details': ContactDetail;
   };
   globalsSelect: {
-    brand: BrandSelect<false> | BrandSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    brand: BrandSelect<false> | BrandSelect<true>;
+    'contact-details': ContactDetailsSelect<false> | ContactDetailsSelect<true>;
   };
   locale: 'az' | 'en' | 'ru';
   widgets: {
@@ -257,27 +259,17 @@ export interface Product {
   _order?: string | null;
   series: string;
   item: string;
-  stock?: string | null;
+  category?: (number | null) | Category;
   /**
    * Auto-generated from series + item + color; you can also type your own. Special characters are converted (ş→s, ç→c, ı→i…).
    */
   slug: string;
-  category?: (number | null) | Category;
-  colorName: string;
-  /**
-   * #rrggbb
-   */
-  colorHex: string;
-  price: number;
-  compareAtPrice?: number | null;
-  /**
-   * Bamboo, Cotton, Lycra, Modal, Terry Cloth, Viscose
-   */
-  fabric?: string | null;
-  composition?: string | null;
   description?: string | null;
+  stock?: string | null;
+  colorName: string;
+  colorHex: string;
   /**
-   * XS/S, M/L, One Size. A size with an empty quantity is not counted and stays on sale indefinitely. Tracked sizes count down with each order, and the product sells out on its own when every tracked size reaches zero.
+   * A size with an empty quantity is not counted — it stays on sale indefinitely. Tracked sizes count down with each order, and the product sells out on its own when every tracked size reaches zero.
    */
   sizes: {
     size: string;
@@ -287,6 +279,28 @@ export interface Product {
     quantity?: number | null;
     id?: string | null;
   }[];
+  /**
+   * Turn off to pull the product from sale regardless of stock.
+   */
+  inStock?: boolean | null;
+  isPreorder?: boolean | null;
+  /**
+   * Shown on the product page. Leave empty if the date is not known yet.
+   */
+  preorderShipsAt?: string | null;
+  price: number;
+  /**
+   * Old price shown struck through; leave empty if not on sale.
+   */
+  compareAtPrice?: number | null;
+  /**
+   * Used as a storefront filter.
+   */
+  fabric?: string | null;
+  composition?: string | null;
+  /**
+   * Shown as bullet points on the product page. Keep the same number of lines in every language.
+   */
   features?:
     | {
         value: string;
@@ -294,7 +308,7 @@ export interface Product {
       }[]
     | null;
   /**
-   * Filling this in makes the product a set.
+   * Fill only for sets — shown as "Set Includes" and appended to the product name.
    */
   setParts?:
     | {
@@ -302,26 +316,18 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
   /**
-   * Turn off to pull the product from sale regardless of stock.
+   * First image is the main one; the second appears on card hover. Recommended ratio 3:4.
    */
-  inStock?: boolean | null;
-  isNew?: boolean | null;
+  images: {
+    image: number | Media;
+    id?: string | null;
+  }[];
   isActive?: boolean | null;
   /**
-   * A pre-order product can be bought while it is out of stock; stock is not counted down for it.
+   * Shows the product in the New In collection.
    */
-  isPreorder?: boolean | null;
-  /**
-   * Shown on the product page. Leave empty if the date is not known yet.
-   */
-  preorderShipsAt?: string | null;
+  isNew?: boolean | null;
   missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -334,16 +340,20 @@ export interface Category {
   id: number;
   _order?: string | null;
   name: string;
-  childrenCount?: number | null;
   /**
    * Auto-generated from the name; you can also type your own. Special characters are converted (ş→s, ç→c, ı→i…).
    */
   slug: string;
-  description?: string | null;
   /**
    * Leave empty for a top-level category.
    */
   parent?: (number | null) | Category;
+  /**
+   * Shown under the category title on the storefront.
+   */
+  description?: string | null;
+  pathName?: string | null;
+  childrenCount?: number | null;
   image?: (number | null) | Media;
   isActive?: boolean | null;
   missingTranslations?: string | null;
@@ -442,14 +452,26 @@ export interface Slide {
   subtitle?: string | null;
   ctaLabel?: string | null;
   /**
-   * e.g. /collections/kai
+   * Relative path (/collections/kai) or full URL.
    */
   ctaUrl?: string | null;
+  /**
+   * Recommended: 2400×1400 (21:9 on large screens).
+   */
   image: number | Media;
+  /**
+   * Recommended: 1080×1350 (4:5). Falls back to the desktop image.
+   */
   imageMobile?: (number | null) | Media;
-  startsAt?: string | null;
-  endsAt?: string | null;
   isActive?: boolean | null;
+  /**
+   * Leave empty to show immediately.
+   */
+  startsAt?: string | null;
+  /**
+   * Leave empty to show indefinitely.
+   */
+  endsAt?: string | null;
   missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -463,10 +485,10 @@ export interface HomeSection {
   _order?: string | null;
   category: number | Category;
   /**
-   * Leave empty to use the category name.
+   * E.g. show the "Sets" category as "Summer Sets".
    */
   title?: string | null;
-  productLimit?: number | null;
+  productLimit: number;
   isActive?: boolean | null;
   missingTranslations?: string | null;
   updatedAt: string;
@@ -481,7 +503,7 @@ export interface Page {
   _order?: string | null;
   title: string;
   /**
-   * Auto-generated from the title. Special characters are converted (ş→s, ç→c, ı→i…).
+   * Auto-generated from the title; the page lives at /pages/<slug>. Special characters are converted (ş→s, ç→c, ı→i…).
    */
   slug: string;
   body?: {
@@ -499,6 +521,9 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * The page stays reachable by its URL either way.
+   */
   footerGroup?: ('company' | 'help') | null;
   isActive?: boolean | null;
   missingTranslations?: string | null;
@@ -513,9 +538,12 @@ export interface Post {
   id: number;
   title: string;
   /**
-   * Auto-generated from the title. Special characters are converted (ş→s, ç→c, ı→i…).
+   * Auto-generated from the title; the post lives at /blog/<slug>. Special characters are converted (ş→s, ç→c, ı→i…).
    */
   slug: string;
+  /**
+   * Shown on the blog index and used as the Google search description.
+   */
   excerpt?: string | null;
   body?: {
     root: {
@@ -532,9 +560,12 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Shown on the blog index and when the post is shared. Recommended ratio 4:3.
+   */
   coverImage?: (number | null) | Media;
   /**
-   * Shown as a gallery under the article.
+   * Optional gallery shown underneath the article.
    */
   images?:
     | {
@@ -542,13 +573,18 @@ export interface Post {
         id?: string | null;
       }[]
     | null;
-  isActive?: boolean | null;
+  /**
+   * Leave empty to keep it a draft. A future time schedules the post.
+   */
   publishedAt?: string | null;
+  isActive?: boolean | null;
   missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Every fixed word on the storefront. Product, category and page wording is edited on those records instead.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-texts".
  */
@@ -556,6 +592,9 @@ export interface SiteText {
   id: number;
   key: string;
   group: string;
+  /**
+   * Shown when a language below is left empty. Placeholders written :like_this are filled in automatically and must be kept.
+   */
   az: string;
   en?: string | null;
   ru?: string | null;
@@ -841,16 +880,12 @@ export interface ProductsSelect<T extends boolean = true> {
   _order?: T;
   series?: T;
   item?: T;
-  stock?: T;
-  slug?: T;
   category?: T;
+  slug?: T;
+  description?: T;
+  stock?: T;
   colorName?: T;
   colorHex?: T;
-  price?: T;
-  compareAtPrice?: T;
-  fabric?: T;
-  composition?: T;
-  description?: T;
   sizes?:
     | T
     | {
@@ -858,6 +893,13 @@ export interface ProductsSelect<T extends boolean = true> {
         quantity?: T;
         id?: T;
       };
+  inStock?: T;
+  isPreorder?: T;
+  preorderShipsAt?: T;
+  price?: T;
+  compareAtPrice?: T;
+  fabric?: T;
+  composition?: T;
   features?:
     | T
     | {
@@ -876,11 +918,8 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  inStock?: T;
-  isNew?: T;
   isActive?: T;
-  isPreorder?: T;
-  preorderShipsAt?: T;
+  isNew?: T;
   missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -892,10 +931,11 @@ export interface ProductsSelect<T extends boolean = true> {
 export interface CategoriesSelect<T extends boolean = true> {
   _order?: T;
   name?: T;
-  childrenCount?: T;
   slug?: T;
-  description?: T;
   parent?: T;
+  description?: T;
+  pathName?: T;
+  childrenCount?: T;
   image?: T;
   isActive?: T;
   missingTranslations?: T;
@@ -941,9 +981,9 @@ export interface SlidesSelect<T extends boolean = true> {
   ctaUrl?: T;
   image?: T;
   imageMobile?: T;
+  isActive?: T;
   startsAt?: T;
   endsAt?: T;
-  isActive?: T;
   missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -993,8 +1033,8 @@ export interface PostsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  isActive?: T;
   publishedAt?: T;
+  isActive?: T;
   missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1164,6 +1204,30 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: number;
+  /**
+   * Orders at or above this amount ship free.
+   */
+  freeShippingThreshold: number;
+  /**
+   * Charged on orders below the threshold.
+   */
+  shippingFee: number;
+  /**
+   * Line breaks are preserved. Leave empty to hide the section entirely.
+   */
+  bankTransferDetails?: string | null;
+  shopName?: string | null;
+  currencyCode?: string | null;
+  currencySymbol?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "brand".
  */
 export interface Brand {
@@ -1187,27 +1251,36 @@ export interface Brand {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "settings".
+ * via the `definition` "contact-details".
  */
-export interface Setting {
+export interface ContactDetail {
   id: number;
-  shopName?: string | null;
-  currencyCode?: string | null;
-  currencySymbol?: string | null;
-  freeShippingThreshold?: number | null;
-  shippingFee?: number | null;
-  bankTransferDetails?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
   contactWhatsapp?: string | null;
-  contactAddress?: string | null;
   workingHours?: string | null;
+  contactAddress?: string | null;
   instagram?: string | null;
   facebook?: string | null;
   tiktok?: string | null;
   x?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  freeShippingThreshold?: T;
+  shippingFee?: T;
+  bankTransferDetails?: T;
+  shopName?: T;
+  currencyCode?: T;
+  currencySymbol?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1228,20 +1301,14 @@ export interface BrandSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "settings_select".
+ * via the `definition` "contact-details_select".
  */
-export interface SettingsSelect<T extends boolean = true> {
-  shopName?: T;
-  currencyCode?: T;
-  currencySymbol?: T;
-  freeShippingThreshold?: T;
-  shippingFee?: T;
-  bankTransferDetails?: T;
+export interface ContactDetailsSelect<T extends boolean = true> {
   contactEmail?: T;
   contactPhone?: T;
   contactWhatsapp?: T;
-  contactAddress?: T;
   workingHours?: T;
+  contactAddress?: T;
   instagram?: T;
   facebook?: T;
   tiktok?: T;

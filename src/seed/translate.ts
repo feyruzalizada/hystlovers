@@ -170,10 +170,10 @@ export async function translateContent(payload: Payload) {
   }
 
   for (const locale of LOCALES) {
-    const settings = await payload.findGlobal({ slug: "settings", locale, fallbackLocale: false });
+    const settings = await payload.findGlobal({ slug: "contact-details", locale, fallbackLocale: false });
     const now = plain(settings.workingHours);
     if ((now === null || known(workingHours).includes(now)) && now !== workingHours[locale]) {
-      await payload.updateGlobal({ slug: "settings", locale, data: { workingHours: workingHours[locale] } });
+      await payload.updateGlobal({ slug: "contact-details", locale, data: { workingHours: workingHours[locale] } });
       updates++;
     }
   }

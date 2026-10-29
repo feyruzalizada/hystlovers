@@ -371,7 +371,8 @@ export const getStaticPages = cache(async (locale: Locale): Promise<(StaticPage 
 });
 
 export const getContactDetails = cache(async (locale: Locale): Promise<ContactDetails> => {
-  const settings = await getSettings(locale);
+  const payload = await payloadClient();
+  const settings = await payload.findGlobal({ slug: "contact-details", locale });
   const socials = [
     settings.instagram ? { name: "Instagram", handle: settings.instagram } : null,
     settings.facebook ? { name: "Facebook", handle: settings.facebook } : null,
