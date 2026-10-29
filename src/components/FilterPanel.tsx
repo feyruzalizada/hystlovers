@@ -1,6 +1,6 @@
 "use client";
 
-import type { Facets } from "@/lib/types";
+import type { Facets, FilterOption } from "@/lib/types";
 import { useI18n } from "./I18nProvider";
 import { useShop } from "./ShopProvider";
 import Icon from "./Icon";
@@ -35,17 +35,19 @@ export default function FilterPanel({
   const set = <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
     onChange({ ...filters, [key]: value });
 
+  const categories = facets.categories.map((name) => ({ value: name, label: name }));
+
   const checkbox = (
     legend: string,
-    values: string[],
+    options: FilterOption[],
     selected: string[],
     key: "categories" | "fabrics",
   ) =>
-    values.length > 0 && (
+    options.length > 0 && (
       <fieldset className="py-5">
         <legend className="text-xs font-medium tracking-wide2 uppercase">{legend}</legend>
         <div className="mt-4 space-y-3">
-          {values.map((value) => {
+          {options.map(({ value, label }) => {
             const active = selected.includes(value);
             return (
               <label key={value} className="flex cursor-pointer items-center gap-3 text-sm">
@@ -62,7 +64,7 @@ export default function FilterPanel({
                   checked={active}
                   onChange={() => set(key, toggle(selected, value))}
                 />
-                {value}
+                {label}
               </label>
             );
           })}
@@ -93,7 +95,7 @@ export default function FilterPanel({
         </button>
       </div>
 
-      {checkbox(t("collection.filter.category"), facets.categories, filters.categories, "categories")}
+      {checkbox(t("collection.filter.category"), categories, filters.categories, "categories")}
 
       <div className="py-5">
         <p className="text-xs font-medium tracking-wide2 uppercase">{t("collection.filter.price")}</p>

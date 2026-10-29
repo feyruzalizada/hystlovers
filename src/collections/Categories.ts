@@ -1,7 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { LIST_FILTERS } from "./admin-components";
-import { copySlug, hiddenOnCopy } from "./duplicate";
+import { hiddenOnCopy } from "./duplicate";
+import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
@@ -51,14 +52,11 @@ export const Categories: CollectionConfig = {
         ],
       },
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      hooks: { beforeDuplicate: [copySlug("categories")] },
-    },
+    slugField("categories", ["name"], {
+      description: "Auto-generated from the name; you can also type your own.",
+      // These collections are built in, so a category with the same slug would be unreachable.
+      reserved: ["all-products", "new-in"],
+    }),
     { name: "description", type: "textarea", localized: true },
     {
       name: "parent",

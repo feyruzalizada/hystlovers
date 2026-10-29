@@ -74,7 +74,7 @@ export default function CollectionView({
         (active.categories.length === 0 || active.categories.includes(p.category)) &&
         (active.colors.length === 0 || active.colors.includes(p.color.slug)) &&
         (active.sizes.length === 0 || active.sizes.some((s) => p.sizes.includes(s))) &&
-        (active.fabrics.length === 0 || active.fabrics.includes(p.fabric)) &&
+        (active.fabrics.length === 0 || active.fabrics.includes(p.fabric_slug)) &&
         (!active.inStockOnly || p.in_stock) &&
         p.price <= active.maxPrice,
     );

@@ -6,6 +6,7 @@ import * as migration_20261019_195237_localized_item from './20261019_195237_loc
 import * as migration_20261019_200605_brand_announcement from './20261019_200605_brand_announcement';
 import * as migration_20261028_100649_customer_admin_fields from './20261028_100649_customer_admin_fields';
 import * as migration_20261029_171422_filter_colors from './20261029_171422_filter_colors';
+import * as migration_20261029_215511_filter_fabrics from './20261029_215511_filter_fabrics';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261029_171422_filter_colors.up,
     down: migration_20261029_171422_filter_colors.down,
-    name: '20261029_171422_filter_colors'
+    name: '20261029_171422_filter_colors',
+  },
+  {
+    up: migration_20261029_215511_filter_fabrics.up,
+    down: migration_20261029_215511_filter_fabrics.down,
+    name: '20261029_215511_filter_fabrics'
   },
 ];

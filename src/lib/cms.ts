@@ -22,6 +22,7 @@ import type {
   Category,
   ContactDetails,
   Facets,
+  FilterOption,
   FooterGroup,
   Locale,
   NavItem,
@@ -77,7 +78,7 @@ function isOrderable(doc: CmsProduct, size: string, qty = 1): boolean {
   return remaining === null || remaining >= qty;
 }
 
-function toProduct(doc: CmsProduct, colorSlug: string, locale: Locale): Product {
+function toProduct(doc: CmsProduct, slugs: { color: string; fabric: string }, locale: Locale): Product {
   const sizes = (doc.sizes ?? []).map((entry) => entry.size);
   const category = resolve(doc.category);
   const images = (doc.images ?? [])
@@ -96,9 +97,10 @@ function toProduct(doc: CmsProduct, colorSlug: string, locale: Locale): Product 
     category: category?.name ?? "",
     category_slug: category?.slug ?? "",
     fabric: doc.fabric ?? "",
+    fabric_slug: slugs.fabric,
     price: Number(doc.price),
     compare_at: doc.compareAtPrice != null ? Number(doc.compareAtPrice) : null,
-    color: { slug: colorSlug, name: doc.colorName ?? "", hex: doc.colorHex ?? "#000000" },
+    color: { slug: slugs.color, name: doc.colorName ?? "", hex: doc.colorHex ?? "#000000" },
     sizes,
     size_stock: Object.fromEntries(
       sizes.map((size) => [
@@ -130,14 +132,22 @@ export const getProducts = cache(async (locale: Locale): Promise<Product[]> => {
     depth: 2,
     ...ALL,
   });
-  // Colour slugs come from the default language, as in the source shop, so
-  // ?color=brown keeps working once the names are translated.
+  // Colour and fabric slugs come from the default language, as in the source
+  // shop, so ?color=qehveyi keeps working once the names are translated.
   const base =
     locale === defaultLocale
       ? result
-      : await payload.find({ collection: "products", locale: defaultLocale, select: { colorName: true }, ...ALL });
-  const names = new Map(base.docs.map((doc) => [doc.id, doc.colorName ?? ""]));
-  return result.docs.map((doc) => toProduct(doc, slugify(names.get(doc.id) ?? doc.colorName ?? ""), locale));
+      : await payload.find({
+          collection: "products",
+          locale: defaultLocale,
+          select: { colorName: true, fabric: true },
+          ...ALL,
+        });
+  const names = new Map(base.docs.map((doc) => [doc.id, doc]));
+  return result.docs.map((doc) => {
+    const az = names.get(doc.id) ?? doc;
+    return toProduct(doc, { color: slugify(az.colorName ?? ""), fabric: slugify(az.fabric ?? "") }, locale);
+  });
 });
 
 export const getCategories = cache(async (locale: Locale): Promise<Category[]> => {
@@ -380,17 +390,25 @@ export const getContactDetails = cache(async (locale: Locale): Promise<ContactDe
 });
 
 export type PaletteColor = Product["color"] & { showInFilter: boolean };
+export type PaletteFabric = { slug: string; name: string; showInFilter: boolean };
+export type FilterPalette = { colors: PaletteColor[]; fabrics: PaletteFabric[] };
 
-/** The filter swatches as arranged in the panel (Shop → Colors). */
-export const getColorPalette = cache(async (locale: Locale): Promise<PaletteColor[]> => {
+/** The filter's colours and fabrics as arranged in the panel (Shop → Colors, Shop → Fabrics). */
+export const getFilterPalette = cache(async (locale: Locale): Promise<FilterPalette> => {
   const payload = await payloadClient();
-  const result = await payload.find({ collection: "colors", locale, sort: "_order", depth: 0, ...ALL });
-  return result.docs.map((doc) => ({
-    slug: doc.slug,
-    name: doc.name,
-    hex: doc.hex,
-    showInFilter: doc.showInFilter !== false,
-  }));
+  const [colors, fabrics] = await Promise.all([
+    payload.find({ collection: "colors", locale, sort: "_order", depth: 0, ...ALL }),
+    payload.find({ collection: "fabrics", locale, sort: "_order", depth: 0, ...ALL }),
+  ]);
+  return {
+    colors: colors.docs.map((doc) => ({
+      slug: doc.slug,
+      name: doc.name,
+      hex: doc.hex,
+      showInFilter: doc.showInFilter !== false,
+    })),
+    fabrics: fabrics.docs.map((doc) => ({ slug: doc.slug, name: doc.name, showInFilter: doc.showInFilter !== false })),
+  };
 });
 
 /**
@@ -407,25 +425,39 @@ function filterColors(pool: Map<string, Product["color"]>, palette: PaletteColor
   ];
 }
 
-export function buildFacets(pool: Product[], palette: PaletteColor[] = []): Facets {
+/** Fabrics follow the panel the same way; one it lacks still shows, sorted by name. */
+function filterFabrics(pool: Map<string, string>, palette: PaletteFabric[]): FilterOption[] {
+  const known = new Set(palette.map((fabric) => fabric.slug));
+  return [
+    ...palette
+      .filter((fabric) => fabric.showInFilter && pool.has(fabric.slug))
+      .map(({ slug, name }) => ({ value: slug, label: name })),
+    ...[...pool]
+      .filter(([slug]) => !known.has(slug))
+      .map(([value, label]) => ({ value, label }))
+      .sort((a, b) => a.label.localeCompare(b.label)),
+  ];
+}
+
+export function buildFacets(pool: Product[], palette: FilterPalette = { colors: [], fabrics: [] }): Facets {
   const colors = new Map<string, Product["color"]>();
   const sizes = new Set<string>();
-  const fabrics = new Set<string>();
+  const fabrics = new Map<string, string>();
   const cats = new Set<string>();
   let priceMax = 0;
 
   for (const p of pool) {
     colors.set(p.color.slug, p.color);
     p.sizes.forEach((s) => sizes.add(s));
-    if (p.fabric) fabrics.add(p.fabric);
+    if (p.fabric_slug) fabrics.set(p.fabric_slug, p.fabric);
     if (p.category) cats.add(p.category);
     priceMax = Math.max(priceMax, p.price);
   }
 
   return {
     categories: [...cats].sort(),
-    fabrics: [...fabrics].sort(),
-    colors: filterColors(colors, palette),
+    fabrics: filterFabrics(fabrics, palette.fabrics),
+    colors: filterColors(colors, palette.colors),
     sizes: [...sizes],
     priceMax: Math.ceil(priceMax),
   };

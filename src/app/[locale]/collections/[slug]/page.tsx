@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CollectionView from "@/components/CollectionView";
-import { buildFacets, filterByCategory, getCategories, getColorPalette, getProducts } from "@/lib/cms";
+import { buildFacets, filterByCategory, getCategories, getFilterPalette, getProducts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
@@ -104,7 +104,7 @@ export default async function CollectionPage({
   const [t, products, palette] = await Promise.all([
     getTranslator(locale),
     getProducts(locale),
-    getColorPalette(locale),
+    getFilterPalette(locale),
   ]);
   const facets = buildFacets(products, palette);
 

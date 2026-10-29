@@ -18,7 +18,7 @@ async function adminLogin(page: Page) {
   await page.locator('input[name="email"]').fill("admin@hystlovers.com");
   await page.locator('input[name="password"]').fill("hystlovers123");
   await page.getByRole("button", { name: /login|log in/i }).click();
-  await page.waitForURL(/\/admin(\/.*)?$/, { timeout: 60000 });
+  await page.waitForURL((url) => !url.pathname.startsWith("/admin/login"), { timeout: 60000 });
 }
 
 async function buyOne(page: Page, email: string) {
@@ -154,4 +154,42 @@ test("filter colours follow the palette: switched off, recoloured, renamed", asy
       data: { hex: color.hex, name: color.name, showInFilter: true },
     });
   }
+});
+
+test("filter fabrics follow the panel: switched off, renamed", async ({ page, request }) => {
+  const headers = await adminHeaders(request);
+  const { docs } = await (await request.get("/api/fabrics?where[slug][equals]=pambiq&depth=0&locale=az", { headers })).json();
+  const fabric = docs[0];
+  const option = (name: string) => page.locator("label", { has: page.locator('input[type="checkbox"]') }).filter({ hasText: new RegExp(`^${name}$`) });
+
+  try {
+    await request.patch(`/api/fabrics/${fabric.id}?locale=az`, { headers, data: { name: "Təbii pambıq" } });
+    await page.goto("/az/collections/all-products");
+    await expect(option("Təbii pambıq").first()).toBeAttached();
+    await option("Təbii pambıq").first().click();
+    await expect(page.locator("main")).toContainText(/pambıq/i);
+
+    await request.patch(`/api/fabrics/${fabric.id}`, { headers, data: { showInFilter: false } });
+    await page.reload();
+    await expect(option("Modal").first()).toBeAttached();
+    await expect(option("Təbii pambıq")).toHaveCount(0);
+  } finally {
+    await request.patch(`/api/fabrics/${fabric.id}?locale=az`, { headers, data: { name: fabric.name, showInFilter: true } });
+  }
+});
+
+test("a new category's slug follows its name until typed by hand; built-in slugs are refused", async ({ page, request }) => {
+  test.setTimeout(180_000);
+  const headers = await adminHeaders(request);
+  const reserved = await request.post("/api/categories", { headers, data: { name: "Hamısı", slug: "new-in" } });
+  expect(reserved.status()).toBe(400);
+
+  await adminLogin(page);
+  await page.goto("/admin/collections/categories/create");
+  const slug = page.locator('input[name="slug"]');
+  await page.locator('input[name="name"]').fill("Yay şəhəri");
+  await expect(slug).toHaveValue("yay-seheri");
+  await slug.fill("yay");
+  await page.locator('input[name="name"]').fill("Payız");
+  await expect(slug).toHaveValue("yay");
 });

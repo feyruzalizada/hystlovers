@@ -73,6 +73,7 @@ export interface Config {
     products: Product;
     categories: Category;
     colors: Color;
+    fabrics: Fabric;
     slides: Slide;
     'home-sections': HomeSection;
     pages: Page;
@@ -99,6 +100,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     colors: ColorsSelect<false> | ColorsSelect<true>;
+    fabrics: FabricsSelect<false> | FabricsSelect<true>;
     slides: SlidesSelect<false> | SlidesSelect<true>;
     'home-sections': HomeSectionsSelect<false> | HomeSectionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -256,6 +258,9 @@ export interface Product {
   series: string;
   item: string;
   stock?: string | null;
+  /**
+   * Auto-generated from series + item + color; you can also type your own. Special characters are converted (ş→s, ç→c, ı→i…).
+   */
   slug: string;
   category?: (number | null) | Category;
   colorName: string;
@@ -330,6 +335,9 @@ export interface Category {
   _order?: string | null;
   name: string;
   childrenCount?: number | null;
+  /**
+   * Auto-generated from the name; you can also type your own. Special characters are converted (ş→s, ç→c, ı→i…).
+   */
   slug: string;
   description?: string | null;
   /**
@@ -408,6 +416,23 @@ export interface Color {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fabrics".
+ */
+export interface Fabric {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Taken from the products' Azerbaijani fabric name.
+   */
+  slug: string;
+  showInFilter?: boolean | null;
+  missingTranslations?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "slides".
  */
 export interface Slide {
@@ -455,6 +480,9 @@ export interface Page {
   id: number;
   _order?: string | null;
   title: string;
+  /**
+   * Auto-generated from the title. Special characters are converted (ş→s, ç→c, ı→i…).
+   */
   slug: string;
   body?: {
     root: {
@@ -484,6 +512,9 @@ export interface Page {
 export interface Post {
   id: number;
   title: string;
+  /**
+   * Auto-generated from the title. Special characters are converted (ş→s, ç→c, ı→i…).
+   */
   slug: string;
   excerpt?: string | null;
   body?: {
@@ -640,6 +671,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'colors';
         value: number | Color;
+      } | null)
+    | ({
+        relationTo: 'fabrics';
+        value: number | Fabric;
       } | null)
     | ({
         relationTo: 'slides';
@@ -875,6 +910,19 @@ export interface ColorsSelect<T extends boolean = true> {
   _order?: T;
   name?: T;
   hex?: T;
+  slug?: T;
+  showInFilter?: T;
+  missingTranslations?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fabrics_select".
+ */
+export interface FabricsSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
   slug?: T;
   showInFilter?: T;
   missingTranslations?: T;

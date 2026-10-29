@@ -12,6 +12,7 @@ import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Categories } from "./collections/Categories";
 import { Colors } from "./collections/Colors";
+import { Fabrics } from "./collections/Fabrics";
 import { Products } from "./collections/Products";
 import { Slides, HomeSections, Pages, Posts, SiteTexts } from "./collections/Content";
 import {
@@ -84,6 +85,7 @@ export default buildConfig({
     Products,
     Categories,
     Colors,
+    Fabrics,
     Slides,
     HomeSections,
     Pages,

@@ -80,6 +80,7 @@ const FILTERS: Record<string, FilterSource[]> = {
     yesNo("Active", "isActive"),
   ],
   colors: [yesNo("Show in filter", "showInFilter")],
+  fabrics: [yesNo("Show in filter", "showInFilter")],
   slides: [yesNo("Active", "isActive")],
   "home-sections": [yesNo("Active", "isActive")],
   pages: [

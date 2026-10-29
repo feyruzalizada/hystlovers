@@ -1,7 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { LIST_FILTERS } from "./admin-components";
-import { copySlug, hiddenOnCopy } from "./duplicate";
+import { hiddenOnCopy } from "./duplicate";
+import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete, revalidateHooks } from "./revalidate";
@@ -120,14 +121,7 @@ export const Pages: CollectionConfig = {
   },
   fields: [
     { name: "title", type: "text", required: true, localized: true },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      hooks: { beforeDuplicate: [copySlug("pages")] },
-    },
+    slugField("pages", ["title"], { description: "Auto-generated from the title." }),
     { name: "body", type: "richText", localized: true },
     { name: "footerGroup", type: "select", options: FOOTER_GROUPS, index: true },
     {
@@ -169,14 +163,7 @@ export const Posts: CollectionConfig = {
   },
   fields: [
     { name: "title", type: "text", required: true, localized: true },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      hooks: { beforeDuplicate: [copySlug("posts")] },
-    },
+    slugField("posts", ["title"], { description: "Auto-generated from the title." }),
     { name: "excerpt", type: "textarea", localized: true },
     { name: "body", type: "richText", localized: true },
     { name: "coverImage", type: "upload", relationTo: "media" },

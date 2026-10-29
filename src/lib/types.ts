@@ -17,6 +17,7 @@ export type Product = {
   category: string;
   category_slug: string;
   fabric: string;
+  fabric_slug: string;
   price: number;
   compare_at: number | null;
   color: Color;
@@ -108,9 +109,11 @@ export type ContactDetails = {
   socials: { name: string; handle: string }[];
 };
 
+export type FilterOption = { value: string; label: string };
+
 export type Facets = {
   categories: string[];
-  fabrics: string[];
+  fabrics: FilterOption[];
   colors: Color[];
   sizes: string[];
   priceMax: number;

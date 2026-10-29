@@ -1,8 +1,9 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { LIST_FILTERS } from "./admin-components";
-import { addProductColor } from "./color-sync";
-import { copySlug, hiddenOnCopy } from "./duplicate";
+import { addProductFilters } from "./filter-sync";
+import { hiddenOnCopy } from "./duplicate";
+import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
@@ -28,7 +29,7 @@ export const Products: CollectionConfig = {
   access: adminAccess,
   defaultSort: "_order",
   hooks: {
-    afterChange: [revalidateAfterChange, addProductColor],
+    afterChange: [revalidateAfterChange, addProductFilters],
     afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {
@@ -68,14 +69,9 @@ export const Products: CollectionConfig = {
         ],
       },
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      hooks: { beforeDuplicate: [copySlug("products")] },
-    },
+    slugField("products", ["series", "item", "colorName"], {
+      description: "Auto-generated from series + item + color; you can also type your own.",
+    }),
     { name: "category", type: "relationship", relationTo: "categories", index: true },
     {
       type: "row",
