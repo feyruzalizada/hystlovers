@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CollectionView from "@/components/CollectionView";
-import { buildFacets, filterByCategory, getCategories, getProducts } from "@/lib/cms";
+import { buildFacets, filterByCategory, getCategories, getColorPalette, getProducts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
@@ -101,8 +101,12 @@ export default async function CollectionPage({
   const path = (p: string) => localePath(locale, p);
 
   // Facets come from the whole active catalogue, as in the source controller.
-  const [t, products] = await Promise.all([getTranslator(locale), getProducts(locale)]);
-  const facets = buildFacets(products);
+  const [t, products, palette] = await Promise.all([
+    getTranslator(locale),
+    getProducts(locale),
+    getColorPalette(locale),
+  ]);
+  const facets = buildFacets(products, palette);
 
   return (
     <>

@@ -11,6 +11,7 @@ import sharp from "sharp";
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Categories } from "./collections/Categories";
+import { Colors } from "./collections/Colors";
 import { Products } from "./collections/Products";
 import { Slides, HomeSections, Pages, Posts, SiteTexts } from "./collections/Content";
 import {
@@ -82,6 +83,7 @@ export default buildConfig({
     Customers,
     Products,
     Categories,
+    Colors,
     Slides,
     HomeSections,
     Pages,

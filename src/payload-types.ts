@@ -72,6 +72,7 @@ export interface Config {
     customers: Customer;
     products: Product;
     categories: Category;
+    colors: Color;
     slides: Slide;
     'home-sections': HomeSection;
     pages: Page;
@@ -97,6 +98,7 @@ export interface Config {
     customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    colors: ColorsSelect<false> | ColorsSelect<true>;
     slides: SlidesSelect<false> | SlidesSelect<true>;
     'home-sections': HomeSectionsSelect<false> | HomeSectionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -388,6 +390,24 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colors".
+ */
+export interface Color {
+  id: number;
+  _order?: string | null;
+  name: string;
+  hex: string;
+  /**
+   * Taken from the products' Azerbaijani colour name; used in links such as ?color=qehveyi.
+   */
+  slug: string;
+  showInFilter?: boolean | null;
+  missingTranslations?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "slides".
  */
 export interface Slide {
@@ -618,6 +638,10 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
+        relationTo: 'colors';
+        value: number | Color;
+      } | null)
+    | ({
         relationTo: 'slides';
         value: number | Slide;
       } | null)
@@ -839,6 +863,20 @@ export interface CategoriesSelect<T extends boolean = true> {
   parent?: T;
   image?: T;
   isActive?: T;
+  missingTranslations?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "colors_select".
+ */
+export interface ColorsSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  hex?: T;
+  slug?: T;
+  showInFilter?: T;
   missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;

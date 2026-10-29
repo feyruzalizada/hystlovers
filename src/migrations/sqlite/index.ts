@@ -7,6 +7,7 @@ import * as migration_20261017_151424_brand_block from './20261017_151424_brand_
 import * as migration_20261019_195227_localized_item from './20261019_195227_localized_item';
 import * as migration_20261019_200553_brand_announcement from './20261019_200553_brand_announcement';
 import * as migration_20261028_100636_customer_admin_fields from './20261028_100636_customer_admin_fields';
+import * as migration_20261029_171412_filter_colors from './20261029_171412_filter_colors';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20261028_100636_customer_admin_fields.up,
     down: migration_20261028_100636_customer_admin_fields.down,
-    name: '20261028_100636_customer_admin_fields'
+    name: '20261028_100636_customer_admin_fields',
+  },
+  {
+    up: migration_20261029_171412_filter_colors.up,
+    down: migration_20261029_171412_filter_colors.down,
+    name: '20261029_171412_filter_colors'
   },
 ];

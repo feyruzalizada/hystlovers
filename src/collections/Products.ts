@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
 import { LIST_FILTERS } from "./admin-components";
+import { addProductColor } from "./color-sync";
 import { copySlug, hiddenOnCopy } from "./duplicate";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
@@ -27,7 +28,7 @@ export const Products: CollectionConfig = {
   access: adminAccess,
   defaultSort: "_order",
   hooks: {
-    afterChange: [revalidateAfterChange],
+    afterChange: [revalidateAfterChange, addProductColor],
     afterDelete: [revalidateAfterDelete],
     beforeValidate: [
       ({ data }) => {

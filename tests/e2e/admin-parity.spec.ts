@@ -130,3 +130,28 @@ test("granting panel access lets a customer sign in to the panel, revoking remov
   const users = await (await request.get(`/api/users?where[email][equals]=${email}`, { headers })).json();
   expect(users.totalDocs).toBe(0);
 });
+
+test("filter colours follow the palette: switched off, recoloured, renamed", async ({ page, request }) => {
+  const headers = await adminHeaders(request);
+  const { docs } = await (await request.get("/api/colors?where[slug][equals]=qehveyi&depth=0&locale=az", { headers })).json();
+  const color = docs[0];
+  const swatches = page.locator("aside, [role=dialog], body").locator("button[aria-pressed]");
+
+  try {
+    await request.patch(`/api/colors/${color.id}?locale=az`, { headers, data: { hex: "#123456", name: "Şokolad" } });
+    await page.goto("/az/collections/all-products");
+    const renamed = swatches.and(page.getByTitle("Şokolad", { exact: true }));
+    await expect(renamed).toHaveCount(1);
+    await expect(renamed).toHaveCSS("background-color", "rgb(18, 52, 86)");
+
+    await request.patch(`/api/colors/${color.id}`, { headers, data: { showInFilter: false } });
+    await page.reload();
+    await expect(swatches.first()).toBeAttached();
+    await expect(page.getByTitle("Şokolad", { exact: true })).toHaveCount(0);
+  } finally {
+    await request.patch(`/api/colors/${color.id}?locale=az`, {
+      headers,
+      data: { hex: color.hex, name: color.name, showInFilter: true },
+    });
+  }
+});

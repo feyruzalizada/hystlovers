@@ -379,7 +379,35 @@ export const getContactDetails = cache(async (locale: Locale): Promise<ContactDe
   };
 });
 
-export function buildFacets(pool: Product[]): Facets {
+export type PaletteColor = Product["color"] & { showInFilter: boolean };
+
+/** The filter swatches as arranged in the panel (Shop → Colors). */
+export const getColorPalette = cache(async (locale: Locale): Promise<PaletteColor[]> => {
+  const payload = await payloadClient();
+  const result = await payload.find({ collection: "colors", locale, sort: "_order", depth: 0, ...ALL });
+  return result.docs.map((doc) => ({
+    slug: doc.slug,
+    name: doc.name,
+    hex: doc.hex,
+    showInFilter: doc.showInFilter !== false,
+  }));
+});
+
+/**
+ * Swatches follow the panel's palette: its order, names and colours, minus the
+ * ones switched off. A colour the palette lacks still shows, from the product.
+ */
+function filterColors(pool: Map<string, Product["color"]>, palette: PaletteColor[]): Product["color"][] {
+  const known = new Set(palette.map((color) => color.slug));
+  return [
+    ...palette
+      .filter((color) => color.showInFilter && pool.has(color.slug))
+      .map(({ slug, name, hex }) => ({ slug, name, hex })),
+    ...[...pool.values()].filter((color) => !known.has(color.slug)),
+  ];
+}
+
+export function buildFacets(pool: Product[], palette: PaletteColor[] = []): Facets {
   const colors = new Map<string, Product["color"]>();
   const sizes = new Set<string>();
   const fabrics = new Set<string>();
@@ -397,7 +425,7 @@ export function buildFacets(pool: Product[]): Facets {
   return {
     categories: [...cats].sort(),
     fabrics: [...fabrics].sort(),
-    colors: [...colors.values()],
+    colors: filterColors(colors, palette),
     sizes: [...sizes],
     priceMax: Math.ceil(priceMax),
   };

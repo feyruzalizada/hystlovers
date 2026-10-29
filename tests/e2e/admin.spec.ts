@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 test("admin panel: login, dashboard stats and collections", async ({ page }) => {
+  // A fresh dev server compiles the panel on first visit, which alone takes about a minute.
+  test.setTimeout(180_000);
   await page.goto("/admin");
   await page.locator('input[name="email"]').fill("admin@hystlovers.com");
   await page.locator('input[name="password"]').fill("hystlovers123");

@@ -46,6 +46,38 @@
   }
 }
 
+.color-field__row {
+  display: flex;
+  gap: 0.5rem;
+
+  input[type="color"] {
+    width: 2.75rem;
+    height: auto;
+    padding: 0.2rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--style-radius-s);
+    background: var(--theme-input-bg);
+    cursor: pointer;
+  }
+
+  input[type="text"] {
+    flex: 1;
+  }
+}
+
+.color-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &__swatch {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 50%;
+  }
+}
+
 .order-status-cell {
   padding: 0.2rem 0.4rem;
   border: 1px solid var(--theme-elevation-150);
