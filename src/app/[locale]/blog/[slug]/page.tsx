@@ -62,7 +62,7 @@ export default async function BlogPostPage({
               {post.publishedAt}
             </time>
           )}
-          <h1 className="heading-brand mt-3 text-2xl leading-snug sm:text-3xl">{post.title}</h1>
+          <h1 className="heading-brand mt-3 text-lg leading-snug sm:text-2xl">{post.title}</h1>
           {post.excerpt && <p className="mt-4 text-sm leading-relaxed text-ink/60">{post.excerpt}</p>}
         </header>
 

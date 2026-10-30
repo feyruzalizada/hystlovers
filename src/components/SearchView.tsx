@@ -21,7 +21,7 @@ export default function SearchView({ query, results }: { query: string; results:
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-      <h1 className="heading-brand text-center text-2xl">{t("search.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("search.title")}</h1>
 
       <form onSubmit={submit} className="mx-auto mt-8 flex max-w-xl border-b border-ink">
         <input

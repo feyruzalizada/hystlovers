@@ -35,7 +35,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl sm:text-3xl">{t("contact.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("contact.title")}</h1>
       <p className="mx-auto mt-4 max-w-md text-center text-sm text-ink/60">{t("contact.subtitle")}</p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem] lg:gap-16">

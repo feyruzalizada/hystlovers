@@ -34,7 +34,7 @@ export default async function StaticPageRoute({
 
   return (
     <article className="mx-auto max-w-2xl px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl sm:text-3xl">{page.title}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{page.title}</h1>
       <div
         className="page-body mt-10 text-sm leading-relaxed text-ink/75 sm:text-base"
         dangerouslySetInnerHTML={{ __html: renderRichText(page.lexical) }}

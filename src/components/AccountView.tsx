@@ -98,7 +98,7 @@ export function OrderDetail({
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="heading-brand text-2xl">{order.number}</h1>
+        <h1 className="heading-brand text-lg sm:text-2xl">{order.number}</h1>
         <div className="flex items-center gap-2">
           <span className="bg-mist px-3 py-1 text-[11px] tracking-wide2 uppercase">
             {t(order.statusKey)}

@@ -57,7 +57,7 @@ export function LoginForm({ resetDone = false }: { resetDone?: boolean }) {
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl">{t("auth.login.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("auth.login.title")}</h1>
 
       {resetDone ? (
         <p className="mt-6 bg-mist px-4 py-3 text-center text-xs">{t("auth.login.reset_success")}</p>
@@ -108,7 +108,7 @@ export function RegisterForm() {
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl">{t("auth.register.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("auth.register.title")}</h1>
       <p className="mt-4 text-center text-sm text-ink/60">{t("auth.register.subtitle")}</p>
 
       <form onSubmit={onSubmit} className="mt-10 space-y-5">
@@ -150,7 +150,7 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl">{t("auth.forgot.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("auth.forgot.title")}</h1>
       <p className="mt-4 text-center text-sm text-ink/60">{t("auth.forgot.subtitle")}</p>
 
       {done && (
@@ -180,7 +180,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16 sm:py-24">
-      <h1 className="heading-brand text-center text-2xl">{t("auth.reset.title")}</h1>
+      <h1 className="heading-brand text-center text-lg sm:text-2xl">{t("auth.reset.title")}</h1>
 
       <form onSubmit={onSubmit} className="mt-10 space-y-5">
         <input type="hidden" name="token" value={token} />

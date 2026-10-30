@@ -55,7 +55,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <h1 className="heading-brand text-2xl">{t("checkout.title")}</h1>
+      <h1 className="heading-brand text-lg sm:text-2xl">{t("checkout.title")}</h1>
 
       {cart.lines.length === 0 ? (
         <div className="mt-12 max-w-md">
