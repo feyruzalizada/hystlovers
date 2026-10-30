@@ -1,6 +1,7 @@
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
 import * as qs from "qs-esm";
+import { Icon, type IconName } from "./icons";
 
 /**
  * The stat row the Filament panel showed above its dashboard: what needs
@@ -13,9 +14,12 @@ const startOfMonth = () => {
 
 const weekAgo = () => new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-type Tone = "neutral" | "good" | "warn";
+// The source widget's colours: success, primary, warning, danger or gray.
+type Tone = "success" | "primary" | "warning" | "danger" | "gray";
 
-type Stat = { label: string; value: string; description: string; href: string; tone: Tone };
+type Stat = { label: string; value: string; description: string; href: string; tone: Tone; icon: IconName };
+
+const money = new Intl.NumberFormat("en", { style: "currency", currency: "AZN" });
 
 export default async function DashboardStats() {
   const payload = await getPayload({ config });
@@ -76,7 +80,6 @@ export default async function DashboardStats() {
     count("pages", { isActive: { equals: true } }),
   ]);
 
-  const settings = await payload.findGlobal({ slug: "settings" });
   const revenue = monthOrders.docs.reduce((sum, order) => sum + Number(order.total ?? 0), 0);
 
   const stats: Stat[] = [
@@ -88,28 +91,32 @@ export default async function DashboardStats() {
           ? `${pendingOrders} pending · ${ordersThisMonth} this month`
           : `None pending · ${ordersThisMonth} this month`,
       href: "/admin/collections/orders",
-      tone: pendingOrders > 0 ? "warn" : "good",
+      tone: pendingOrders > 0 ? "warning" : "success",
+      icon: "orders",
     },
     {
       label: "Revenue (month)",
-      value: `${revenue.toFixed(2)} ${settings.currencySymbol ?? ""}`,
+      value: money.format(revenue),
       description: "Excludes cancelled orders",
       href: "/admin/collections/orders",
-      tone: "neutral",
+      tone: "primary",
+      icon: "banknotes",
     },
     {
       label: "Products",
       value: String(products),
       description: `${activeProducts} active · ${newIn} new in`,
       href: "/admin/collections/products",
-      tone: "neutral",
+      tone: "primary",
+      icon: "bag",
     },
     {
       label: "Out of stock",
       value: String(outOfStock),
       description: outOfStock > 0 ? "Needs restocking" : "All products available",
       href: `/admin/collections/products${qs.stringify({ where: { and: [{ inStock: { equals: false } }] } }, { addQueryPrefix: true })}`,
-      tone: outOfStock > 0 ? "warn" : "good",
+      tone: outOfStock > 0 ? "warning" : "success",
+      icon: outOfStock > 0 ? "warning" : "check",
     },
     {
       label: "Messages",
@@ -119,79 +126,47 @@ export default async function DashboardStats() {
           ? `${unreadMessages} unread · ${messagesThisWeek} this week`
           : `All read · ${messagesThisWeek} this week`,
       href: "/admin/collections/contact-messages",
-      tone: unreadMessages > 0 ? "warn" : "good",
+      tone: unreadMessages > 0 ? "danger" : "success",
+      icon: "envelope",
     },
     {
       label: "Categories",
       value: String(categories),
       description: `${rootCategories} top level`,
       href: "/admin/collections/categories",
-      tone: "neutral",
+      tone: "gray",
+      icon: "squares",
     },
     {
       label: "Slides",
       value: String(slides),
       description: `${liveSlides} live on the homepage`,
       href: "/admin/collections/slides",
-      tone: "neutral",
+      tone: "gray",
+      icon: "photo",
     },
     {
       label: "Pages",
       value: String(pages),
       description: "Published CMS pages",
       href: "/admin/collections/pages",
-      tone: "neutral",
+      tone: "gray",
+      icon: "document",
     },
   ];
 
-  const toneColor: Record<Tone, string> = {
-    neutral: "var(--theme-elevation-500)",
-    good: "#2f855a",
-    warn: "#b7791f",
-  };
-
   return (
-    <div style={{ marginBottom: "2rem" }}>
-      <div
-        style={{
-          display: "grid",
-          gap: "0.75rem",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        }}
-      >
-        {stats.map((stat) => (
-          <a
-            key={stat.label}
-            href={stat.href}
-            style={{
-              display: "block",
-              padding: "1rem 1.25rem",
-              border: "1px solid var(--theme-elevation-150)",
-              background: "var(--theme-elevation-50)",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            <span
-              style={{
-                display: "block",
-                fontSize: "0.7rem",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--theme-elevation-500)",
-              }}
-            >
-              {stat.label}
-            </span>
-            <strong style={{ display: "block", fontSize: "1.6rem", lineHeight: 1.4 }}>
-              {stat.value}
-            </strong>
-            <span style={{ display: "block", fontSize: "0.75rem", color: toneColor[stat.tone] }}>
-              {stat.description}
-            </span>
-          </a>
-        ))}
-      </div>
+    <div className="dashboard-stats">
+      {stats.map((stat) => (
+        <a key={stat.label} href={stat.href} className={`dashboard-card dashboard-card--${stat.tone}`}>
+          <span className="dashboard-card__label">{stat.label}</span>
+          <span className="dashboard-card__value">{stat.value}</span>
+          <span className="dashboard-card__description">
+            {stat.description}
+            <Icon name={stat.icon} />
+          </span>
+        </a>
+      ))}
     </div>
   );
 }

@@ -263,3 +263,34 @@ test("list switches save straight from the table; category selects show the full
     await request.patch(`/api/products/${product.id}`, { headers, data: { isNew: product.isNew } });
   }
 });
+
+test("the panel wears the source layout: sidebar, welcome card, section headers, replicate", async ({ page, request }) => {
+  test.setTimeout(180_000);
+  const headers = await adminHeaders(request);
+  const product = (await (await request.get("/api/products?where[slug][equals]=t-shirt-brown&depth=0", { headers })).json()).docs[0];
+  await adminLogin(page);
+
+  await page.goto("/admin");
+  await expect(page.locator(".nav-brand")).toHaveText("Hystlovers");
+  await expect(page.locator("#nav-dashboard")).toHaveClass(/nav__link--active/);
+  await expect(page.locator(".dashboard-welcome")).toContainText("Welcome");
+  await expect(page.locator(".nav")).toBeVisible();
+
+  await page.goto(`/admin/collections/products/${product.id}`);
+  await expect(page.locator(".section-label__description").first()).toContainText("colorways of one garment");
+
+  const copies = () => request.get("/api/products?where[slug][like]=t-shirt-brown-copy&depth=0", { headers });
+  try {
+    await page.goto("/admin/collections/products?limit=100");
+    const row = page.locator("tbody tr", { has: page.locator(`a[href$="/products/${product.id}"]`) });
+    await expect(row.locator(".product-thumb")).toBeVisible();
+    await row.getByRole("button", { name: "Replicate" }).click();
+    await expect.poll(async () => (await (await copies()).json()).totalDocs).toBe(1);
+    const copy = (await (await copies()).json()).docs[0];
+    expect(copy.isActive).toBe(false);
+  } finally {
+    for (const doc of (await (await copies()).json()).docs) {
+      await request.delete(`/api/products/${doc.id}`, { headers });
+    }
+  }
+});

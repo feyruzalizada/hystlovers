@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminOnly } from "./access";
-import { LIST_FILTERS, noteCell } from "./admin-components";
+import { LIST_FILTERS, noteCell, listCell } from "./admin-components";
 import {
   countOrdersAfterChange,
   countOrdersAfterDelete,
@@ -75,6 +75,7 @@ export const Customers: CollectionConfig = {
       admin: {
         position: "sidebar",
         description: "Lets this customer sign in to the admin panel with the same email and, at first, the same password.",
+        components: { Cell: listCell("BooleanIconCell") },
       },
     },
     {
@@ -92,7 +93,7 @@ export const Customers: CollectionConfig = {
       type: "number",
       virtual: true,
       label: "Spent",
-      admin: { readOnly: true },
+      admin: { readOnly: true, components: { Cell: listCell("PriceCell") } },
       hooks: {
         afterRead: [
           async ({ data, req }) => {
@@ -184,7 +185,7 @@ export const Orders: CollectionConfig = {
           label: "Payment",
           options: options(PAYMENT_METHODS),
           required: true,
-          admin: { width: "33%", readOnly: true, components: { Cell: noteCell("paymentStatus", { labels: true }) } },
+          admin: { width: "33%", readOnly: true, components: { Cell: noteCell("paymentStatus", { labels: true, badge: true }) } },
         },
         {
           name: "paymentStatus",
@@ -235,7 +236,12 @@ export const Orders: CollectionConfig = {
       fields: [
         { name: "subtotal", type: "number", required: true, admin: { width: "33%", readOnly: true } },
         { name: "shippingTotal", type: "number", required: true, defaultValue: 0, admin: { width: "33%", readOnly: true } },
-        { name: "total", type: "number", required: true, admin: { width: "33%", readOnly: true } },
+        {
+          name: "total",
+          type: "number",
+          required: true,
+          admin: { width: "33%", readOnly: true, components: { Cell: listCell("PriceCell") } },
+        },
       ],
     },
     {

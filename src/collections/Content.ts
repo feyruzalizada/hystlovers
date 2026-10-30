@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL, noteCell } from "./admin-components";
+import { LIST_FILTERS, TOGGLE_CELL, listCell, noteCell } from "./admin-components";
 import { hiddenOnCopy } from "./duplicate";
 import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
@@ -102,7 +102,7 @@ export const Slides: CollectionConfig = {
           relationTo: "media",
           label: "Desktop image",
           required: true,
-          admin: { description: "Recommended: 2400×1400 (21:9 on large screens)." },
+          admin: { description: "Recommended: 2400×1400 (21:9 on large screens).", components: { Cell: listCell("ImageCell") } },
         },
         {
           name: "imageMobile",
@@ -352,7 +352,10 @@ export const Posts: CollectionConfig = {
           type: "upload",
           relationTo: "media",
           label: "Cover image",
-          admin: { description: "Shown on the blog index and when the post is shared. Recommended ratio 4:3." },
+          admin: {
+            description: "Shown on the blog index and when the post is shared. Recommended ratio 4:3.",
+            components: { Cell: listCell("ImageCell") },
+          },
         },
         {
           name: "images",
@@ -387,7 +390,7 @@ export const Posts: CollectionConfig = {
               type: "checkbox",
               label: "Active",
               defaultValue: true,
-              admin: { width: "50%" },
+              admin: { width: "50%", components: { Cell: listCell("BooleanIconCell") } },
               hooks: { beforeDuplicate: [hiddenOnCopy] },
             },
           ],

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL } from "./admin-components";
+import { LIST_FILTERS, TOGGLE_CELL, noteCell, listCell } from "./admin-components";
 import { addProductFilters } from "./filter-sync";
 import { hiddenOnCopy } from "./duplicate";
 import { slugField } from "./slug";
@@ -23,7 +23,18 @@ export const Products: CollectionConfig = {
   orderable: true,
   admin: {
     useAsTitle: "slug",
-    defaultColumns: ["series", "category", "price", "stock", "inStock", "isPreorder", "isNew", "isActive", "missingTranslations"],
+    defaultColumns: [
+      "thumbnail",
+      "product",
+      "category",
+      "price",
+      "stock",
+      "inStock",
+      "isPreorder",
+      "isNew",
+      "isActive",
+      "missingTranslations",
+    ],
     group: "Shop",
     listSearchableFields: ["series", "item", "colorName"],
     components: { beforeListTable: [LIST_FILTERS] },
@@ -68,7 +79,7 @@ export const Products: CollectionConfig = {
               // Kept out of `required` so the column stays nullable; the form still insists.
               validate: (value: unknown) => (value ? true : "Choose a category."),
               filterOptions: { isActive: { equals: true } },
-              admin: { width: "33%" },
+              admin: { width: "33%", components: { Cell: listCell("CategoryBadgeCell") } },
             },
           ],
         },
@@ -86,7 +97,7 @@ export const Products: CollectionConfig = {
       virtual: true,
       label: "Units",
       // A list column only; the form edits the sizes themselves.
-      admin: { readOnly: true, condition: () => false },
+      admin: { readOnly: true, condition: () => false, components: { Cell: listCell("StockCell") } },
       hooks: {
         afterRead: [
           ({ siblingData }) => {
@@ -194,7 +205,14 @@ export const Products: CollectionConfig = {
         {
           type: "row",
           fields: [
-            { name: "price", type: "number", label: "Price (AZN)", required: true, min: 0, admin: { width: "50%" } },
+            {
+              name: "price",
+              type: "number",
+              label: "Price (AZN)",
+              required: true,
+              min: 0,
+              admin: { width: "50%", components: { Cell: listCell("PriceCell") } },
+            },
             {
               name: "compareAtPrice",
               type: "number",
@@ -294,6 +312,14 @@ export const Products: CollectionConfig = {
           ],
         },
       ],
+    },
+    // List-only columns of the source table.
+    { name: "thumbnail", type: "ui", label: " ", admin: { components: { Cell: listCell("ThumbnailCell") } } },
+    {
+      name: "product",
+      type: "ui",
+      label: "Product",
+      admin: { components: { Cell: noteCell("colorName", { value: "series", append: "item" }) } },
     },
     missingTranslations("products", ["item", "colorName", "fabric", "composition", "description", "features", "setParts"]),
   ],

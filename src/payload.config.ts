@@ -26,6 +26,7 @@ import { Brand } from "./globals/Brand";
 import { ContactDetails } from "./globals/ContactDetails";
 import { Settings } from "./globals/Settings";
 import { navBadges } from "./endpoints/nav-badges";
+import { withGlobalPanelLayout, withPanelLayout } from "./collections/sections";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // Without DATABASE_URI the app opens the read-only demo database that ships
@@ -73,9 +74,15 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " — Hystlovers" },
+    // The source panel's date-time format, e.g. "Sep 24, 2026 11:35".
+    dateFormat: "MMM d, yyyy HH:mm",
+    avatar: { Component: "/components/admin/Avatar#default" },
     components: {
-      beforeDashboard: ["/components/admin/DashboardStats#default"],
+      graphics: { Logo: "/components/admin/Logo#default", Icon: "/components/admin/HomeIcon#default" },
+      beforeLogin: ["/components/admin/SignInHeading#default"],
+      beforeNavLinks: ["/components/admin/NavBrand#default"],
       afterNavLinks: ["/components/admin/NavBadges#default"],
+      views: { dashboard: { Component: "/components/admin/Dashboard#default" } },
     },
   },
   // Order matters: the panel groups by `admin.group` and keeps this order
@@ -97,8 +104,8 @@ export default buildConfig({
     StockNotifications,
     Media,
     Users,
-  ],
-  globals: [Settings, Brand, ContactDetails],
+  ].map(withPanelLayout),
+  globals: [Settings, Brand, ContactDetails].map(withGlobalPanelLayout),
   endpoints: [navBadges],
   localization: {
     locales: [
