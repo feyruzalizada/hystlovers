@@ -150,7 +150,7 @@ export default async function CollectionPage({
             </nav>
           )}
 
-          <h1 className="heading-brand text-2xl sm:text-3xl">{collection.name}</h1>
+          <h1 className="heading-brand text-lg sm:text-2xl">{collection.name}</h1>
           {collection.description && (
             <p className={`mx-auto mt-3 max-w-xl text-sm ${collection.poster ? "text-paper/80" : "text-ink/60"}`}>
               {collection.description}
