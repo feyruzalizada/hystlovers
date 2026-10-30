@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -27,6 +28,7 @@ async function resolveCollection(slug: string, locale: Locale) {
       products: slug === "new-in" ? products.filter((p) => p.is_new) : products,
       subcategories: [] as { name: string; url: string; count: number }[],
       parent: null,
+      poster: null,
     };
   }
 
@@ -46,6 +48,7 @@ async function resolveCollection(slug: string, locale: Locale) {
           count: filterByCategory(products, categories, child.slug).length,
         })),
       parent: parent ? { name: parent.name ?? parent.slug, url: `/collections/${parent.slug}` } : null,
+      poster: category.image ?? null,
     };
   }
 
@@ -59,6 +62,7 @@ async function resolveCollection(slug: string, locale: Locale) {
     products: inSeries,
     subcategories: [] as { name: string; url: string; count: number }[],
     parent: null,
+    poster: null,
   };
 }
 
@@ -110,24 +114,47 @@ export default async function CollectionPage({
 
   return (
     <>
-      <header className="border-b border-line bg-mist/60">
-        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
+      <header
+        className={
+          collection.poster
+            ? "relative isolate overflow-hidden border-b border-line bg-ink text-paper"
+            : "border-b border-line bg-mist/60"
+        }
+      >
+        {collection.poster && (
+          <>
+            <Image src={collection.poster} alt="" fill priority sizes="100vw" className="-z-10 object-cover" />
+            <div className="absolute inset-0 -z-10 bg-ink/40" />
+          </>
+        )}
+        <div
+          className={`mx-auto max-w-7xl px-4 text-center sm:px-6 ${
+            collection.poster
+              ? "flex min-h-[260px] flex-col items-center justify-center py-14 sm:min-h-[380px] sm:py-20"
+              : "py-10 sm:py-14"
+          }`}
+        >
           {collection.parent && (
             <nav
               aria-label={t("nav.breadcrumb")}
-              className="mb-3 text-[11px] tracking-wide2 text-ink/50 uppercase"
+              className={`mb-3 text-[11px] tracking-wide2 uppercase ${collection.poster ? "text-paper/70" : "text-ink/50"}`}
             >
-              <Link href={path(collection.parent.url)} className="transition-colors hover:text-ink">
+              <Link
+                href={path(collection.parent.url)}
+                className={`transition-colors ${collection.poster ? "hover:text-paper" : "hover:text-ink"}`}
+              >
                 {collection.parent.name}
               </Link>
               <span className="mx-2">/</span>
-              <span className="text-ink">{collection.name}</span>
+              <span className={collection.poster ? "text-paper" : "text-ink"}>{collection.name}</span>
             </nav>
           )}
 
           <h1 className="heading-brand text-2xl sm:text-3xl">{collection.name}</h1>
           {collection.description && (
-            <p className="mx-auto mt-3 max-w-xl text-sm text-ink/60">{collection.description}</p>
+            <p className={`mx-auto mt-3 max-w-xl text-sm ${collection.poster ? "text-paper/80" : "text-ink/60"}`}>
+              {collection.description}
+            </p>
           )}
 
           {collection.subcategories.length > 0 && (

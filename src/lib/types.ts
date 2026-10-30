@@ -42,6 +42,7 @@ export type Category = {
   labelKey: string | null;
   parent: string | null;
   description?: string | null;
+  image?: string | null;
 };
 
 export type Slide = {

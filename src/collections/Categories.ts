@@ -98,7 +98,16 @@ export const Categories: CollectionConfig = {
       type: "collapsible",
       label: "Display",
       fields: [
-        { name: "image", type: "upload", relationTo: "media", label: "Banner image (optional)" },
+        {
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          label: "Poster (optional)",
+          admin: {
+            description:
+              "Shown behind the title at the top of the category page. Landscape, at least 1920×600; without it the plain grey band stays.",
+          },
+        },
         {
           name: "isActive",
           type: "checkbox",

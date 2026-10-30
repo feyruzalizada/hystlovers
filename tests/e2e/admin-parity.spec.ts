@@ -178,6 +178,26 @@ test("filter fabrics follow the panel: switched off, renamed", async ({ page, re
   }
 });
 
+test("a category poster fills the top of its page; without one the grey band stays", async ({ page, request }) => {
+  const headers = await adminHeaders(request);
+  const category = (await (await request.get("/api/categories?where[isActive][equals]=true&depth=0&limit=1", { headers })).json()).docs[0];
+  const media = (await (await request.get("/api/media?depth=0&limit=1", { headers })).json()).docs[0];
+  const poster = page.locator("main header img");
+
+  try {
+    await request.patch(`/api/categories/${category.id}`, { headers, data: { image: media.id } });
+    await page.goto(`/az/collections/${category.slug}`);
+    await expect(poster).toBeVisible();
+    await expect(page.locator("main header")).toHaveClass(/bg-ink/);
+
+    await request.patch(`/api/categories/${category.id}`, { headers, data: { image: null } });
+    await page.reload();
+    await expect(poster).toHaveCount(0);
+  } finally {
+    await request.patch(`/api/categories/${category.id}`, { headers, data: { image: category.image ?? null } });
+  }
+});
+
 test("a new category's slug follows its name until typed by hand; built-in slugs are refused", async ({ page, request }) => {
   test.setTimeout(180_000);
   const headers = await adminHeaders(request);

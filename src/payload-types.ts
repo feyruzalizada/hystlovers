@@ -354,6 +354,9 @@ export interface Category {
   description?: string | null;
   pathName?: string | null;
   childrenCount?: number | null;
+  /**
+   * Shown behind the title at the top of the category page. Landscape, at least 1920×600; without it the plain grey band stays.
+   */
   image?: (number | null) | Media;
   isActive?: boolean | null;
   missingTranslations?: string | null;

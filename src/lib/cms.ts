@@ -167,6 +167,7 @@ export const getCategories = cache(async (locale: Locale): Promise<Category[]> =
     labelKey: null,
     parent: resolve(doc.parent)?.slug ?? null,
     description: doc.description ?? null,
+    image: mediaUrl(doc.image),
   }));
 });
 
