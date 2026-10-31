@@ -53,23 +53,24 @@ export default async function BlogPage({
       <header
         className={
           poster
-            ? "relative isolate overflow-hidden border-b border-line bg-ink text-paper"
+            ? "relative isolate overflow-hidden border-b border-line bg-ink text-paper [text-shadow:0_1px_8px_rgb(0_0_0/0.6)]"
             : "border-b border-line bg-mist/60"
         }
       >
         {poster && (
           <>
-            <Image src={poster} alt="" fill priority sizes="100vw" className="-z-10 object-cover" />
+            <Image
+              src={poster}
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 640px) 1700px, 100vw"
+              className="-z-10 object-cover"
+            />
             <div className="absolute inset-0 -z-10 bg-ink/40" />
           </>
         )}
-        <div
-          className={`mx-auto max-w-7xl px-4 text-center sm:px-6 ${
-            poster
-              ? "flex min-h-[260px] flex-col items-center justify-center py-14 sm:min-h-[380px] sm:py-20"
-              : "py-10 sm:py-14"
-          }`}
-        >
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
           <h1 className="heading-brand text-lg sm:text-2xl">{t("blog.title")}</h1>
           <p className={`mx-auto mt-3 max-w-xl text-sm ${poster ? "text-paper/80" : "text-ink/60"}`}>
             {t("blog.subtitle")}
