@@ -429,7 +429,7 @@ body,
 }
 
 .field-type {
-  input:not([type="checkbox"], [type="radio"], [type="color"]),
+  input:not([type="checkbox"], [type="radio"], [type="color"], .rs__input),
   textarea,
   .rs__control,
   .react-select .rs__control {
@@ -456,7 +456,7 @@ body,
     }
   }
 
-  input:not([type="checkbox"], [type="radio"], [type="color"]) {
+  input:not([type="checkbox"], [type="radio"], [type="color"], .rs__input) {
     height: 36px;
     padding: 6px 12px;
   }
@@ -1135,5 +1135,433 @@ html[data-theme="dark"] .fi-avatar {
 @media (min-width: 769px) {
   :root {
     --nav-width: 300px;
+  }
+}
+
+// Page headers: breadcrumbs above the title and the actions on the right, as
+// the source pages had. Payload's own title row, tabs and top Save make way.
+
+.list-header__title-and-actions,
+.doc-header,
+.doc-tabs,
+.doc-controls__content,
+.doc-controls .form-submit {
+  display: none;
+}
+
+.list-heading {
+  padding-top: 32px;
+}
+
+.list-header {
+  margin-top: 0;
+}
+
+.fi-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 32px;
+
+  &__title {
+    margin: 0;
+    color: var(--fi-text);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: -0.025em;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+.fi-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+  color: var(--fi-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin: 0 8px;
+    color: var(--fi-icon);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--fi-text-2);
+    }
+  }
+}
+
+.fi-btn {
+  @extend %fi-button;
+  justify-content: center;
+  background: var(--fi-surface);
+  color: var(--fi-text);
+  box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
+  text-decoration: none;
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: var(--fi-bg);
+  }
+
+  &--primary {
+    background: var(--fi-primary);
+    color: var(--fi-on-primary);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--fi-primary-hover);
+    }
+  }
+
+  &--danger {
+    background: var(--fi-danger);
+    color: #fff;
+    box-shadow: none;
+
+    &:hover {
+      background: #ef4444;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+}
+
+// The edit screen's action bar now holds the page header.
+.doc-controls {
+  position: static;
+  margin-top: 0;
+  padding-top: 32px;
+
+  &__wrapper,
+  &__controls-wrapper {
+    height: auto;
+    padding: 0;
+    background: transparent;
+  }
+
+  &__controls-wrapper {
+    width: 100%;
+  }
+
+  &__controls {
+    flex: 1;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .fi-header {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+// Badges in the source's colours.
+.fi-badge {
+  &--primary,
+  &--warning {
+    background: #fffbeb;
+    color: #b45309;
+    box-shadow: inset 0 0 0 1px rgb(217 119 6 / 0.15);
+  }
+
+  &--info {
+    background: #eff6ff;
+    color: #1d4ed8;
+    box-shadow: inset 0 0 0 1px rgb(37 99 235 / 0.15);
+  }
+
+  &--success {
+    background: #f0fdf4;
+    color: #15803d;
+    box-shadow: inset 0 0 0 1px rgb(22 163 74 / 0.15);
+  }
+}
+
+.count-cell {
+  display: block;
+  text-align: center;
+}
+
+.note-cell__muted {
+  color: var(--fi-muted);
+}
+
+.cell-message {
+  max-width: 360px;
+  white-space: normal;
+}
+
+// Read-only view pages (the source's infolists).
+
+.record-view {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.fi-section {
+  @extend %fi-card;
+  margin-bottom: 24px;
+
+  &__header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--fi-divider);
+    color: var(--fi-text);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+  }
+
+  &__content {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+  }
+}
+
+.fi-grid {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  }
+}
+
+.fi-entry {
+  dt {
+    margin-bottom: 8px;
+    color: var(--fi-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--fi-text);
+    font-size: 14px;
+    line-height: 20px;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.fi-repeat {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--fi-ring);
+}
+
+.fi-placeholder {
+  margin: 0;
+  color: var(--fi-muted);
+  font-size: 14px;
+}
+
+.fi-prose {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.fi-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 96px 16px 16px;
+  background: rgb(9 9 11 / 0.5);
+
+  &__panel {
+    @extend %fi-card;
+    width: 100%;
+    max-width: 448px;
+    padding: 24px;
+  }
+
+  &__title {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &__field {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 500;
+
+    sup {
+      color: var(--fi-danger);
+    }
+
+    select {
+      height: 36px;
+      padding: 6px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--fi-surface);
+      box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
+      color: var(--fi-text);
+      font-size: 14px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+// The source forms named the language in the section header, not on every label.
+.field-label .localized {
+  display: none;
+}
+
+// "/pages/" before the slug input, as the source form's prefix.
+.slug-field {
+  position: relative;
+
+  &__prefix {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    border-right: 1px solid var(--fi-input-ring);
+    color: var(--fi-muted);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .field-description {
+    position: absolute;
+  }
+
+  input {
+    padding-left: calc(var(--prefix-width) + 12px) !important;
+  }
+}
+
+// The action bar no longer floats, so its frosted backdrop goes too.
+.doc-controls {
+  position: relative;
+
+  &::before,
+  &::after {
+    display: none;
+  }
+}
+
+// Breadcrumbs now sit above each page title, as in the source panel.
+.app-header .step-nav {
+  display: none;
+}
+
+.list-header {
+  margin-bottom: 0;
+
+  &__content {
+    display: block;
+  }
+}
+
+.list-heading .fi-header {
+  margin-bottom: 24px;
+}
+
+// A list's description sits right under its title, as the source's subheading.
+.list-header .custom-view-description {
+  max-width: 42rem;
+  margin: -16px 0 32px;
+  color: var(--fi-helper);
+  font-size: 18px;
+  line-height: 28px;
+}
+
+// The slug wrapper takes the field's place in the row.
+.row__fields > .slug-field {
+  flex: 1 1 0;
+  min-width: 0;
+
+  > .field-type {
+    width: 100%;
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+}
+
+// The rich editor as one bordered box with its toolbar on top.
+.rich-text-lexical {
+  .editor-container,
+  .rich-text-lexical__wrap {
+    border-radius: 8px;
+  }
+
+  .fixed-toolbar {
+    border: 0;
+    border-bottom: 1px solid var(--fi-input-ring);
+    border-radius: 8px 8px 0 0;
+    background: var(--fi-surface);
+  }
+
+  .editor-container {
+    background: var(--fi-surface);
+    box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
+  }
+}
+
+@media (min-width: 1024px) {
+  .fi-entry {
+    grid-column: span var(--span, 1);
   }
 }

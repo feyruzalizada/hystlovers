@@ -3,7 +3,7 @@ import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { FixedToolbarFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import sharp from "sharp";
@@ -26,7 +26,7 @@ import { Brand } from "./globals/Brand";
 import { ContactDetails } from "./globals/ContactDetails";
 import { Settings } from "./globals/Settings";
 import { navBadges } from "./endpoints/nav-badges";
-import { withGlobalPanelLayout, withPanelLayout } from "./collections/sections";
+import { withGlobalPanelLayout, withPanelLayout } from "./collections/panel-layout";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 // Without DATABASE_URI the app opens the read-only demo database that ships
@@ -107,6 +107,8 @@ export default buildConfig({
   ].map(withPanelLayout),
   globals: [Settings, Brand, ContactDetails].map(withGlobalPanelLayout),
   endpoints: [navBadges],
+  // The source panel's wording for empty selects.
+  i18n: { translations: { en: { general: { selectValue: "Select an option" } } } },
   localization: {
     locales: [
       { label: "Azərbaycan", code: "az" },
@@ -116,7 +118,8 @@ export default buildConfig({
     defaultLocale: "az",
     fallback: true,
   },
-  editor: lexicalEditor(),
+  // A toolbar always in view, as the source panel's rich editor had.
+  editor: lexicalEditor({ features: ({ defaultFeatures }) => [...defaultFeatures, FixedToolbarFeature()] }),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   db,

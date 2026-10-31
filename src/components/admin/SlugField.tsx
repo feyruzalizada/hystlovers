@@ -10,7 +10,7 @@ import { slugify } from "@/lib/slug";
  * hand; clearing it resumes. Saved records keep their slug so links stay put.
  */
 const SlugField: TextFieldClientComponent = (props) => {
-  const { sources } = props as typeof props & { sources: string[] };
+  const { sources, prefix } = props as typeof props & { sources: string[]; prefix?: string };
   const { id } = useDocumentInfo();
   const { value, setValue } = useField<string>({ path: props.path });
   const source = useFormFields(([fields]) => sources.map((name) => fields[name]?.value ?? "").join(" "));
@@ -22,7 +22,13 @@ const SlugField: TextFieldClientComponent = (props) => {
     if (auto.current !== (value ?? "")) setValue(auto.current);
   }, [id, source, value, setValue]);
 
-  return <TextField {...props} />;
+  if (!prefix) return <TextField {...props} />;
+  return (
+    <div className="slug-field" style={{ "--prefix-width": `${prefix.length + 3}ch` } as React.CSSProperties}>
+      <span className="slug-field__prefix">{prefix}</span>
+      <TextField {...props} />
+    </div>
+  );
 };
 
 export default SlugField;

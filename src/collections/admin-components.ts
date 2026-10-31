@@ -6,15 +6,35 @@ export const TOGGLE_CELL = "/components/admin/ToggleCell#default";
 
 /** A list cell with another field of the row underneath, as the source table's column descriptions. */
 export const noteCell = (
-  note: string,
-  extra: { notePrefix?: string; labels?: boolean; badge?: boolean; value?: string; append?: string } = {},
+  note: string | undefined,
+  extra: {
+    notePrefix?: string;
+    labels?: boolean;
+    badge?: boolean | "primary";
+    value?: string;
+    prefix?: string;
+    append?: string;
+  } = {},
 ) => ({
   path: "/components/admin/NoteCell#default",
   clientProps: { note, ...extra },
 });
 
 export const listCell = (
-  name: "ThumbnailCell" | "ImageCell" | "PriceCell" | "StockCell" | "CategoryBadgeCell" | "BooleanIconCell",
+  name:
+    | "ThumbnailCell"
+    | "ImageCell"
+    | "PriceCell"
+    | "StockCell"
+    | "CategoryBadgeCell"
+    | "CategoryPathBadgeCell"
+    | "BooleanIconCell"
+    | "CountCell"
+    | "ScheduleCell"
+    | "SectionTitleCell"
+    | "ReadStatusCell"
+    | "StockProductCell"
+    | "TranslatedCell",
 ) =>
   `/components/admin/ListCells#${name}`;
 

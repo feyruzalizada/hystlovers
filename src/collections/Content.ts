@@ -186,6 +186,7 @@ export const HomeSections: CollectionConfig = {
           relationTo: "categories",
           required: true,
           filterOptions: { isActive: { equals: true } },
+          admin: { allowCreate: false },
         },
         {
           type: "row",
@@ -257,8 +258,17 @@ export const Pages: CollectionConfig = {
       label: "Page",
       admin: { description: "Written in Azerbaijani; switch the language at the top for the others." },
       fields: [
-        { name: "title", type: "text", required: true, localized: true, maxLength: 255 },
-        slugField("pages", ["title"], { description: "Auto-generated from the title; the page lives at /pages/<slug>." }),
+        {
+          type: "row",
+          fields: [
+            { name: "title", type: "text", required: true, localized: true, maxLength: 255, admin: { width: "50%" } },
+            slugField("pages", ["title"], {
+              description: "Auto-generated from the title; the page lives at /pages/<slug>.",
+              prefix: "/pages/",
+              width: "50%",
+            }),
+          ],
+        },
         { name: "body", type: "richText", localized: true, validate: requiredBody },
       ],
     },
@@ -325,14 +335,23 @@ export const Posts: CollectionConfig = {
       admin: { description: "Written in Azerbaijani; switch the language at the top for the others." },
       fields: [
         {
-          name: "title",
-          type: "text",
-          required: true,
-          localized: true,
-          maxLength: 255,
-          admin: { components: { Cell: noteCell("slug", { notePrefix: "/blog/" }) } },
+          type: "row",
+          fields: [
+            {
+              name: "title",
+              type: "text",
+              required: true,
+              localized: true,
+              maxLength: 255,
+              admin: { width: "50%", components: { Cell: noteCell("slug", { notePrefix: "/blog/" }) } },
+            },
+            slugField("posts", ["title"], {
+              description: "Auto-generated from the title; the post lives at /blog/<slug>.",
+              prefix: "/blog/",
+              width: "50%",
+            }),
+          ],
         },
-        slugField("posts", ["title"], { description: "Auto-generated from the title; the post lives at /blog/<slug>." }),
         {
           name: "excerpt",
           type: "textarea",

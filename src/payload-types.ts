@@ -210,8 +210,8 @@ export interface Order {
   total: number;
   currency: string;
   locale: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -231,8 +231,8 @@ export interface Customer {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -344,9 +344,6 @@ export interface Category {
    * Auto-generated from the name; you can also type your own. Special characters are converted (ş→s, ç→c, ı→i…).
    */
   slug: string;
-  /**
-   * Leave empty for a top-level category.
-   */
   parent?: (number | null) | Category;
   /**
    * Shown under the category title on the storefront.
@@ -616,8 +613,8 @@ export interface ContactMessage {
   subject: 'order' | 'return' | 'product' | 'other';
   message: string;
   readAt?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -626,8 +623,8 @@ export interface ContactMessage {
 export interface NewsletterSubscriber {
   id: number;
   email: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -641,8 +638,8 @@ export interface StockNotification {
    * Set once the back-in-stock mail goes out.
    */
   notifiedAt?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -845,8 +842,8 @@ export interface OrdersSelect<T extends boolean = true> {
   total?: T;
   currency?: T;
   locale?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -858,8 +855,8 @@ export interface CustomersSelect<T extends boolean = true> {
   ordersCount?: T;
   spent?: T;
   orders?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1066,8 +1063,8 @@ export interface ContactMessagesSelect<T extends boolean = true> {
   subject?: T;
   message?: T;
   readAt?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1075,8 +1072,8 @@ export interface ContactMessagesSelect<T extends boolean = true> {
  */
 export interface NewsletterSubscribersSelect<T extends boolean = true> {
   email?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1086,8 +1083,8 @@ export interface StockNotificationsSelect<T extends boolean = true> {
   product?: T;
   email?: T;
   notifiedAt?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

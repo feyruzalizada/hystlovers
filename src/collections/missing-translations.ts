@@ -21,7 +21,8 @@ export function missingTranslations(collection: CollectionSlug, fields: string[]
     type: "text",
     virtual: true,
     label: "Missing translations",
-    admin: { readOnly: true },
+    // A list column only.
+    admin: { readOnly: true, condition: () => false },
     hooks: {
       afterRead: [
         async ({ data, req }) => {

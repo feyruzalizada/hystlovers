@@ -44,18 +44,24 @@ export const Categories: CollectionConfig = {
       label: "Category",
       admin: { description: "Written in Azerbaijani; switch the language at the top for the others." },
       fields: [
-        { name: "name", type: "text", required: true, localized: true, maxLength: 255 },
-        slugField("categories", ["name"], {
-          description: "Auto-generated from the name; you can also type your own.",
-          // These collections are built in, so a category with the same slug would be unreachable.
-          reserved: ["all-products", "new-in"],
-        }),
+        {
+          type: "row",
+          fields: [
+            { name: "name", type: "text", required: true, localized: true, maxLength: 255, admin: { width: "50%" } },
+            slugField("categories", ["name"], {
+              description: "Auto-generated from the name; you can also type your own.",
+              // These collections are built in, so a category with the same slug would be unreachable.
+              reserved: ["all-products", "new-in"],
+              width: "50%",
+            }),
+          ],
+        },
         {
           name: "parent",
           type: "relationship",
           relationTo: "categories",
           label: "Parent category",
-          admin: { description: "Leave empty for a top-level category." },
+          admin: { placeholder: "None — top level", allowCreate: false },
           // A category can't be its own parent or a child of its descendants.
           filterOptions: async ({ id, req }) =>
             id ? { id: { not_in: await descendantIdsWithSelf(req.payload, id, req) } } : true,
@@ -79,7 +85,8 @@ export const Categories: CollectionConfig = {
       type: "number",
       virtual: true,
       label: "Subcategories",
-      admin: { readOnly: true },
+      // A list column only.
+      admin: { readOnly: true, condition: () => false },
       hooks: {
         afterRead: [
           async ({ data, req }) => {

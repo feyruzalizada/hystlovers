@@ -8,7 +8,18 @@ const TRANSLIT_HINT = "Special characters are converted (ş→s, ç→c, ı→i�
 export function slugField(
   collection: CollectionSlug,
   sources: string[],
-  { description, reserved = [] }: { description: string; reserved?: string[] },
+  {
+    description,
+    reserved = [],
+    prefix,
+    width,
+  }: {
+    description: string;
+    reserved?: string[];
+    /** Shown before the input, e.g. "/pages/", as the source form did. */
+    prefix?: string;
+    width?: string;
+  },
 ): TextField {
   return {
     name: "slug",
@@ -23,7 +34,8 @@ export function slugField(
     hooks: { beforeDuplicate: [copySlug(collection)] },
     admin: {
       description: `${description} ${TRANSLIT_HINT}`,
-      components: { Field: { path: "/components/admin/SlugField#default", clientProps: { sources } } },
+      ...(width ? { width } : {}),
+      components: { Field: { path: "/components/admin/SlugField#default", clientProps: { sources, prefix } } },
     },
   };
 }

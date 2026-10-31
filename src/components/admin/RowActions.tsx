@@ -34,7 +34,11 @@ export default function RowActions({ rowData, collectionSlug, actions }: Props) 
       {actions.map((action) => {
         if (action === "edit" || action === "view") {
           return (
-            <Link key={action} href={href} className={`row-actions__link${action === "view" ? " row-actions__link--gray" : ""}`}>
+            <Link
+              key={action}
+              href={action === "view" ? `${href}/view` : href}
+              className={`row-actions__link${action === "view" ? " row-actions__link--gray" : ""}`}
+            >
               <Icon name={action} />
               {action === "edit" ? "Edit" : "View"}
             </Link>

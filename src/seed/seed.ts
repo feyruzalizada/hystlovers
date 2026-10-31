@@ -112,6 +112,8 @@ export async function seed(payload: Payload) {
 
   // Earlier seeded values that may be replaced; anything else was edited in the panel.
   const replaced = read<Record<string, Partial<Record<Locale, string[]>>>>("messages/replaced.json");
+  // The source panel's editor hint per key, shown under the key in the list.
+  const hints = read<Record<string, string>>("messages/hints.json");
   const stored = await payload.find({ collection: "site-texts", limit: 0, pagination: false, depth: 0 });
   const byKey = new Map(stored.docs.map((doc) => [doc.key, doc]));
   let textWrites = 0;
@@ -121,17 +123,26 @@ export async function seed(payload: Payload) {
     if (!doc) {
       await payload.create({
         collection: "site-texts",
-        data: { key, group: key.split(".")[0], az: messages.az[key], en: messages.en[key], ru: messages.ru[key] },
+        data: {
+          key,
+          group: key.split(".")[0],
+          az: messages.az[key],
+          en: messages.en[key],
+          ru: messages.ru[key],
+          hint: hints[key],
+        },
       });
       textWrites++;
       continue;
     }
-    const data: Partial<Record<Locale, string>> = {};
+    const data: Partial<Record<Locale | "hint", string>> = {};
     for (const locale of LOCALES) {
       const now = doc[locale];
       if (now === messages[locale][key]) continue;
       if (!now || replaced[key]?.[locale]?.includes(now)) data[locale] = messages[locale][key];
     }
+    // A hint written in the panel stays.
+    if (!doc.hint && hints[key]) data.hint = hints[key];
     if (Object.keys(data).length > 0) {
       await payload.update({ collection: "site-texts", id: doc.id, data });
       textWrites++;

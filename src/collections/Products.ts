@@ -79,7 +79,7 @@ export const Products: CollectionConfig = {
               // Kept out of `required` so the column stays nullable; the form still insists.
               validate: (value: unknown) => (value ? true : "Choose a category."),
               filterOptions: { isActive: { equals: true } },
-              admin: { width: "33%", components: { Cell: listCell("CategoryBadgeCell") } },
+              admin: { width: "33%", allowCreate: false, components: { Cell: listCell("CategoryBadgeCell") } },
             },
           ],
         },
