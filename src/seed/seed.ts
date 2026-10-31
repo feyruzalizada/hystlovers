@@ -347,6 +347,31 @@ export async function seed(payload: Payload) {
     payload.logger.info(`${slides.length} slides imported`);
   }
 
+  // ---- title band banner ------------------------------------------------
+  // The shop's zebra banner behind every page title. Placed once, when the file
+  // is not in the media library yet, so a banner changed or removed in the
+  // panel is never put back.
+  const bannerFile = "storage/banners/hyst-banner.png";
+  const hasBanner = await payload.count({ collection: "media", where: { filename: { like: "hyst-banner" } } });
+  if (hasBanner.totalDocs === 0) {
+    const banner = await uploadImage(bannerFile);
+    if (banner) {
+      await payload.update({ collection: "categories", where: { image: { exists: false } }, data: { image: banner } });
+      const { docs } = await payload.find({ collection: "products", limit: 0, pagination: false, depth: 0 });
+      const series = [...new Set(docs.map((product) => product.series))];
+      await payload.updateGlobal({
+        slug: "page-banners",
+        data: {
+          allProducts: banner,
+          newIn: banner,
+          blog: banner,
+          series: series.map((name) => ({ name, image: banner })),
+        },
+      });
+      payload.logger.info("title band banner placed");
+    }
+  }
+
   // ---- home sections ----------------------------------------------------
   const featured = read<{ title: string; url: string }[]>("content/featured.json");
   const existingSections = await payload.count({ collection: "home-sections" });
