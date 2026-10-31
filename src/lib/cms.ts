@@ -5,6 +5,7 @@ import config from "@payload-config";
 import { slugify } from "./slug";
 import { productName } from "./product-name";
 import { defaultLocale } from "./i18n";
+import { hasPoster, type Poster } from "./poster";
 import type {
   Brand,
   Category as CmsCategory,
@@ -168,7 +169,7 @@ export const getCategories = cache(async (locale: Locale): Promise<Category[]> =
     labelKey: null,
     parent: resolve(doc.parent)?.slug ?? null,
     description: doc.description ?? null,
-    image: mediaUrl(doc.image),
+    poster: posterOf(doc, "image"),
   }));
 });
 
@@ -191,18 +192,40 @@ export const getBrand = cache(async (locale: Locale): Promise<Brand> => {
   return payload.findGlobal({ slug: "brand", locale });
 });
 
-export type PageBanners = { allProducts: string | null; newIn: string | null; blog: string | null; series: Record<string, string> };
+/** A banner in its four sizes, from the desktop upload and its Wide/Tablet/Mobile siblings. */
+function posterOf(doc: object, base: string): Poster | null {
+  const field = (name: string) => mediaUrl((doc as Record<string, Related<Media>>)[name]);
+  const poster = {
+    mobile: field(`${base}Mobile`),
+    tablet: field(`${base}Tablet`),
+    desktop: field(base),
+    wide: field(`${base}Wide`),
+  };
+  return hasPoster(poster) ? poster : null;
+}
+
+export type PageBanners = {
+  allProducts: Poster | null;
+  newIn: Poster | null;
+  blog: Poster | null;
+  series: Record<string, Poster>;
+};
 
 /** Posters for the title band of the catalogue-wide collections, series pages and the blog. */
 export const getPageBanners = cache(async (): Promise<PageBanners> => {
   const payload = await payloadClient();
   const doc: PageBanner = await payload.findGlobal({ slug: "page-banners", depth: 1 });
-  const series: Record<string, string> = {};
+  const series: Record<string, Poster> = {};
   for (const row of doc.series ?? []) {
-    const url = mediaUrl(row.image);
-    if (row.name && url) series[row.name.trim().toLowerCase()] = url;
+    const poster = posterOf(row, "image");
+    if (row.name && poster) series[row.name.trim().toLowerCase()] = poster;
   }
-  return { allProducts: mediaUrl(doc.allProducts), newIn: mediaUrl(doc.newIn), blog: mediaUrl(doc.blog), series };
+  return {
+    allProducts: posterOf(doc, "allProducts"),
+    newIn: posterOf(doc, "newIn"),
+    blog: posterOf(doc, "blog"),
+    series,
+  };
 });
 
 export const getShop = cache(async (locale: Locale): Promise<ShopSettings> => {

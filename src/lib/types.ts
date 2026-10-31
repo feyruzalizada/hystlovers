@@ -1,3 +1,5 @@
+import type { Poster } from "./poster";
+
 export type Locale = "az" | "en" | "ru";
 
 export type Color = {
@@ -42,7 +44,7 @@ export type Category = {
   labelKey: string | null;
   parent: string | null;
   description?: string | null;
-  image?: string | null;
+  poster?: Poster | null;
 };
 
 export type Slide = {

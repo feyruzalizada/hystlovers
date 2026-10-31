@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import PosterImage from "@/components/PosterImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPageBanners, getPosts } from "@/lib/cms";
@@ -59,14 +60,7 @@ export default async function BlogPage({
       >
         {poster && (
           <>
-            <Image
-              src={poster}
-              alt=""
-              fill
-              priority
-              sizes="(max-width: 640px) 1700px, 100vw"
-              className="-z-10 object-cover"
-            />
+            <PosterImage poster={poster} />
             <div className="absolute inset-0 -z-10 bg-ink/40" />
           </>
         )}

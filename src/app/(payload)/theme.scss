@@ -1565,3 +1565,11 @@ html[data-theme="dark"] .fi-avatar {
     grid-column: span var(--span, 1);
   }
 }
+
+// The sidebar keeps its width however wide the page content gets.
+@media (min-width: 1024px) {
+  .template-default--nav-open .nav {
+    width: var(--nav-width);
+    min-width: var(--nav-width);
+  }
+}

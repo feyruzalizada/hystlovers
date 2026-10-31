@@ -3,6 +3,7 @@ import { adminAccess } from "./access";
 import { LIST_FILTERS, TOGGLE_CELL } from "./admin-components";
 import { descendantIdsWithSelf, refreshCategoryPaths } from "./category-paths";
 import { hiddenOnCopy } from "./duplicate";
+import { POSTER_HINT, posterFields } from "./poster";
 import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
@@ -103,18 +104,14 @@ export const Categories: CollectionConfig = {
     },
     {
       type: "collapsible",
+      label: "Poster",
+      admin: { description: POSTER_HINT },
+      fields: posterFields("image"),
+    },
+    {
+      type: "collapsible",
       label: "Display",
       fields: [
-        {
-          name: "image",
-          type: "upload",
-          relationTo: "media",
-          label: "Poster (optional)",
-          admin: {
-            description:
-              "Shown behind the title at the top of the category page. Landscape, at least 1920×600; without it the plain grey band stays.",
-          },
-        },
         {
           name: "isActive",
           type: "checkbox",

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import PosterImage from "@/components/PosterImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -56,7 +56,7 @@ async function resolveCollection(slug: string, locale: Locale) {
           count: filterByCategory(products, categories, child.slug).length,
         })),
       parent: parent ? { name: parent.name ?? parent.slug, url: `/collections/${parent.slug}` } : null,
-      poster: category.image ?? null,
+      poster: category.poster ?? null,
     };
   }
 
@@ -131,15 +131,7 @@ export default async function CollectionPage({
       >
         {collection.poster && (
           <>
-            {/* Wide banners cover a short band, so phones get a wider file than their screen. */}
-            <Image
-              src={collection.poster}
-              alt=""
-              fill
-              priority
-              sizes="(max-width: 640px) 1700px, 100vw"
-              className="-z-10 object-cover"
-            />
+            <PosterImage poster={collection.poster} />
             <div className="absolute inset-0 -z-10 bg-ink/40" />
           </>
         )}

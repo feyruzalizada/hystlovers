@@ -354,9 +354,21 @@ export interface Category {
   pathName?: string | null;
   childrenCount?: number | null;
   /**
-   * Shown behind the title at the top of the category page. Landscape, at least 1920×600; without it the plain grey band stays.
+   * For screens 1024–1919 px wide. File 3840 × 352 px.
    */
   image?: (number | null) | Media;
+  /**
+   * For screens 1920 px and wider. File 5120 × 352 px.
+   */
+  imageWide?: (number | null) | Media;
+  /**
+   * For screens 640–1023 px wide. File 2048 × 352 px.
+   */
+  imageTablet?: (number | null) | Media;
+  /**
+   * For screens up to 639 px wide. File 860 × 280 px.
+   */
+  imageMobile?: (number | null) | Media;
   isActive?: boolean | null;
   missingTranslations?: string | null;
   updatedAt: string;
@@ -939,6 +951,9 @@ export interface CategoriesSelect<T extends boolean = true> {
   pathName?: T;
   childrenCount?: T;
   image?: T;
+  imageWide?: T;
+  imageTablet?: T;
+  imageMobile?: T;
   isActive?: T;
   missingTranslations?: T;
   updatedAt?: T;
@@ -1252,33 +1267,83 @@ export interface Brand {
   createdAt?: string | null;
 }
 /**
+ * Shown behind the page title. A size left empty takes the nearest one that is set; without any, the plain grey band stays.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "page-banners".
  */
 export interface PageBanner {
   id: number;
   /**
-   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   * For screens 1024–1919 px wide. File 3840 × 352 px.
    */
   allProducts?: (number | null) | Media;
   /**
-   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   * For screens 1920 px and wider. File 5120 × 352 px.
+   */
+  allProductsWide?: (number | null) | Media;
+  /**
+   * For screens 640–1023 px wide. File 2048 × 352 px.
+   */
+  allProductsTablet?: (number | null) | Media;
+  /**
+   * For screens up to 639 px wide. File 860 × 280 px.
+   */
+  allProductsMobile?: (number | null) | Media;
+  /**
+   * For screens 1024–1919 px wide. File 3840 × 352 px.
    */
   newIn?: (number | null) | Media;
+  /**
+   * For screens 1920 px and wider. File 5120 × 352 px.
+   */
+  newInWide?: (number | null) | Media;
+  /**
+   * For screens 640–1023 px wide. File 2048 × 352 px.
+   */
+  newInTablet?: (number | null) | Media;
+  /**
+   * For screens up to 639 px wide. File 860 × 280 px.
+   */
+  newInMobile?: (number | null) | Media;
   series?:
     | {
         name: string;
         /**
-         * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+         * For screens 1024–1919 px wide. File 3840 × 352 px.
          */
         image: number | Media;
+        /**
+         * For screens 1920 px and wider. File 5120 × 352 px.
+         */
+        imageWide?: (number | null) | Media;
+        /**
+         * For screens 640–1023 px wide. File 2048 × 352 px.
+         */
+        imageTablet?: (number | null) | Media;
+        /**
+         * For screens up to 639 px wide. File 860 × 280 px.
+         */
+        imageMobile?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
   /**
-   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   * For screens 1024–1919 px wide. File 3840 × 352 px.
    */
   blog?: (number | null) | Media;
+  /**
+   * For screens 1920 px and wider. File 5120 × 352 px.
+   */
+  blogWide?: (number | null) | Media;
+  /**
+   * For screens 640–1023 px wide. File 2048 × 352 px.
+   */
+  blogTablet?: (number | null) | Media;
+  /**
+   * For screens up to 639 px wide. File 860 × 280 px.
+   */
+  blogMobile?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1338,15 +1403,27 @@ export interface BrandSelect<T extends boolean = true> {
  */
 export interface PageBannersSelect<T extends boolean = true> {
   allProducts?: T;
+  allProductsWide?: T;
+  allProductsTablet?: T;
+  allProductsMobile?: T;
   newIn?: T;
+  newInWide?: T;
+  newInTablet?: T;
+  newInMobile?: T;
   series?:
     | T
     | {
         name?: T;
         image?: T;
+        imageWide?: T;
+        imageTablet?: T;
+        imageMobile?: T;
         id?: T;
       };
   blog?: T;
+  blogWide?: T;
+  blogTablet?: T;
+  blogMobile?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
