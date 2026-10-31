@@ -48,7 +48,8 @@ export default async function LocaleLayout({
       <head>
         <meta name="theme-color" content="#1c1c1c" />
       </head>
-      <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased">
+      {/* Browser extensions (e.g. ColorZilla) add attributes to <body> before React loads. */}
+      <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased" suppressHydrationWarning>
         <I18nProvider locale={locale} messages={messages}>
           <ShopProvider shop={shop}>
             <CartProvider
