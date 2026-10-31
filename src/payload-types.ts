@@ -123,11 +123,13 @@ export interface Config {
   globals: {
     settings: Setting;
     brand: Brand;
+    'page-banners': PageBanner;
     'contact-details': ContactDetail;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
     brand: BrandSelect<false> | BrandSelect<true>;
+    'page-banners': PageBannersSelect<false> | PageBannersSelect<true>;
     'contact-details': ContactDetailsSelect<false> | ContactDetailsSelect<true>;
   };
   locale: 'az' | 'en' | 'ru';
@@ -1251,6 +1253,37 @@ export interface Brand {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-banners".
+ */
+export interface PageBanner {
+  id: number;
+  /**
+   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   */
+  allProducts?: (number | null) | Media;
+  /**
+   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   */
+  newIn?: (number | null) | Media;
+  series?:
+    | {
+        name: string;
+        /**
+         * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+         */
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown behind the page title. Landscape, at least 1920×600; without it the plain grey band stays.
+   */
+  blog?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-details".
  */
 export interface ContactDetail {
@@ -1295,6 +1328,25 @@ export interface BrandSelect<T extends boolean = true> {
   footerTitle?: T;
   footerText?: T;
   newsletterTitle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-banners_select".
+ */
+export interface PageBannersSelect<T extends boolean = true> {
+  allProducts?: T;
+  newIn?: T;
+  series?:
+    | T
+    | {
+        name?: T;
+        image?: T;
+        id?: T;
+      };
+  blog?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

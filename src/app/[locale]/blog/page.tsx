@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPosts } from "@/lib/cms";
+import { getPageBanners, getPosts } from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
@@ -39,7 +39,8 @@ export default async function BlogPage({
   if (!isLocale(locale)) notFound();
 
   const { page: rawPage } = await searchParams;
-  const [t, all] = await Promise.all([getTranslator(locale), getPosts(locale)]);
+  const [t, all, banners] = await Promise.all([getTranslator(locale), getPosts(locale), getPageBanners()]);
+  const poster = banners.blog;
 
   const page = Math.max(1, Number(rawPage ?? 1));
   const lastPage = Math.max(1, Math.ceil(all.length / PER_PAGE));
@@ -49,10 +50,30 @@ export default async function BlogPage({
 
   return (
     <>
-      <header className="border-b border-line bg-mist/60">
-        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
+      <header
+        className={
+          poster
+            ? "relative isolate overflow-hidden border-b border-line bg-ink text-paper"
+            : "border-b border-line bg-mist/60"
+        }
+      >
+        {poster && (
+          <>
+            <Image src={poster} alt="" fill priority sizes="100vw" className="-z-10 object-cover" />
+            <div className="absolute inset-0 -z-10 bg-ink/40" />
+          </>
+        )}
+        <div
+          className={`mx-auto max-w-7xl px-4 text-center sm:px-6 ${
+            poster
+              ? "flex min-h-[260px] flex-col items-center justify-center py-14 sm:min-h-[380px] sm:py-20"
+              : "py-10 sm:py-14"
+          }`}
+        >
           <h1 className="heading-brand text-lg sm:text-2xl">{t("blog.title")}</h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-ink/60">{t("blog.subtitle")}</p>
+          <p className={`mx-auto mt-3 max-w-xl text-sm ${poster ? "text-paper/80" : "text-ink/60"}`}>
+            {t("blog.subtitle")}
+          </p>
         </div>
       </header>
 

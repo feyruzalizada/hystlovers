@@ -10,6 +10,7 @@ import type {
   Category as CmsCategory,
   HomeSection,
   Media,
+  PageBanner,
   Page as CmsPage,
   Post as CmsPost,
   Product as CmsProduct,
@@ -188,6 +189,20 @@ export const getSettings = cache(async (locale: Locale): Promise<Setting> => {
 export const getBrand = cache(async (locale: Locale): Promise<Brand> => {
   const payload = await payloadClient();
   return payload.findGlobal({ slug: "brand", locale });
+});
+
+export type PageBanners = { allProducts: string | null; newIn: string | null; blog: string | null; series: Record<string, string> };
+
+/** Posters for the title band of the catalogue-wide collections, series pages and the blog. */
+export const getPageBanners = cache(async (): Promise<PageBanners> => {
+  const payload = await payloadClient();
+  const doc: PageBanner = await payload.findGlobal({ slug: "page-banners", depth: 1 });
+  const series: Record<string, string> = {};
+  for (const row of doc.series ?? []) {
+    const url = mediaUrl(row.image);
+    if (row.name && url) series[row.name.trim().toLowerCase()] = url;
+  }
+  return { allProducts: mediaUrl(doc.allProducts), newIn: mediaUrl(doc.newIn), blog: mediaUrl(doc.blog), series };
 });
 
 export const getShop = cache(async (locale: Locale): Promise<ShopSettings> => {

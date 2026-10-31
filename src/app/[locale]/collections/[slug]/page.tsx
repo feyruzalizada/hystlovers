@@ -3,7 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CollectionView from "@/components/CollectionView";
-import { buildFacets, filterByCategory, getCategories, getFilterPalette, getProducts } from "@/lib/cms";
+import {
+  buildFacets,
+  filterByCategory,
+  getCategories,
+  getFilterPalette,
+  getPageBanners,
+  getProducts,
+} from "@/lib/cms";
 import { getTranslator } from "@/lib/server-i18n";
 import { localeAlternates } from "@/lib/alternates";
 import { isLocale, localePath, locales } from "@/lib/i18n";
@@ -14,10 +21,11 @@ import type { Locale } from "@/lib/types";
  * category — a series landing page such as /collections/kai.
  */
 async function resolveCollection(slug: string, locale: Locale) {
-  const [t, products, categories] = await Promise.all([
+  const [t, products, categories, banners] = await Promise.all([
     getTranslator(locale),
     getProducts(locale),
     getCategories(locale),
+    getPageBanners(),
   ]);
 
   if (slug === "all-products" || slug === "new-in") {
@@ -28,7 +36,7 @@ async function resolveCollection(slug: string, locale: Locale) {
       products: slug === "new-in" ? products.filter((p) => p.is_new) : products,
       subcategories: [] as { name: string; url: string; count: number }[],
       parent: null,
-      poster: null,
+      poster: slug === "new-in" ? banners.newIn : banners.allProducts,
     };
   }
 
@@ -62,7 +70,7 @@ async function resolveCollection(slug: string, locale: Locale) {
     products: inSeries,
     subcategories: [] as { name: string; url: string; count: number }[],
     parent: null,
-    poster: null,
+    poster: banners.series[series] ?? null,
   };
 }
 

@@ -24,6 +24,7 @@ import {
 } from "./collections/Commerce";
 import { Brand } from "./globals/Brand";
 import { ContactDetails } from "./globals/ContactDetails";
+import { PageBanners } from "./globals/PageBanners";
 import { Settings } from "./globals/Settings";
 import { navBadges } from "./endpoints/nav-badges";
 import { withGlobalPanelLayout, withPanelLayout } from "./collections/panel-layout";
@@ -105,7 +106,7 @@ export default buildConfig({
     Media,
     Users,
   ].map(withPanelLayout),
-  globals: [Settings, Brand, ContactDetails].map(withGlobalPanelLayout),
+  globals: [Settings, Brand, PageBanners, ContactDetails].map(withGlobalPanelLayout),
   endpoints: [navBadges],
   // The source panel's wording for empty selects.
   i18n: { translations: { en: { general: { selectValue: "Select an option" } } } },

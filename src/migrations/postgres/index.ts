@@ -8,6 +8,7 @@ import * as migration_20261028_100649_customer_admin_fields from './20261028_100
 import * as migration_20261029_171422_filter_colors from './20261029_171422_filter_colors';
 import * as migration_20261029_215511_filter_fabrics from './20261029_215511_filter_fabrics';
 import * as migration_20261029_225437_admin_parity_forms from './20261029_225437_admin_parity_forms';
+import * as migration_20261031_104822_page_banners from './20261031_104822_page_banners';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20261029_225437_admin_parity_forms.up,
     down: migration_20261029_225437_admin_parity_forms.down,
-    name: '20261029_225437_admin_parity_forms'
+    name: '20261029_225437_admin_parity_forms',
+  },
+  {
+    up: migration_20261031_104822_page_banners.up,
+    down: migration_20261031_104822_page_banners.down,
+    name: '20261031_104822_page_banners'
   },
 ];
