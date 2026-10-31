@@ -261,6 +261,22 @@ export async function seed(payload: Payload) {
     all.docs.forEach((doc) => categoryIds.set(doc.slug, doc.id));
   }
 
+  // The line under each category title, from the source shop. Only empty ones
+  // are filled, so wording changed in the panel stays.
+  const descriptions = read<Record<string, Record<Locale, string>>>("content/category-descriptions.json");
+  let described = 0;
+  for (const [slug, id] of categoryIds) {
+    const text = descriptions[slug];
+    if (!text) continue;
+    for (const locale of LOCALES) {
+      const doc = await payload.findByID({ collection: "categories", id, locale, fallbackLocale: false, depth: 0 });
+      if (doc.description) continue;
+      await payload.update({ collection: "categories", id, locale, data: { description: text[locale] } });
+      described++;
+    }
+  }
+  if (described > 0) payload.logger.info(`category descriptions: ${described} filled`);
+
   // ---- products ---------------------------------------------------------
   const products = read<SeedProduct[]>("content/products.json");
   const existingProducts = await payload.count({ collection: "products" });

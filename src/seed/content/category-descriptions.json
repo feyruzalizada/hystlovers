@@ -1,0 +1,62 @@
+{
+  "sets": {
+    "az": "Bir-biri ilə harmoniyada dizayn edilmiş ikili dəstlər.",
+    "en": "Two-piece sets designed to work in harmony.",
+    "ru": "Комплекты из двух вещей, созданных в гармонии друг с другом."
+  },
+  "lounge-sets": {
+    "az": "Gün boyu rahatlıq üçün köynək və şalvar kombinasiyaları.",
+    "en": "Shirt and trouser pairings for all-day comfort.",
+    "ru": "Сочетания рубашки и брюк для комфорта на весь день."
+  },
+  "ribbed-sets": {
+    "az": "Yumşaq rib parçadan crop top və tayt dəstləri.",
+    "en": "Crop top and legging sets in soft ribbed fabric.",
+    "ru": "Комплекты из кроп-топа и леггинсов из мягкого рубчика."
+  },
+  "pajama-sets": {
+    "az": "Rahat gecələr üçün nəfəs alan pambıq dəstlər.",
+    "en": "Breathable cotton sets for restful nights.",
+    "ru": "Дышащие хлопковые комплекты для спокойных ночей."
+  },
+  "single-pieces": {
+    "az": "Qarderobunuzu tamamlayan zamansız tək parçalar.",
+    "en": "Timeless single pieces to complete your wardrobe.",
+    "ru": "Вневременные отдельные вещи, дополняющие ваш гардероб."
+  },
+  "t-shirts": {
+    "az": "Zamansız rənglərdə yumşaq pambıq futbolkalar.",
+    "en": "Soft cotton T-shirts in timeless colours.",
+    "ru": "Мягкие хлопковые футболки вневременных оттенков."
+  },
+  "tank-tops": {
+    "az": "Yüngül modal maykalar.",
+    "en": "Lightweight modal tank tops.",
+    "ru": "Лёгкие майки из модала."
+  },
+  "dresses": {
+    "az": "Gündüzdən gecəyə zərif donlar.",
+    "en": "Elegant dresses from day to night.",
+    "ru": "Элегантные платья — с утра до вечера."
+  },
+  "blouses": {
+    "az": "İncə bambuk bluzlar.",
+    "en": "Fine bamboo blouses.",
+    "ru": "Тонкие блузы из бамбука."
+  },
+  "sweatshirts": {
+    "az": "Sərin günlər üçün isti svitşotlar.",
+    "en": "Warm sweatshirts for cooler days.",
+    "ru": "Тёплые свитшоты для прохладных дней."
+  },
+  "shorts": {
+    "az": "Axıcı görünüşlü atlaz şortlar.",
+    "en": "Satin shorts with a fluid drape.",
+    "ru": "Атласные шорты со струящимся силуэтом."
+  },
+  "accessories": {
+    "az": "Görünüşünüzü tamamlayan son toxunuşlar.",
+    "en": "Finishing touches to complete your look.",
+    "ru": "Последние штрихи, завершающие образ."
+  }
+}
