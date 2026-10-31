@@ -71,9 +71,12 @@ export default async function BlogPage({
         )}
         <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
           <h1 className="heading-brand text-lg sm:text-2xl">{t("blog.title")}</h1>
-          <p className={`mx-auto mt-3 max-w-xl text-sm ${poster ? "text-paper/80" : "text-ink/60"}`}>
-            {t("blog.subtitle")}
-          </p>
+          {/* Over a banner only the title shows; the empty line keeps the band its usual height. */}
+          {poster ? (
+            <span aria-hidden className="mt-3 block h-5" />
+          ) : (
+            <p className="mx-auto mt-3 max-w-xl text-sm text-ink/60">{t("blog.subtitle")}</p>
+          )}
         </div>
       </header>
 

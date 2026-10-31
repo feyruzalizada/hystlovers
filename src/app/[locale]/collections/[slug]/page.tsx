@@ -161,10 +161,13 @@ export default async function CollectionPage({
           )}
 
           <h1 className="heading-brand text-lg sm:text-2xl">{collection.name}</h1>
-          {collection.description && (
-            <p className={`mx-auto mt-3 max-w-xl text-sm ${collection.poster ? "text-paper/80" : "text-ink/60"}`}>
-              {collection.description}
-            </p>
+          {/* Over a banner only the title shows; the empty line keeps the band its usual height. */}
+          {collection.poster ? (
+            <span aria-hidden className="mt-3 block h-5" />
+          ) : (
+            collection.description && (
+              <p className="mx-auto mt-3 max-w-xl text-sm text-ink/60">{collection.description}</p>
+            )
           )}
 
           {collection.subcategories.length > 0 && (
