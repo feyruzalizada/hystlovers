@@ -140,7 +140,6 @@ export default async function CollectionPage({
               sizes="(max-width: 640px) 1700px, 100vw"
               className="-z-10 object-cover"
             />
-            <div className="absolute inset-0 -z-10 bg-ink/40" />
           </>
         )}
         {/* The same height with or without a poster, so every collection's band lines up. */}

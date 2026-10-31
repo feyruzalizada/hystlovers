@@ -67,7 +67,6 @@ export default async function BlogPage({
               sizes="(max-width: 640px) 1700px, 100vw"
               className="-z-10 object-cover"
             />
-            <div className="absolute inset-0 -z-10 bg-ink/40" />
           </>
         )}
         <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14">
