@@ -29,43 +29,49 @@ export const Colors: CollectionConfig = {
   disableDuplicate: true,
   fields: [
     {
-      type: "row",
+      type: "collapsible",
+      label: "Color",
       fields: [
-        { name: "name", type: "text", required: true, localized: true, admin: { width: "50%" } },
         {
-          name: "hex",
+          type: "row",
+          fields: [
+            { name: "name", type: "text", required: true, localized: true, admin: { width: "50%" } },
+            {
+              name: "hex",
+              type: "text",
+              required: true,
+              label: "Swatch",
+              validate: (value: unknown) => (typeof value === "string" && HEX.test(value) ? true : "Use a #rrggbb colour value."),
+              admin: {
+                width: "50%",
+                components: {
+                  Field: "/components/admin/ColorField#default",
+                  Cell: "/components/admin/ColorCell#default",
+                },
+              },
+            },
+          ],
+        },
+        {
+          name: "slug",
           type: "text",
           required: true,
-          label: "Swatch",
-          validate: (value: unknown) => (typeof value === "string" && HEX.test(value) ? true : "Use a #rrggbb colour value."),
+          unique: true,
+          index: true,
           admin: {
-            width: "50%",
-            components: {
-              Field: "/components/admin/ColorField#default",
-              Cell: "/components/admin/ColorCell#default",
-            },
+            readOnly: true,
+            description: "Taken from the products' Azerbaijani colour name; used in links such as ?color=qehveyi.",
           },
         },
+        {
+          name: "showInFilter",
+          type: "checkbox",
+          label: "Show in filter",
+          defaultValue: true,
+          index: true,
+          admin: { components: { Cell: TOGGLE_CELL } },
+        },
       ],
-    },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      index: true,
-      admin: {
-        readOnly: true,
-        description: "Taken from the products' Azerbaijani colour name; used in links such as ?color=qehveyi.",
-      },
-    },
-    {
-      name: "showInFilter",
-      type: "checkbox",
-      label: "Show in filter",
-      defaultValue: true,
-      index: true,
-      admin: { components: { Cell: TOGGLE_CELL } },
     },
     missingTranslations("colors", ["name"]),
   ],

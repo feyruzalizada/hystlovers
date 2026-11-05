@@ -207,7 +207,7 @@ export const Products: CollectionConfig = {
             {
               name: "price",
               type: "number",
-              label: "Price (AZN)",
+              label: "Price",
               required: true,
               min: 0,
               admin: { width: "50%", components: { Cell: listCell("PriceCell") } },
@@ -215,7 +215,7 @@ export const Products: CollectionConfig = {
             {
               name: "compareAtPrice",
               type: "number",
-              label: "Compare-at price (AZN)",
+              label: "Compare-at price",
               min: 0,
               admin: { width: "50%", description: "Old price shown struck through; leave empty if not on sale." },
               validate: (value: unknown, { siblingData }: { siblingData: { price?: number | null } }) =>

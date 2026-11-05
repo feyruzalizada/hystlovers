@@ -20,7 +20,7 @@ export const Settings: GlobalConfig = {
             {
               name: "freeShippingThreshold",
               type: "number",
-              label: "Free shipping from (AZN)",
+              label: "Free shipping from",
               required: true,
               min: 0,
               defaultValue: 100,
@@ -29,7 +29,7 @@ export const Settings: GlobalConfig = {
             {
               name: "shippingFee",
               type: "number",
-              label: "Shipping fee (AZN)",
+              label: "Shipping fee",
               required: true,
               min: 0,
               defaultValue: 5,

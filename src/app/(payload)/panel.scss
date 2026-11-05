@@ -878,3 +878,285 @@ html[data-theme="dark"] {
 .cell-number {
   white-space: nowrap;
 }
+
+// Form sections as the source: 24px apart, header over a divider, 24px inside.
+.render-fields:not(.render-fields--margins-small) > .field-type.collapsible-field {
+  margin-top: 24px;
+  margin-bottom: 24px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.collapsible__content .render-fields {
+  --spacing-field: 24px;
+}
+
+.field-label .required {
+  margin-left: 1px;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.field-type.textarea textarea {
+  min-height: 84px;
+  line-height: 24px;
+}
+
+// Money fields carry the source's "AZN" suffix box.
+.field-type__wrap > div:has(> #field-price, > #field-compareAtPrice, > #field-freeShippingThreshold, > #field-shippingFee) {
+  position: relative;
+
+  input {
+    padding-right: 66px;
+  }
+
+  &::after {
+    content: "AZN";
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    border-left: 1px solid var(--fi-input-ring);
+    color: var(--fi-muted);
+    font-size: 14px;
+    pointer-events: none;
+  }
+}
+
+// A chosen image shows as the source's file preview: the picture on a dark
+// panel, its name top left; Payload's Edit and Remove sit on it.
+.upload-relationship-details {
+  position: relative;
+  display: block;
+  height: 256px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #27272a;
+  overflow: hidden;
+
+  &__imageAndDetails {
+    display: block;
+    height: 100%;
+  }
+
+  &__thumbnail.thumbnail {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    background: transparent;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__details {
+    position: absolute;
+    top: 9px;
+    left: 80px;
+    right: 12px;
+    z-index: 1;
+    color: #fff;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  }
+
+  &__filename,
+  &__filename a {
+    margin: 0;
+    color: #fff;
+    font-size: 12px;
+    line-height: 14px;
+    text-decoration: none;
+  }
+
+  &__meta {
+    margin: 2px 0 0;
+    color: rgb(255 255 255 / 0.8);
+    font-size: 10px;
+  }
+
+  &__actions {
+    position: absolute;
+    top: 9px;
+    left: 9px;
+    z-index: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 6px;
+
+    .btn {
+      width: 26px;
+      height: 26px;
+      margin: 0;
+      padding: 0;
+      border-radius: 50%;
+      background: rgb(0 0 0 / 0.35);
+      color: #fff;
+
+      &:hover {
+        background: rgb(0 0 0 / 0.55);
+      }
+
+      .stroke {
+        stroke: #fff;
+      }
+
+      .fill {
+        fill: #fff;
+      }
+    }
+  }
+}
+
+.field-type.upload[style*="50%"] .upload-relationship-details {
+  height: 160px;
+}
+
+// The empty upload as the source's drop area: a white box, centred, Amber links.
+.field-type.upload .dropzone {
+  justify-content: center;
+  min-height: 66px;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--fi-surface);
+  box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
+  color: #52525b;
+  font-size: 14px;
+
+  .upload__dropzoneContent {
+    align-items: center;
+    text-align: center;
+  }
+
+  .btn {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--fi-accent);
+    font-weight: 500;
+
+    &:hover {
+      background: transparent;
+      text-decoration: underline;
+    }
+  }
+
+  .upload__dragAndDropText {
+    margin: 4px 0 0;
+    color: var(--fi-muted);
+  }
+}
+
+.field-type.upload .upload-field-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.field-type.upload .dropzone .upload__dropzoneContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+// The colour field as the source's: the code in one input, the colour as a dot
+// on its right; the dot still opens the browser's picker.
+.color-field__row {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  input[type="text"] {
+    width: 100%;
+    padding-right: 40px;
+  }
+
+  input[type="color"] {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: 0;
+      border-radius: 50%;
+    }
+
+    &::-moz-color-swatch {
+      border: 0;
+      border-radius: 50%;
+    }
+  }
+}
+
+// Profile (account) page: Payload's sign-in box and settings as the source's cards.
+.collection-edit--users {
+  .auth-fields {
+    margin-bottom: 24px;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--fi-surface);
+    box-shadow: 0 0 0 1px var(--fi-ring), var(--fi-shadow);
+  }
+
+  .auth-fields__controls .btn {
+    margin: 0;
+  }
+}
+
+.payload-settings {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--fi-surface);
+  box-shadow: 0 0 0 1px var(--fi-ring), var(--fi-shadow);
+
+  h3 {
+    margin: 0 0 16px;
+    color: var(--fi-text);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+  }
+}
+
+// The account page has no title of its own; the source called it "Profile".
+.collection-edit--users:not(:has(.fi-header)) .document-fields__main::before {
+  content: "Profile";
+  display: block;
+  margin: 0 0 32px;
+  padding: 0 var(--gutter-h);
+  color: var(--fi-text);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: -0.025em;
+}
