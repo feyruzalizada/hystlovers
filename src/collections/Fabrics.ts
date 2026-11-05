@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL } from "./admin-components";
+import { TOGGLE_CELL } from "./admin-components";
 import { missingTranslations } from "./missing-translations";
 import { revalidateHooks } from "./revalidate";
 
@@ -20,7 +20,6 @@ export const Fabrics: CollectionConfig = {
     defaultColumns: ["name", "slug", "showInFilter", "missingTranslations"],
     group: "Shop",
     listSearchableFields: ["name", "slug"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   // Fabrics come from products (filter-sync.ts); switching one off replaces deleting it.
   access: { ...adminAccess, create: () => false, delete: () => false },

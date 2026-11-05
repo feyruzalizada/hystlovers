@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminOnly } from "./access";
-import { LIST_FILTERS, noteCell, listCell } from "./admin-components";
+import { noteCell, listCell } from "./admin-components";
 import {
   countOrdersAfterChange,
   countOrdersAfterDelete,
@@ -46,7 +46,6 @@ export const Customers: CollectionConfig = {
     defaultColumns: ["name", "email", "ordersCount", "spent", "panelAccess", "createdAt"],
     group: "Shop",
     listSearchableFields: ["name", "email"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   disableDuplicate: true,
   hooks: {
@@ -131,7 +130,6 @@ export const Orders: CollectionConfig = {
     defaultColumns: ["number", "customerName", "itemsCount", "total", "paymentMethod", "status", "createdAt"],
     group: "Shop",
     listSearchableFields: ["number", "customerName"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   disableDuplicate: true,
   endpoints: [ordersExport],
@@ -262,7 +260,6 @@ export const ContactMessages: CollectionConfig = {
     defaultColumns: ["name", "subject", "message", "readAt", "createdAt"],
     group: "Contact",
     listSearchableFields: ["name", "message"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   disableDuplicate: true,
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
@@ -326,7 +323,6 @@ export const StockNotifications: CollectionConfig = {
     useAsTitle: "email",
     defaultColumns: ["product", "email", "createdAt"],
     group: "Contact",
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: { read: adminOnly, create: () => false, update: adminOnly, delete: adminOnly },
   disableDuplicate: true,

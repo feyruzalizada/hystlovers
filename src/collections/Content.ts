@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL, listCell, noteCell } from "./admin-components";
+import { TOGGLE_CELL, listCell, noteCell } from "./admin-components";
 import { hiddenOnCopy } from "./duplicate";
 import { slugField } from "./slug";
 import { missingTranslations } from "./missing-translations";
@@ -28,7 +28,6 @@ export const Slides: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["image", "title", "ctaLabel", "missingTranslations", "isActive", "startsAt", "updatedAt"],
     group: "Content",
-    components: { beforeListTable: [LIST_FILTERS] },
     listSearchableFields: ["title"],
   },
   access: adminAccess,
@@ -170,7 +169,6 @@ export const HomeSections: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "productLimit", "missingTranslations", "isActive"],
     group: "Content",
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",
@@ -237,7 +235,6 @@ export const Pages: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "footerGroup", "missingTranslations", "isActive", "updatedAt"],
     group: "Content",
-    components: { beforeListTable: [LIST_FILTERS] },
     listSearchableFields: ["title", "slug"],
   },
   access: adminAccess,
@@ -314,7 +311,6 @@ export const Posts: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["coverImage", "title", "missingTranslations", "isActive", "publishedAt"],
     group: "Content",
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "-publishedAt",
@@ -434,7 +430,6 @@ export const SiteTexts: CollectionConfig = {
     useAsTitle: "key",
     defaultColumns: ["key", "group", "az", "en", "ru"],
     group: "Content",
-    components: { beforeListTable: [LIST_FILTERS] },
     listSearchableFields: ["key", "az", "en", "ru"],
   },
   access: { ...adminAccess, create: () => false },

@@ -4,8 +4,9 @@ import { default as default_eb0d343dfad511a8f4f171ce7256a51c } from '../../../co
 import { PriceCell as PriceCell_07f513c68167caf320c51b8dc6c45309 } from '../../../components/admin/ListCells'
 import { default as default_4ac536b05bcf7dd66a6c577ab1ace490 } from '../../../components/admin/RowActions'
 import { default as default_97867db1f35691a3a75230c0de9d4069 } from '../../../components/admin/FormActions'
+import { default as default_ac40f7dbf6ead4e725a63eeca17cf303 } from '../../../components/admin/ListFooter'
 import { default as default_085a1674145518d3d554f03b27591a1f } from '../../../components/admin/ListHeading'
-import { default as default_744010add209a33c9051e78b813fcc64 } from '../../../components/admin/ListFilters'
+import { default as default_652aa70326503b9e9e12ae0112df1364 } from '../../../components/admin/ListToolbar'
 import { default as default_f9ca6dbcdd81948f88598844a1ded53b } from '../../../components/admin/DocHeading'
 import { orders as orders_9588d47cc6980cbfed33759f0b6e6ac1 } from '../../../components/admin/RecordView'
 import { default as default_7e4b95150cc654d8bd6ffe236c60d757 } from '../../../components/admin/ColumnLabel'
@@ -70,8 +71,9 @@ export const importMap = {
   "/components/admin/ListCells#PriceCell": PriceCell_07f513c68167caf320c51b8dc6c45309,
   "/components/admin/RowActions#default": default_4ac536b05bcf7dd66a6c577ab1ace490,
   "/components/admin/FormActions#default": default_97867db1f35691a3a75230c0de9d4069,
+  "/components/admin/ListFooter#default": default_ac40f7dbf6ead4e725a63eeca17cf303,
   "/components/admin/ListHeading#default": default_085a1674145518d3d554f03b27591a1f,
-  "/components/admin/ListFilters#default": default_744010add209a33c9051e78b813fcc64,
+  "/components/admin/ListToolbar#default": default_652aa70326503b9e9e12ae0112df1364,
   "/components/admin/DocHeading#default": default_f9ca6dbcdd81948f88598844a1ded53b,
   "/components/admin/RecordView#orders": orders_9588d47cc6980cbfed33759f0b6e6ac1,
   "/components/admin/ColumnLabel#default": default_7e4b95150cc654d8bd6ffe236c60d757,

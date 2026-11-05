@@ -1,10 +1,13 @@
 import type { CollectionConfig, Field, GlobalConfig, PayloadComponent, UIField } from "payload";
+import type { Toolbar } from "@/components/admin/ListToolbarClient";
 import type { RowAction } from "@/components/admin/RowActions";
 import { listCell, noteCell, rowActions } from "./admin-components";
 
 const SECTION_LABEL = "/components/admin/SectionLabel#default";
 const COLUMN_LABEL = "/components/admin/ColumnLabel#default";
 const FORM_ACTIONS = "/components/admin/FormActions#default";
+const LIST_TOOLBAR = "/components/admin/ListToolbar#default";
+const LIST_FOOTER = "/components/admin/ListFooter#default";
 
 type Column = { label?: string; Cell?: PayloadComponent };
 
@@ -23,6 +26,8 @@ type PanelSpec = {
   createdAt?: { label: string; dateOnly?: boolean };
   /** Records open on a read-only view page, as the source's View action. */
   viewPage?: boolean;
+  /** The source table's controls: reorder, row checkboxes, column manager, sortable columns. */
+  toolbar?: Toolbar;
 };
 
 const PANEL: Record<string, PanelSpec> = {
@@ -33,6 +38,7 @@ const PANEL: Record<string, PanelSpec> = {
     actions: ["view"],
     createdAt: { label: "Placed" },
     viewPage: true,
+    toolbar: { sortable: ["total", "createdAt"] },
   },
   customers: {
     title: "Customers",
@@ -42,12 +48,14 @@ const PANEL: Record<string, PanelSpec> = {
     actions: ["view"],
     createdAt: { label: "Registered", dateOnly: true },
     viewPage: true,
+    toolbar: { sortable: ["name", "ordersCount", "spent", "createdAt"] },
   },
   products: {
     title: "Products",
     singular: "Product",
     cells: { price: { label: "Price" }, isPreorder: { label: "Pre-order" }, isNew: { label: "New" } },
     actions: ["edit", "replicate"],
+    toolbar: { reorder: true, select: true, sortable: ["price"] },
   },
   categories: {
     title: "Categories",
@@ -59,9 +67,10 @@ const PANEL: Record<string, PanelSpec> = {
       childrenCount: { Cell: listCell("CountCell") },
     },
     actions: ["edit"],
+    toolbar: { reorder: true, select: true, columns: true },
   },
-  colors: { title: "Colors", singular: "Color", actions: ["edit"] },
-  fabrics: { title: "Fabrics", singular: "Fabric", actions: ["edit"] },
+  colors: { title: "Colors", singular: "Color", actions: ["edit"], toolbar: { reorder: true } },
+  fabrics: { title: "Fabrics", singular: "Fabric", actions: ["edit"], toolbar: { reorder: true } },
   slides: {
     title: "Slides",
     singular: "Slide",
@@ -71,6 +80,7 @@ const PANEL: Record<string, PanelSpec> = {
       { name: "schedule", type: "ui", label: "Schedule", admin: { components: { Cell: listCell("ScheduleCell") } } },
     ],
     actions: ["edit"],
+    toolbar: { reorder: true, select: true, columns: true },
   },
   "home-sections": {
     title: "Homepage Sections",
@@ -84,6 +94,7 @@ const PANEL: Record<string, PanelSpec> = {
       { name: "sectionTitle", type: "ui", label: "Title", admin: { components: { Cell: listCell("SectionTitleCell") } } },
     ],
     actions: ["edit"],
+    toolbar: { reorder: true, select: true },
   },
   pages: {
     title: "Pages",
@@ -94,6 +105,7 @@ const PANEL: Record<string, PanelSpec> = {
       footerGroup: { Cell: noteCell(undefined, { badge: "primary", labels: true }) },
     },
     actions: ["edit"],
+    toolbar: { reorder: true, select: true, columns: true },
   },
   posts: {
     title: "Posts",
@@ -105,6 +117,7 @@ const PANEL: Record<string, PanelSpec> = {
       publishedAt: { label: "Published" },
     },
     actions: ["edit", "delete"],
+    toolbar: { select: true, sortable: ["publishedAt"] },
   },
   "site-texts": {
     title: "Site Texts",
@@ -124,12 +137,14 @@ const PANEL: Record<string, PanelSpec> = {
     actions: ["view"],
     createdAt: { label: "Received" },
     viewPage: true,
+    toolbar: { sortable: ["createdAt"] },
   },
   "newsletter-subscribers": {
     title: "Newsletter Subscribers",
     singular: "Newsletter Subscriber",
     columns: ["email", "createdAt"],
     createdAt: { label: "Subscribed" },
+    toolbar: { select: true, sortable: ["createdAt"] },
   },
   "stock-notifications": {
     title: "Stock Notifications",
@@ -137,6 +152,7 @@ const PANEL: Record<string, PanelSpec> = {
     columns: ["product", "email", "createdAt"],
     cells: { product: { Cell: listCell("StockProductCell") } },
     createdAt: { label: "Requested" },
+    toolbar: { sortable: ["createdAt"] },
   },
   media: { title: "Media", singular: "Media" },
   users: { title: "Users", singular: "User" },
@@ -221,10 +237,15 @@ export function withPanelLayout(collection: CollectionConfig): CollectionConfig 
     admin: {
       ...collection.admin,
       defaultColumns: [...columns, ...(spec.actions ? ["rowActions"] : [])],
-      custom: { ...collection.admin?.custom, panel: { title: spec.title, singular: spec.singular, viewPage: spec.viewPage } },
+      custom: {
+        ...collection.admin?.custom,
+        panel: { title: spec.title, singular: spec.singular, viewPage: spec.viewPage, toolbar: spec.toolbar },
+      },
       components: {
         ...collection.admin?.components,
         beforeList: ["/components/admin/ListHeading#default"],
+        beforeListTable: [LIST_TOOLBAR],
+        afterListTable: [LIST_FOOTER],
         edit: {
           ...collection.admin?.components?.edit,
           beforeDocumentControls: ["/components/admin/DocHeading#default"],

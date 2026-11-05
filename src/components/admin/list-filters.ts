@@ -3,13 +3,15 @@ import { CONTACT_SUBJECTS, ORDER_STATUSES, PAYMENT_METHODS } from "@/collections
 import { FOOTER_GROUPS } from "@/collections/Content";
 
 export type FilterOption = { label: string; where: Where };
-export type Filter = { label: string; options: FilterOption[] };
-type FilterSource = { label: string; options: FilterOption[] | ((payload: Payload) => Promise<FilterOption[]>) };
+export type Filter = { label: string; options: FilterOption[]; blank?: string; toggle?: boolean };
+type FilterSource = Omit<Filter, "options"> & { options: FilterOption[] | ((payload: Payload) => Promise<FilterOption[]>) };
 
 const label = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).replaceAll("_", " ");
 
+// Yes/no filters leave "-" for no choice, as the source's ternary filters.
 const yesNo = (name: string, field: string): FilterSource => ({
   label: name,
+  blank: "-",
   options: [
     { label: "Yes", where: { [field]: { equals: true } } },
     { label: "No", where: { [field]: { equals: false } } },
@@ -31,6 +33,7 @@ const FILTERS: Record<string, FilterSource[]> = {
     yesNo("Panel access", "panelAccess"),
     {
       label: "Has ordered",
+      blank: "-",
       options: [
         { label: "Yes", where: { ordersCount: { greater_than: 0 } } },
         { label: "No", where: { ordersCount: { equals: 0 } } },
@@ -65,6 +68,7 @@ const FILTERS: Record<string, FilterSource[]> = {
   categories: [
     {
       label: "Parent",
+      blank: "All levels",
       options: async (payload) => {
         const { docs } = await payload.find({
           collection: "categories",
@@ -84,7 +88,7 @@ const FILTERS: Record<string, FilterSource[]> = {
   slides: [yesNo("Active", "isActive")],
   "home-sections": [yesNo("Active", "isActive")],
   pages: [
-    { label: "Footer group", options: FOOTER_GROUPS.map((group) => ({ label: group.label, where: { footerGroup: { equals: group.value } } })) },
+    { label: "Footer column", options: FOOTER_GROUPS.map((group) => ({ label: group.label, where: { footerGroup: { equals: group.value } } })) },
     yesNo("Active", "isActive"),
   ],
   posts: [yesNo("Active", "isActive")],
@@ -97,7 +101,8 @@ const FILTERS: Record<string, FilterSource[]> = {
       },
     },
     {
-      label: "Translation",
+      label: "Missing a translation",
+      toggle: true,
       options: [
         {
           label: "Missing",
@@ -116,6 +121,7 @@ const FILTERS: Record<string, FilterSource[]> = {
   "contact-messages": [
     {
       label: "Read",
+      blank: "-",
       options: [
         { label: "Read", where: { readAt: { exists: true } } },
         { label: "New", where: { readAt: { exists: false } } },
@@ -132,7 +138,7 @@ export const EXPORTS: Record<string, string> = { orders: "/api/orders/export" };
 export async function loadFilters(collection: string, payload: Payload): Promise<Filter[]> {
   return Promise.all(
     (FILTERS[collection] ?? []).map(async (filter) => ({
-      label: filter.label,
+      ...filter,
       options: typeof filter.options === "function" ? await filter.options(payload) : filter.options,
     })),
   );

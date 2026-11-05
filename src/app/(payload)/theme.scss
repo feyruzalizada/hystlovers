@@ -1013,18 +1013,6 @@ html[data-theme="dark"] .fi-avatar {
   background: var(--fi-surface);
 }
 
-.order-status-cell {
-  height: 36px;
-  min-width: 160px;
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--fi-surface);
-  box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
-  color: var(--fi-text);
-  font-size: 14px;
-}
-
 // Sidebar and table fit, as in the source panel
 
 .nav__scroll {

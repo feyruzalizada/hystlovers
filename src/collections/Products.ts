@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL, noteCell, listCell } from "./admin-components";
+import { TOGGLE_CELL, noteCell, listCell } from "./admin-components";
 import { addProductFilters } from "./filter-sync";
 import { hiddenOnCopy } from "./duplicate";
 import { slugField } from "./slug";
@@ -37,7 +37,6 @@ export const Products: CollectionConfig = {
     ],
     group: "Shop",
     listSearchableFields: ["series", "item", "colorName"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",

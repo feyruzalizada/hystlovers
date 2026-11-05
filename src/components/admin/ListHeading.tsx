@@ -1,6 +1,8 @@
 import type { BeforeListServerProps } from "payload";
 import { Gutter } from "@payloadcms/ui";
 import Link from "next/link";
+import ExportButton from "./ExportButton";
+import { EXPORTS } from "./list-filters";
 import { PageHeader } from "./PageHeader";
 
 type Panel = { title?: string; singular?: string };
@@ -10,6 +12,7 @@ export default function ListHeading({ collectionConfig, hasCreatePermission, new
   const panel = (collectionConfig.admin.custom?.panel ?? {}) as Panel;
   const title = panel.title ?? String(collectionConfig.labels.plural);
   const url = `/admin/collections/${collectionConfig.slug}`;
+  const exportPath = EXPORTS[collectionConfig.slug];
 
   return (
     <Gutter className="list-heading">
@@ -17,7 +20,9 @@ export default function ListHeading({ collectionConfig, hasCreatePermission, new
         crumbs={[{ label: title, href: url }, { label: "List" }]}
         title={title}
         actions={
-          hasCreatePermission && panel.singular ? (
+          exportPath ? (
+            <ExportButton path={exportPath} />
+          ) : hasCreatePermission && panel.singular ? (
             <Link href={newDocumentURL} className="fi-btn fi-btn--primary">
               New {panel.singular.toLowerCase()}
             </Link>

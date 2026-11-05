@@ -6,6 +6,7 @@ import { importMap } from "./admin/importMap.js";
 import "@payloadcms/next/css";
 import "./custom.scss";
 import "./theme.scss";
+import "./panel.scss";
 import "./nav-icons.scss";
 
 type Args = { children: React.ReactNode };

@@ -1,6 +1,6 @@
 import type { CollectionConfig, PayloadRequest } from "payload";
 import { adminAccess } from "./access";
-import { LIST_FILTERS, TOGGLE_CELL } from "./admin-components";
+import { TOGGLE_CELL } from "./admin-components";
 import { descendantIdsWithSelf, refreshCategoryPaths } from "./category-paths";
 import { hiddenOnCopy } from "./duplicate";
 import { POSTER_HINT, posterFields } from "./poster";
@@ -19,7 +19,6 @@ export const Categories: CollectionConfig = {
     defaultColumns: ["name", "slug", "childrenCount", "missingTranslations", "isActive", "updatedAt"],
     group: "Shop",
     listSearchableFields: ["name", "slug"],
-    components: { beforeListTable: [LIST_FILTERS] },
   },
   access: adminAccess,
   defaultSort: "_order",

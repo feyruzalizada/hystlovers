@@ -3,11 +3,16 @@
 import { toast } from "@payloadcms/ui";
 import type { DefaultCellComponentProps } from "payload";
 import { useState } from "react";
+import { Icon } from "./icons";
 
 type Option = { label: string; value: string };
 
 /** The status column as a select, saved on change, like the source panel's SelectColumn. */
-export default function OrderStatusCell({ cellData, rowData, field }: DefaultCellComponentProps) {
+export default function OrderStatusCell({
+  cellData,
+  rowData,
+  field,
+}: DefaultCellComponentProps) {
   const [status, setStatus] = useState(String(cellData ?? ""));
   const [saving, setSaving] = useState(false);
   const options = ("options" in field ? field.options : []) as Option[];
@@ -31,18 +36,23 @@ export default function OrderStatusCell({ cellData, rowData, field }: DefaultCel
   };
 
   return (
-    <select
-      className="order-status-cell"
-      value={status}
-      disabled={saving}
+    <span
+      className="fi-select order-status-cell"
       onClick={(event) => event.stopPropagation()}
-      onChange={(event) => void change(event.target.value)}
     >
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+      <select
+        value={status}
+        disabled={saving}
+        onClick={(event) => event.stopPropagation()}
+        onChange={(event) => void change(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <Icon name="chevronDown" />
+    </span>
   );
 }

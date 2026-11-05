@@ -1,7 +1,6 @@
 import type { UIField } from "payload";
 import type { RowAction } from "@/components/admin/RowActions";
 
-export const LIST_FILTERS = "/components/admin/ListFilters#default";
 export const TOGGLE_CELL = "/components/admin/ToggleCell#default";
 
 /** A list cell with another field of the row underneath, as the source table's column descriptions. */
