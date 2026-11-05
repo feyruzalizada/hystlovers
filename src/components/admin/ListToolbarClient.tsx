@@ -1,20 +1,24 @@
 "use client";
 
-import { toast, useConfig, useListDrawerContext, useListQuery, useSelection, useTableColumns } from "@payloadcms/ui";
-import { useRouter } from "next/navigation";
+import {
+  DeleteMany,
+  EditMany,
+  useConfig,
+  useListDrawerContext,
+  useListQuery,
+  useSelection,
+  useTableColumns,
+} from "@payloadcms/ui";
 import type { Where } from "payload";
 import * as qs from "qs-esm";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./icons";
 import type { Filter } from "./list-filters";
-import { ConfirmModal, Dropdown } from "./Popover";
+import { Dropdown } from "./Popover";
 
 export type Toolbar = {
+  /** The collection can be put in order by dragging, as Payload's orderable lists. */
   reorder?: boolean;
-  select?: boolean;
-  columns?: boolean;
-  /** Columns whose heading sorts, as in the source table; the others show no arrows. */
-  sortable?: string[];
 };
 
 // The URL turns every value into a string, so options are compared in that form.
@@ -24,27 +28,30 @@ const normalize = (where: Where) => JSON.stringify(qs.parse(qs.stringify(where))
 const conditions = (where: Where | undefined): Where[] => {
   if (!where) return [];
   if (Array.isArray(where.and)) return where.and;
-  if (Array.isArray(where.or) && where.or.length === 1 && Array.isArray(where.or[0]?.and)) return where.or[0].and as Where[];
+  if (Array.isArray(where.or) && where.or.length === 1 && Array.isArray(where.or[0]?.and))
+    return where.or[0].and as Where[];
   return [where];
 };
 
 const LOCKED_COLUMNS = new Set(["_select", "_dragHandle", "rowActions", "formActions"]);
 
-/** CSS for what this list hides: arrows on unsorted columns, checkboxes, drag handles outside reorder mode. */
-function listStyle(slug: string, toolbar: Toolbar, reordering: boolean) {
+/** Drag handles show only in reorder mode, as the source; checkboxes and row actions step aside then. */
+function listStyle(slug: string, reordering: boolean) {
   const list = `.collection-list--${slug}:has(.fi-toolbar)`;
-  const rules: string[] = [];
-  const sortable = new Set([...(toolbar.sortable ?? []), "_dragHandle"]);
-  rules.push(
-    `${list} th:not(${[...sortable].map((name) => `#heading-${name}`).join(",")}) .sort-column__buttons{display:none}`,
-  );
-  if (!toolbar.select || reordering) rules.push(`${list} #heading-_select,${list} .cell-_select{display:none}`);
-  if (!reordering) rules.push(`${list} #heading-_dragHandle,${list} .cell-_dragHandle{display:none}`);
-  else rules.push(`${list} #heading-rowActions,${list} .cell-rowActions{visibility:hidden}`);
-  return rules.join("\n");
+  return reordering
+    ? `${list} #heading-_select,${list} .cell-_select{display:none}\n${list} #heading-rowActions,${list} .cell-rowActions{visibility:hidden}`
+    : `${list} #heading-_dragHandle,${list} .cell-_dragHandle{display:none}`;
 }
 
-export default function ListToolbarClient({ slug, filters, toolbar }: { slug: string; filters: Filter[]; toolbar: Toolbar }) {
+export default function ListToolbarClient({
+  slug,
+  filters,
+  toolbar,
+}: {
+  slug: string;
+  filters: Filter[];
+  toolbar: Toolbar;
+}) {
   const { isInDrawer } = useListDrawerContext();
   if (isInDrawer) return null;
   return <Toolbar slug={slug} filters={filters} toolbar={toolbar} />;
@@ -55,6 +62,7 @@ function Toolbar({ slug, filters, toolbar }: { slug: string; filters: Filter[]; 
   const [reordering, setReordering] = useState(false);
   const sortBeforeReorder = useRef<string | undefined>(undefined);
 
+  // Payload lets rows be dragged only while the list is sorted by its order.
   const toggleReorder = () => {
     if (!reordering) {
       sortBeforeReorder.current = typeof query.sort === "string" ? query.sort : undefined;
@@ -67,7 +75,7 @@ function Toolbar({ slug, filters, toolbar }: { slug: string; filters: Filter[]; 
 
   return (
     <div className="fi-toolbar">
-      <style>{listStyle(slug, toolbar, reordering)}</style>
+      <style>{listStyle(slug, reordering)}</style>
       <div className="fi-toolbar__bar">
         <div className="fi-toolbar__start">
           {toolbar.reorder && (
@@ -81,38 +89,38 @@ function Toolbar({ slug, filters, toolbar }: { slug: string; filters: Filter[]; 
               <Icon name={reordering ? "done" : "reorder"} />
             </button>
           )}
-          {!reordering && toolbar.select && <BulkActions slug={slug} />}
+          {!reordering && <BulkActions slug={slug} />}
         </div>
         {!reordering && (
           <div className="fi-toolbar__end">
             <Search initial={typeof query.search === "string" ? query.search : ""} onSearch={handleSearchChange} />
-            {filters.length > 0 && <Filters filters={filters} />}
-            {toolbar.columns && <Columns />}
+            <Filters filters={filters} />
+            <Columns />
           </div>
         )}
       </div>
-      {reordering ? (
-        <div className="fi-toolbar__note">Drag and drop the records into order.</div>
-      ) : (
-        toolbar.select && <SelectionBar />
-      )}
+      {reordering ? <div className="fi-toolbar__note">Drag and drop the records into order.</div> : <SelectionBar />}
     </div>
   );
 }
 
 function Search({ initial, onSearch }: { initial: string; onSearch?: (search: string) => Promise<void> }) {
   const [value, setValue] = useState(initial);
-  const first = useRef(true);
+  const searched = useRef(initial.trim());
+  const latest = useRef(onSearch);
+  latest.current = onSearch;
 
   // Searches as you type, half a second after the last key, as the source table did.
+  // Only a changed term searches: a new search reloads the list and clears the selection.
   useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    const timer = setTimeout(() => void onSearch?.(value.trim()), 500);
+    const term = value.trim();
+    if (term === searched.current) return;
+    const timer = setTimeout(() => {
+      searched.current = term;
+      void latest.current?.(term);
+    }, 500);
     return () => clearTimeout(timer);
-  }, [value, onSearch]);
+  }, [value]);
 
   return (
     <label className="fi-input fi-input--search">
@@ -122,20 +130,29 @@ function Search({ initial, onSearch }: { initial: string; onSearch?: (search: st
   );
 }
 
+/** Payload's own condition builder stays under the toolbar; this opens and closes it. */
+const toggleAdvanced = () => document.querySelector<HTMLButtonElement>(".list-controls__toggle-where")?.click();
+
 function Filters({ filters }: { filters: Filter[] }) {
   const { query, refineListData } = useListQuery();
   const current = conditions(query.where as Where | undefined);
   const currentKeys = current.map(normalize);
-  const applied = filters.map((filter) => filter.options.findIndex((option) => currentKeys.includes(normalize(option.where))));
+  const applied = filters.map((filter) =>
+    filter.options.findIndex((option) => currentKeys.includes(normalize(option.where))),
+  );
   const [draft, setDraft] = useState(applied);
-  const active = applied.filter((index) => index >= 0).length;
+  const own = new Set(filters.flatMap((filter) => filter.options.map((option) => normalize(option.where))));
+  // Conditions from the advanced builder count too.
+  const active = applied.filter((index) => index >= 0).length + current.filter((c) => !own.has(normalize(c))).length;
 
   const apply = (selection: number[]) => {
-    const own = new Set(filters.flatMap((filter) => filter.options.map((option) => normalize(option.where))));
     const kept = current.filter((condition) => !own.has(normalize(condition)));
     const chosen = selection.flatMap((index, at) => (index >= 0 ? [filters[at].options[index].where] : []));
     const next = [...kept, ...chosen];
-    void refineListData({ where: next.length > 0 ? { and: next } : undefined, page: 1 });
+    void refineListData({
+      where: next.length > 0 ? { and: next } : undefined,
+      page: 1,
+    });
   };
 
   return (
@@ -157,9 +174,8 @@ function Filters({ filters }: { filters: Filter[] }) {
               type="button"
               className="fi-link fi-link--danger"
               onClick={() => {
-                const none = filters.map(() => -1);
-                setDraft(none);
-                apply(none);
+                setDraft(filters.map(() => -1));
+                void refineListData({ where: undefined, page: 1 });
               }}
             >
               Reset
@@ -171,7 +187,9 @@ function Filters({ filters }: { filters: Filter[] }) {
                 <input
                   type="checkbox"
                   checked={draft[at] === 0}
-                  onChange={(event) => setDraft(draft.map((value, i) => (i === at ? (event.target.checked ? 0 : -1) : value)))}
+                  onChange={(event) =>
+                    setDraft(draft.map((value, i) => (i === at ? (event.target.checked ? 0 : -1) : value)))
+                  }
                 />
                 <span>{filter.label}</span>
               </label>
@@ -181,7 +199,9 @@ function Filters({ filters }: { filters: Filter[] }) {
                 <span className="fi-select">
                   <select
                     value={draft[at]}
-                    onChange={(event) => setDraft(draft.map((value, i) => (i === at ? Number(event.target.value) : value)))}
+                    onChange={(event) =>
+                      setDraft(draft.map((value, i) => (i === at ? Number(event.target.value) : value)))
+                    }
                   >
                     <option value={-1}>{filter.blank ?? "All"}</option>
                     {filter.options.map((option, index) => (
@@ -195,16 +215,28 @@ function Filters({ filters }: { filters: Filter[] }) {
               </label>
             ),
           )}
-          <div>
+          <div className="fi-panel__actions">
+            {filters.length > 0 && (
+              <button
+                type="button"
+                className="fi-btn fi-btn--primary"
+                onClick={() => {
+                  apply(draft);
+                  close();
+                }}
+              >
+                Apply filters
+              </button>
+            )}
             <button
               type="button"
-              className="fi-btn fi-btn--primary"
+              className="fi-link"
               onClick={() => {
-                apply(draft);
+                toggleAdvanced();
                 close();
               }}
             >
-              Apply filters
+              Advanced filters
             </button>
           </div>
         </div>
@@ -256,7 +288,9 @@ function Columns() {
                 checked={draft.includes(column.accessor)}
                 onChange={(event) =>
                   setDraft(
-                    event.target.checked ? [...draft, column.accessor] : draft.filter((name) => name !== column.accessor),
+                    event.target.checked
+                      ? [...draft, column.accessor]
+                      : draft.filter((name) => name !== column.accessor),
                   )
                 }
               />
@@ -268,7 +302,7 @@ function Columns() {
               type="button"
               className="fi-btn fi-btn--primary"
               onClick={() => {
-                // Locked columns keep their place: the checkbox, the drag handle and the row actions.
+                // The checkbox, drag handle and row action columns keep their place.
                 const locked = columns.filter((column) => LOCKED_COLUMNS.has(column.accessor) && column.active);
                 void setActiveColumns([
                   ...locked.filter((column) => column.accessor !== "rowActions").map((column) => column.accessor),
@@ -287,75 +321,32 @@ function Columns() {
   );
 }
 
+/** Payload's own bulk Edit and Delete, offered from the source's "Bulk actions" menu. */
 function BulkActions({ slug }: { slug: string }) {
-  const { count, getQueryParams, toggleAll } = useSelection();
-  const { refineListData } = useListQuery();
-  const { config } = useConfig();
-  const router = useRouter();
-  const [confirming, setConfirming] = useState(false);
-  const [busy, setBusy] = useState(false);
-
-  if (count === 0) return null;
-
-  const remove = async () => {
-    setBusy(true);
-    try {
-      const res = await fetch(`${config.serverURL}${config.routes.api}/${slug}${getQueryParams()}`, {
-        method: "DELETE",
-        credentials: "include",
-        headers: { "Accept-Language": "en" },
-      });
-      const body = (await res.json().catch(() => ({}))) as { errors?: { message: string }[] };
-      if (!res.ok || body.errors?.length) {
-        toast.error(body.errors?.[0]?.message ?? "Could not delete the selected records.");
-      } else {
-        toast.success("Deleted");
-        toggleAll();
-        await refineListData({ page: 1 });
-        router.refresh();
-      }
-    } finally {
-      setBusy(false);
-      setConfirming(false);
-    }
-  };
+  const { count } = useSelection();
+  const { getEntityConfig } = useConfig();
+  const collection = getEntityConfig({ collectionSlug: slug });
+  if (count === 0 || !collection) return null;
 
   return (
-    <>
-      <Dropdown
-        align="start"
-        trigger={
-          <span className="fi-btn fi-btn--outline">
-            <Icon name="dots" />
-            Bulk actions
-          </span>
-        }
-      >
-        {(close) => (
-          <div className="fi-menu">
-            <button
-              type="button"
-              className="fi-menu__item fi-menu__item--danger"
-              onClick={() => {
-                close();
-                setConfirming(true);
-              }}
-            >
-              <Icon name="trash" />
-              Delete selected
-            </button>
-          </div>
-        )}
-      </Dropdown>
-      {confirming && (
-        <ConfirmModal
-          title="Delete selected"
-          busy={busy}
-          onCancel={() => setConfirming(false)}
-          onConfirm={() => void remove()}
-        />
+    <Dropdown
+      align="start"
+      keepMounted
+      className="fi-bulk"
+      trigger={
+        <span className="fi-btn fi-btn--outline">
+          <Icon name="dots" />
+          Bulk actions
+        </span>
+      }
+    >
+      {() => (
+        <div className="fi-menu">
+          <EditMany collection={collection} />
+          <DeleteMany collection={collection} />
+        </div>
       )}
-    </>
+    </Dropdown>
   );
 }
 

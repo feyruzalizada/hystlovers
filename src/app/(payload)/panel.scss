@@ -1,13 +1,58 @@
 // The source panel's toolbars, dropdowns, pager and modals, drawn by our own
 // components (ListToolbar, ListFooter, Popover, GlobalSearch, UserMenu…).
 
+// Payload's list controls stay in the page: its search and column pills give
+// way to the toolbar, its condition builder ("Advanced filters") opens under it.
 .collection-list:has(.fi-toolbar) {
-  .list-controls,
   .list-header__actions,
   .list-selection,
   .page-controls,
-  .sticky-toolbar {
+  .sticky-toolbar,
+  .list-controls .search-bar,
+  .list-controls__columns {
     display: none;
+  }
+
+  .collection-list__wrap {
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      order: 5;
+    }
+
+    > .list-header {
+      order: 0;
+    }
+
+    > .fi-toolbar {
+      order: 1;
+    }
+
+    > .list-controls {
+      order: 2;
+      margin: 0;
+    }
+
+    > .collection-list__tables,
+    > .no-results {
+      order: 3;
+    }
+
+    > .fi-pagination {
+      order: 4;
+    }
+  }
+
+  .list-controls__where .where-builder {
+    margin: 0;
+    padding: 16px 24px;
+    background: var(--fi-surface);
+    border-top: 1px solid var(--fi-divider);
+  }
+
+  .list-controls__where:has(.where-builder) {
+    margin-inline: 1px;
   }
 
   .collection-list__tables .table {
@@ -648,4 +693,188 @@ html[data-theme="dark"] {
   small {
     line-height: 20px;
   }
+}
+
+// Top bar: one line under it, the search and the avatar menu.
+.app-header__bg {
+  box-shadow: 0 1px 0 0 var(--fi-ring), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.app-header__actions-wrapper {
+  margin-left: auto;
+  margin-right: 16px;
+}
+
+.app-header__actions {
+  overflow: visible;
+}
+
+.fi-user-menu {
+  width: 224px;
+
+  &__trigger {
+    border-radius: 999px;
+  }
+}
+
+.fi-theme-switcher {
+  display: flex;
+  gap: 4px;
+
+  button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fi-icon);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--fi-hover);
+      color: var(--fi-muted);
+    }
+
+    &.is-active {
+      background: var(--fi-hover);
+      color: var(--fi-switch);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Sidebar as the source: 320px wide, 32px above Dashboard, groups 28px apart.
+@media (min-width: 769px) {
+  :root {
+    --nav-width: 320px;
+  }
+}
+
+.nav__wrap {
+  padding: 0 16px 32px;
+}
+
+.nav-brand {
+  margin-bottom: 32px;
+}
+
+.nav-group {
+  margin-top: 36px;
+
+  &__toggle {
+    margin-bottom: 12px;
+    line-height: 24px;
+  }
+}
+
+.fi-panel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+// Payload's bulk Edit and Delete buttons, drawn as the source's menu items.
+.fi-bulk .fi-menu {
+  display: grid;
+
+  .list-selection__button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fi-text-2);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--fi-hover);
+    }
+  }
+
+  .delete-documents__toggle {
+    color: var(--fi-danger);
+  }
+}
+
+// Row checkboxes as the source's: 16px squares, Amber when ticked.
+.table .checkbox-input {
+  .checkbox-input__input {
+    width: 16px;
+    height: 16px;
+  }
+
+  input {
+    width: 16px;
+    height: 16px;
+  }
+
+  .checkbox-input__icon {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 4px;
+    background: var(--fi-surface);
+    box-shadow: 0 0 0 1px var(--fi-input-ring), var(--fi-shadow);
+
+    svg,
+    path {
+      display: none;
+    }
+  }
+
+  &--checked .checkbox-input__icon,
+  &--partial .checkbox-input__icon {
+    background: var(--fi-switch) center / 100% no-repeat;
+    box-shadow: none;
+  }
+
+  &--checked .checkbox-input__icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+  }
+
+  &--partial .checkbox-input__icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='4' y='7' width='8' height='2' rx='1'/%3e%3c/svg%3e");
+  }
+}
+
+// The drag handle is the source's two bars; the heading over it stays blank.
+.sort-row {
+  display: flex;
+  width: 20px;
+  height: 20px;
+
+  &::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: var(--fi-icon);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M2 6.75A.75.75 0 0 1 2.75 6h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 6.75Zm0 6.5a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z'/%3E%3C/svg%3E")
+      center / 20px no-repeat;
+  }
+
+  &__icon {
+    display: none;
+  }
+}
+
+#heading-_dragHandle > * {
+  visibility: hidden;
+}
+
+.cell-number {
+  white-space: nowrap;
 }

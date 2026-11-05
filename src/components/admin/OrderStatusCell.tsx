@@ -8,11 +8,7 @@ import { Icon } from "./icons";
 type Option = { label: string; value: string };
 
 /** The status column as a select, saved on change, like the source panel's SelectColumn. */
-export default function OrderStatusCell({
-  cellData,
-  rowData,
-  field,
-}: DefaultCellComponentProps) {
+export default function OrderStatusCell({ cellData, rowData, field }: DefaultCellComponentProps) {
   const [status, setStatus] = useState(String(cellData ?? ""));
   const [saving, setSaving] = useState(false);
   const options = ("options" in field ? field.options : []) as Option[];
@@ -36,10 +32,7 @@ export default function OrderStatusCell({
   };
 
   return (
-    <span
-      className="fi-select order-status-cell"
-      onClick={(event) => event.stopPropagation()}
-    >
+    <span className="fi-select order-status-cell" onClick={(event) => event.stopPropagation()}>
       <select
         value={status}
         disabled={saving}

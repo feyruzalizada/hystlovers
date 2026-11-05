@@ -11,6 +11,8 @@ type DropdownProps = {
   align?: "start" | "end";
   className?: string;
   onOpen?: () => void;
+  /** Keeps the panel in the page while closed, so modals opened from it (Payload's bulk Edit/Delete) stay alive. */
+  keepMounted?: boolean;
 };
 
 /**
@@ -18,9 +20,14 @@ type DropdownProps = {
  * the body, so a link or a scrolling table around the trigger cannot clip or
  * swallow it.
  */
-export function Dropdown({ trigger, children, align = "end", className, onOpen }: DropdownProps) {
+export function Dropdown({ trigger, children, align = "end", className, onOpen, keepMounted }: DropdownProps) {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [place, setPlace] = useState<{ top: number; left?: number; right?: number }>({ top: 0 });
+  const [place, setPlace] = useState<{
+    top: number;
+    left?: number;
+    right?: number;
+  }>({ top: 0 });
   const button = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
@@ -30,7 +37,10 @@ export function Dropdown({ trigger, children, align = "end", className, onOpen }
     if (!rect) return;
     setPlace(
       align === "end"
-        ? { top: rect.bottom + 8, right: Math.max(8, window.innerWidth - rect.right) }
+        ? {
+            top: rect.bottom + 8,
+            right: Math.max(8, window.innerWidth - rect.right),
+          }
         : { top: rect.bottom + 8, left: Math.max(8, rect.left) },
     );
   }, [align]);
@@ -38,6 +48,8 @@ export function Dropdown({ trigger, children, align = "end", className, onOpen }
   useLayoutEffect(() => {
     if (open) measure();
   }, [open, measure]);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -75,9 +87,19 @@ export function Dropdown({ trigger, children, align = "end", className, onOpen }
       >
         {trigger}
       </button>
-      {open &&
+      {mounted &&
+        (open || keepMounted) &&
         createPortal(
-          <div ref={panel} className={["fi-dropdown", className].filter(Boolean).join(" ")} style={{ position: "fixed", ...place }}>
+          <div
+            ref={panel}
+            className={["fi-dropdown", className].filter(Boolean).join(" ")}
+            style={{
+              position: "fixed",
+              ...place,
+              display: open ? undefined : "none",
+            }}
+            onClick={keepMounted ? () => setTimeout(close) : undefined}
+          >
             {children(close)}
           </div>,
           document.body,
