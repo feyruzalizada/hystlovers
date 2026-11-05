@@ -51,10 +51,10 @@ export default function Avatar() {
             ))}
           </div>
           <div className="fi-menu">
-            <a href="/admin/logout" className="fi-menu__item">
+            <Link href="/admin/logout" className="fi-menu__item">
               <Icon name="signOut" />
               Sign out
-            </a>
+            </Link>
           </div>
         </>
       )}

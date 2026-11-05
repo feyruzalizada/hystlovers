@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./icons";
 
@@ -21,7 +21,12 @@ type DropdownProps = {
  * swallow it.
  */
 export function Dropdown({ trigger, children, align = "end", className, onOpen, keepMounted }: DropdownProps) {
-  const [mounted, setMounted] = useState(false);
+  // The body exists only in the browser; the server renders no panel.
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const [open, setOpen] = useState(false);
   const [place, setPlace] = useState<{
     top: number;
@@ -48,8 +53,6 @@ export function Dropdown({ trigger, children, align = "end", className, onOpen, 
   useLayoutEffect(() => {
     if (open) measure();
   }, [open, measure]);
-
-  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;

@@ -94,16 +94,26 @@ test("orders: payment status, list filters, status column, export and customer c
 
   await page.goto(`/admin/collections/orders?search=${number}`);
   const row = page.locator("tbody tr", { hasText: number });
-  await row.locator("select.order-status-cell").selectOption("confirmed");
+  await row.locator(".order-status-cell select").selectOption("confirmed");
   await expect
     .poll(async () => (await (await request.get(`/api/orders/${order.id}?depth=0`, { headers })).json()).status)
     .toBe("confirmed");
 
   await page.goto("/admin/collections/orders");
-  await page.locator(".list-filters__item", { hasText: "Status" }).locator("select").selectOption({ label: "Confirmed" });
+  const filterBy = async (status: string) => {
+    const select = page.locator(".fi-filters .fi-field", { hasText: "Status" }).locator("select");
+    // A click before hydration opens nothing, so it is retried until the panel shows.
+    await expect(async () => {
+      if (!(await select.isVisible())) await page.locator(".fi-filters__trigger").click();
+      await expect(select).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 60_000 });
+    await select.selectOption({ label: status });
+    await page.getByRole("button", { name: "Apply filters" }).click();
+  };
+  await filterBy("Confirmed");
   await expect(page).toHaveURL(/where/);
   await expect(page.locator("tbody tr", { hasText: number })).toBeVisible();
-  await page.locator(".list-filters__item", { hasText: "Status" }).locator("select").selectOption({ label: "Delivered" });
+  await filterBy("Delivered");
   await expect(page.locator("tbody tr", { hasText: number })).toHaveCount(0);
 
   await page.goto(`/admin/collections/customers/${customer.id}`);

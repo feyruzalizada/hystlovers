@@ -108,7 +108,9 @@ function Search({ initial, onSearch }: { initial: string; onSearch?: (search: st
   const [value, setValue] = useState(initial);
   const searched = useRef(initial.trim());
   const latest = useRef(onSearch);
-  latest.current = onSearch;
+  useEffect(() => {
+    latest.current = onSearch;
+  });
 
   // Searches as you type, half a second after the last key, as the source table did.
   // Only a changed term searches: a new search reloads the list and clears the selection.
