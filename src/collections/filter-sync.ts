@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook, Payload, PayloadRequest } from "payload";
 import { slugify } from "@/lib/slug";
 import { HEX } from "./Colors";
+import { keepLocale } from "./keep-locale";
 
 const LOCALES = ["az", "en", "ru"] as const;
 
@@ -64,16 +65,18 @@ async function ensureFilters(payload: Payload, product: ProductFilters, req?: Pa
 }
 
 export const addProductFilters: CollectionAfterChangeHook = async ({ doc, req }) => {
-  const product = (await req.payload.findByID({
-    collection: "products",
-    id: doc.id,
-    locale: "all",
-    depth: 0,
-    select,
-    overrideAccess: true,
-    req,
-  })) as unknown as ProductFilters;
-  await ensureFilters(req.payload, product, req);
+  await keepLocale(req, async () => {
+    const product = (await req.payload.findByID({
+      collection: "products",
+      id: doc.id,
+      locale: "all",
+      depth: 0,
+      select,
+      overrideAccess: true,
+      req,
+    })) as unknown as ProductFilters;
+    await ensureFilters(req.payload, product, req);
+  });
   return doc;
 };
 

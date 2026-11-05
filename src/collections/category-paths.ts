@@ -1,18 +1,21 @@
 import type { Payload, PayloadRequest } from "payload";
+import { keepLocale } from "./keep-locale";
 
 type Node = { id: number | string; name?: string | null; parent?: number | string | null; pathName?: string | null };
 
 async function allCategories(payload: Payload, req?: PayloadRequest): Promise<Node[]> {
-  const { docs } = await payload.find({
-    collection: "categories",
-    locale: "az",
-    depth: 0,
-    limit: 0,
-    pagination: false,
-    select: { name: true, parent: true, pathName: true },
-    overrideAccess: true,
-    req,
-  });
+  const { docs } = await keepLocale(req, () =>
+    payload.find({
+      collection: "categories",
+      locale: "az",
+      depth: 0,
+      limit: 0,
+      pagination: false,
+      select: { name: true, parent: true, pathName: true },
+      overrideAccess: true,
+      req,
+    }),
+  );
   return docs as unknown as Node[];
 }
 

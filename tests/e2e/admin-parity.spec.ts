@@ -304,3 +304,27 @@ test("the panel wears the source layout: sidebar, welcome card, section headers,
     }
   }
 });
+
+test("saving a subcategory in English or Russian leaves its Azerbaijani text alone", async ({ request }) => {
+  const headers = await adminHeaders(request);
+  const list = await request.get("/api/categories?where[parent][exists]=true&depth=0&limit=1&locale=az", { headers });
+  const child = (await list.json()).docs[0];
+  type Texts = { name: string; description: string | null; pathName: string };
+  const read = async (locale: string): Promise<Texts> => {
+    const res = await request.get(`/api/categories/${child.id}?locale=${locale}&depth=0&fallback-locale=none`, { headers });
+    const { name, description, pathName } = await res.json();
+    return { name, description, pathName };
+  };
+  const before = { az: await read("az"), en: await read("en"), ru: await read("ru") };
+
+  try {
+    await request.patch(`/api/categories/${child.id}?locale=en`, { headers, data: { description: "EN only" } });
+    await request.patch(`/api/categories/${child.id}?locale=ru`, { headers, data: { description: "Только RU" } });
+    expect(await read("az")).toEqual(before.az);
+    expect((await read("en")).description).toBe("EN only");
+    expect((await read("ru")).description).toBe("Только RU");
+  } finally {
+    await request.patch(`/api/categories/${child.id}?locale=en`, { headers, data: { description: before.en.description } });
+    await request.patch(`/api/categories/${child.id}?locale=ru`, { headers, data: { description: before.ru.description } });
+  }
+});
