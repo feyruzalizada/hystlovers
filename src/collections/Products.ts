@@ -43,6 +43,17 @@ export const Products: CollectionConfig = {
   hooks: {
     afterChange: [revalidateAfterChange, addProductFilters],
     afterDelete: [revalidateAfterDelete],
+    // A stock alert must name its product, so the database refuses to delete a product that still has some.
+    beforeDelete: [
+      async ({ id, req }) => {
+        await req.payload.delete({
+          collection: "stock-notifications",
+          where: { product: { equals: id } },
+          overrideAccess: true,
+          req,
+        });
+      },
+    ],
     beforeValidate: [
       ({ data }) => {
         if (data) {

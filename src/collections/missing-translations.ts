@@ -1,4 +1,5 @@
 import type { CollectionSlug, Field } from "payload";
+import { keepLocale } from "./keep-locale";
 
 const LOCALES = ["az", "en", "ru"] as const;
 
@@ -26,13 +27,22 @@ export function missingTranslations(collection: CollectionSlug, fields: string[]
     hooks: {
       afterRead: [
         async ({ data, req }) => {
-          // Only the panel needs it. The lookup below runs without a user, so it
-          // skips this hook itself, as do storefront reads.
+          // Only the panel needs it; storefront reads skip it.
           if (req.user?.collection !== "users" || !data?.id) return undefined;
-          const doc = (await req.payload.findByID({ collection, id: data.id, locale: "all", depth: 0 })) as unknown as Record<
-            string,
-            Record<string, unknown> | undefined
-          >;
+          // Inside the save's transaction, so a record being created is found and one being
+          // deleted is no error. Selecting only the fields keeps this hook from running again.
+          const doc = (await keepLocale(req, () =>
+            req.payload.findByID({
+              collection,
+              id: data.id,
+              locale: "all",
+              depth: 0,
+              select: Object.fromEntries(fields.map((field) => [field, true])),
+              disableErrors: true,
+              req,
+            }),
+          )) as unknown as Record<string, Record<string, unknown> | undefined> | null;
+          if (!doc) return undefined;
 
           const missing = LOCALES.filter((locale) =>
             fields.some((field) => {
