@@ -13,7 +13,9 @@ async function thumbnail(payload: BasePayload, value: unknown) {
   const id = idOf(value);
   if (!id) return null;
   const media = await payload.findByID({ collection: "media", id, depth: 0, overrideAccess: true }).catch(() => null);
-  const src = media?.sizes?.card?.url || media?.url;
+  // A file smaller than the card size gets no card; a replaced file may still carry the old one's URL.
+  const card = media?.sizes?.card;
+  const src = (card?.filename && card.url) || media?.url;
   // A small panel thumbnail of an already resized file; next/image adds nothing here.
   // eslint-disable-next-line @next/next/no-img-element
   return src ? <img src={src} alt="" className="product-thumb" /> : null;
