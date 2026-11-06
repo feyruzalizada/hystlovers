@@ -72,8 +72,12 @@ export default function Hero({ slides }: { slides: Slide[] }) {
               />
             </>
           )}
+          {/* A dark veil over a video keeps low-resolution footage from showing its grain. */}
+          {slide.video && <div aria-hidden="true" className="absolute inset-0 bg-black/40" />}
 
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 text-center sm:pb-20">
+          <div
+            className={`absolute inset-0 flex flex-col items-center justify-end pb-16 text-center sm:pb-20 ${slide.video ? "text-paper" : ""}`}
+          >
             {slide.subtitle.trim() && (
               <p className="text-xs tracking-brand uppercase sm:text-sm">{slide.subtitle}</p>
             )}
