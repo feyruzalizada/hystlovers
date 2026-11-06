@@ -268,6 +268,12 @@ export const getShop = cache(async (locale: Locale): Promise<ShopSettings> => {
     currency: { code: settings.currencyCode ?? "AZN", symbol: settings.currencySymbol ?? "₼" },
     freeShippingThreshold: Number(settings.freeShippingThreshold ?? 0),
     shippingFee: Number(settings.shippingFee ?? 0),
+    sizeGuide: (settings.sizeGuide ?? []).map((row) => ({
+      size: row.size,
+      chest: row.chest ?? "",
+      waist: row.waist ?? "",
+      hips: row.hips ?? "",
+    })),
     navigation,
     footer: [group("company", "footer.group.company"), group("help", "footer.group.help")],
   };

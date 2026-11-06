@@ -41,6 +41,33 @@ export const Settings: GlobalConfig = {
     },
     {
       type: "collapsible",
+      label: "Size guide",
+      admin: {
+        description:
+          "The size table on product pages. Each product lists its own sizes; a size such as XS also takes the measurements of a combined row like XS/S.",
+      },
+      fields: [
+        {
+          name: "sizeGuide",
+          type: "array",
+          label: "Sizes",
+          labels: { singular: "Size", plural: "Sizes" },
+          fields: [
+            {
+              type: "row",
+              fields: [
+                { name: "size", type: "text", required: true, admin: { width: "25%", placeholder: "S" } },
+                { name: "chest", type: "text", label: "Chest (cm)", admin: { width: "25%", placeholder: "84-88" } },
+                { name: "waist", type: "text", label: "Waist (cm)", admin: { width: "25%", placeholder: "64-68" } },
+                { name: "hips", type: "text", label: "Hips (cm)", admin: { width: "25%", placeholder: "90-94" } },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "collapsible",
       label: "Bank transfer",
       admin: {
         description:

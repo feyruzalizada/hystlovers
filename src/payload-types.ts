@@ -1239,6 +1239,15 @@ export interface Setting {
    * Charged on orders below the threshold.
    */
   shippingFee: number;
+  sizeGuide?:
+    | {
+        size: string;
+        chest?: string | null;
+        waist?: string | null;
+        hips?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Line breaks are preserved. Leave empty to hide the section entirely.
    */
@@ -1378,6 +1387,15 @@ export interface ContactDetail {
 export interface SettingsSelect<T extends boolean = true> {
   freeShippingThreshold?: T;
   shippingFee?: T;
+  sizeGuide?:
+    | T
+    | {
+        size?: T;
+        chest?: T;
+        waist?: T;
+        hips?: T;
+        id?: T;
+      };
   bankTransferDetails?: T;
   shopName?: T;
   currencyCode?: T;

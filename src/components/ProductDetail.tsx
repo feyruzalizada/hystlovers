@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import type { Product, ProductSibling } from "@/lib/types";
+import type { Product, ProductSibling, SizeGuideRow } from "@/lib/types";
 import { notifyWhenInStock } from "@/app/actions/shop";
 import { useI18n } from "./I18nProvider";
 import { useCart } from "./CartProvider";
@@ -15,10 +15,18 @@ import SectionHeading from "./SectionHeading";
 
 const MAX_QTY = 20;
 
-const SIZE_GUIDE = [
-  { size: "XS/S", chest: "82-88", waist: "62-68", hips: "88-94" },
-  { size: "M/L", chest: "90-98", waist: "70-78", hips: "96-104" },
-];
+const norm = (size: string) => size.trim().toLowerCase();
+
+/** The product's own sizes; "XS" falls back to a combined "XS/S" row, and an unknown size shows dashes. */
+function guideRows(sizes: string[], guide: SizeGuideRow[]): SizeGuideRow[] {
+  return sizes.map((size) => {
+    const key = norm(size);
+    const row =
+      guide.find((entry) => norm(entry.size) === key) ??
+      guide.find((entry) => entry.size.split("/").map(norm).includes(key));
+    return { size, chest: row?.chest || "—", waist: row?.waist || "—", hips: row?.hips || "—" };
+  });
+}
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -57,7 +65,7 @@ export default function ProductDetail({
 }) {
   const { t, path, locale } = useI18n();
   const cart = useCart();
-  const { formatPrice, freeShippingThreshold } = useShop();
+  const { formatPrice, freeShippingThreshold, sizeGuide } = useShop();
 
   const availabilityOf = (size: string) =>
     product.size_stock[size] ?? { available: product.in_stock, remaining: null };
@@ -428,7 +436,7 @@ export default function ProductDetail({
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-ink/70">
-                {SIZE_GUIDE.map((row) => (
+                {guideRows(product.sizes, sizeGuide).map((row) => (
                   <tr key={row.size}>
                     <td className="py-2.5">{row.size}</td>
                     <td>{row.chest}</td>

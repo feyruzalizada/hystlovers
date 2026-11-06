@@ -10,7 +10,7 @@ import { missingTranslations } from "./missing-translations";
 import { slugify } from "@/lib/slug";
 import { revalidateAfterChange, revalidateAfterDelete } from "./revalidate";
 
-export const SIZE_SUGGESTIONS = ["XS/S", "M/L", "One Size"];
+export const SIZE_SUGGESTIONS = ["XS", "S", "M", "L", "XL", "XS/S", "M/L", "One Size"];
 export const FABRIC_SUGGESTIONS = ["Bamboo", "Cotton", "Lycra", "Modal", "Terry Cloth", "Viscose"];
 
 /**

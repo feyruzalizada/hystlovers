@@ -75,11 +75,14 @@ export type FooterGroup = {
   links: NavItem[];
 };
 
+export type SizeGuideRow = { size: string; chest: string; waist: string; hips: string };
+
 export type ShopSettings = {
   name: string;
   currency: { code: string; symbol: string };
   freeShippingThreshold: number;
   shippingFee: number;
+  sizeGuide: SizeGuideRow[];
   navigation: NavItem[];
   footer: FooterGroup[];
 };
