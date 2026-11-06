@@ -10,6 +10,7 @@ import * as migration_20261029_215511_filter_fabrics from './20261029_215511_fil
 import * as migration_20261029_225437_admin_parity_forms from './20261029_225437_admin_parity_forms';
 import * as migration_20261031_104822_page_banners from './20261031_104822_page_banners';
 import * as migration_20261031_124402_poster_sizes from './20261031_124402_poster_sizes';
+import * as migration_20261106_011630_payload_3_93 from './20261106_011630_payload_3_93';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20261031_124402_poster_sizes.up,
     down: migration_20261031_124402_poster_sizes.down,
-    name: '20261031_124402_poster_sizes'
+    name: '20261031_124402_poster_sizes',
+  },
+  {
+    up: migration_20261106_011630_payload_3_93.up,
+    down: migration_20261106_011630_payload_3_93.down,
+    name: '20261106_011630_payload_3_93'
   },
 ];

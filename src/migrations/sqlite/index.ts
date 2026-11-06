@@ -12,6 +12,7 @@ import * as migration_20261029_215459_filter_fabrics from './20261029_215459_fil
 import * as migration_20261029_225426_admin_parity_forms from './20261029_225426_admin_parity_forms';
 import * as migration_20261031_104803_page_banners from './20261031_104803_page_banners';
 import * as migration_20261031_124325_poster_sizes from './20261031_124325_poster_sizes';
+import * as migration_20261106_011622_payload_3_93 from './20261106_011622_payload_3_93';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261031_124325_poster_sizes.up,
     down: migration_20261031_124325_poster_sizes.down,
-    name: '20261031_124325_poster_sizes'
+    name: '20261031_124325_poster_sizes',
+  },
+  {
+    up: migration_20261106_011622_payload_3_93.up,
+    down: migration_20261106_011622_payload_3_93.down,
+    name: '20261106_011622_payload_3_93'
   },
 ];
