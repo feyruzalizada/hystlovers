@@ -27,6 +27,7 @@ import { ContactDetails } from "./globals/ContactDetails";
 import { PageBanners } from "./globals/PageBanners";
 import { Settings } from "./globals/Settings";
 import { navBadges } from "./endpoints/nav-badges";
+import { serverUrl } from "./lib/server-url";
 import { withGlobalPanelLayout, withPanelLayout } from "./collections/panel-layout";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -129,7 +130,7 @@ export default buildConfig({
   // serverURL only fills in absolute links (password resets); leaving CORS and
   // CSRF at their defaults keeps cookie auth working on every origin the app
   // is actually served from.
-  serverURL: process.env.SERVER_URL,
+  serverURL: serverUrl,
   plugins: [
     // Vercel's filesystem is read-only, so panel uploads go to Blob there.
     // Without the token files stay in public/media.

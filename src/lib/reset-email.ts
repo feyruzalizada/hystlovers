@@ -1,5 +1,6 @@
 import type { Payload, PayloadRequest } from "payload";
 import { buildTranslator, defaultLocale, isLocale, localePath, type Translator } from "./i18n";
+import { serverUrl } from "./server-url";
 import type { Locale } from "./types";
 
 const escape = (value: string) =>
@@ -28,7 +29,7 @@ export async function resetEmailSubject(req: PayloadRequest | undefined): Promis
 /** The storefront's reset page, in the language the shopper asked from. */
 export async function resetEmailHtml(req: PayloadRequest | undefined, token: string): Promise<string> {
   const [t, locale] = await fromRequest(req);
-  const url = `${process.env.SERVER_URL ?? ""}${localePath(locale, `/reset-password/${token}`)}`;
+  const url = `${serverUrl ?? ""}${localePath(locale, `/reset-password/${token}`)}`;
 
   return `<!DOCTYPE html>
 <html lang="${locale}">
