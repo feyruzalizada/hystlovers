@@ -16,6 +16,7 @@ import * as migration_20261106_011622_payload_3_93 from './20261106_011622_paylo
 import * as migration_20261106_160453_size_guide from './20261106_160453_size_guide';
 import * as migration_20261106_163731_image_border from './20261106_163731_image_border';
 import * as migration_20261106_164839_slide_video from './20261106_164839_slide_video';
+import * as migration_20261106_171920_background_audio from './20261106_171920_background_audio';
 
 export const migrations = [
   {
@@ -106,6 +107,11 @@ export const migrations = [
   {
     up: migration_20261106_164839_slide_video.up,
     down: migration_20261106_164839_slide_video.down,
-    name: '20261106_164839_slide_video'
+    name: '20261106_164839_slide_video',
+  },
+  {
+    up: migration_20261106_171920_background_audio.up,
+    down: migration_20261106_171920_background_audio.down,
+    name: '20261106_171920_background_audio'
   },
 ];

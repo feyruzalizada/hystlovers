@@ -1278,6 +1278,10 @@ export interface Brand {
    * The line above the menu. Leave empty to hide the bar.
    */
   announcement?: string | null;
+  /**
+   * MP3, M4A or OGG, played on a loop on every page. Browsers start it at the visitor's first click or tap; a button in the corner turns it off. Leave empty for silence.
+   */
+  backgroundAudio?: (number | null) | Media;
   homeLabel?: string | null;
   homeText?: string | null;
   homeButton?: string | null;
@@ -1420,6 +1424,7 @@ export interface SettingsSelect<T extends boolean = true> {
  */
 export interface BrandSelect<T extends boolean = true> {
   announcement?: T;
+  backgroundAudio?: T;
   homeLabel?: T;
   homeText?: T;
   homeButton?: T;

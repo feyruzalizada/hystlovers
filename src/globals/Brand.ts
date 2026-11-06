@@ -22,6 +22,17 @@ export const Brand: GlobalConfig = {
               localized: true,
               admin: { description: "The line above the menu. Leave empty to hide the bar." },
             },
+            {
+              name: "backgroundAudio",
+              label: "Background sound",
+              type: "upload",
+              relationTo: "media",
+              filterOptions: { mimeType: { contains: "audio" } },
+              admin: {
+                description:
+                  "MP3, M4A or OGG, played on a loop on every page. Browsers start it at the visitor's first click or tap; a button in the corner turns it off. Leave empty for silence.",
+              },
+            },
           ],
         },
         {

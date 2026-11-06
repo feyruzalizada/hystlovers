@@ -188,6 +188,11 @@ export const getSettings = cache(async (locale: Locale): Promise<Setting> => {
   return payload.findGlobal({ slug: "settings", locale });
 });
 
+/** The site-wide background sound, if one is set. */
+export function backgroundAudioUrl(brand: Brand): string | null {
+  return mediaUrl(brand.backgroundAudio as Related<Media>);
+}
+
 export const getBrand = cache(async (locale: Locale): Promise<Brand> => {
   const payload = await payloadClient();
   return payload.findGlobal({ slug: "brand", locale });

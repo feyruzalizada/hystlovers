@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import { getBrand, getShop, getSiteTexts } from "@/lib/cms";
+import { backgroundAudioUrl, getBrand, getShop, getSiteTexts } from "@/lib/cms";
 import { isLocale, locales } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nProvider";
 import { FormValidation } from "@/components/FormValidation";
@@ -10,6 +10,7 @@ import { CartProvider } from "@/components/CartProvider";
 import CartDrawer from "@/components/CartDrawer";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BackgroundAudio from "@/components/BackgroundAudio";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -63,6 +64,7 @@ export default async function LocaleLayout({
               <Footer groups={shop.footer} brand={brand} />
               <CartDrawer />
               <FormValidation />
+              {backgroundAudioUrl(brand) && <BackgroundAudio src={backgroundAudioUrl(brand)!} />}
             </CartProvider>
           </ShopProvider>
         </I18nProvider>
