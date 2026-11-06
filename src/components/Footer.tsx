@@ -59,7 +59,7 @@ export default function Footer({ groups, brand }: { groups: FooterGroup[]; brand
               rel="noopener"
               className="font-medium tracking-wide2 text-paper/70 uppercase underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
             >
-              Burncode LLC
+              Friends
             </a>
           </p>
         </div>
