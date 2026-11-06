@@ -17,7 +17,9 @@ export default function ProductCard({
 
   return (
     <Link href={path(`/products/${product.slug}`)} className="group block">
-      <div className="relative aspect-[3/4] overflow-hidden bg-mist">
+      <div
+        className={`relative aspect-[3/4] overflow-hidden bg-mist ${product.image_border ? "border border-black" : ""}`}
+      >
         {product.images[0] && (
           <Image
             src={product.images[0]}

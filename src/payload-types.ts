@@ -331,6 +331,10 @@ export interface Product {
    * Shows the product in the New In collection.
    */
   isNew?: boolean | null;
+  /**
+   * A thin black frame around the product's photos in the shop.
+   */
+  imageBorder?: boolean | null;
   missingTranslations?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -938,6 +942,7 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   isActive?: T;
   isNew?: T;
+  imageBorder?: T;
   missingTranslations?: T;
   updatedAt?: T;
   createdAt?: T;

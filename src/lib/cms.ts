@@ -116,6 +116,7 @@ function toProduct(doc: CmsProduct, slugs: { color: string; fabric: string }, lo
       ? new Date(doc.preorderShipsAt).toLocaleDateString("en-GB").replaceAll("/", ".")
       : null,
     is_new: Boolean(doc.isNew),
+    image_border: Boolean(doc.imageBorder),
     composition: doc.composition ?? "",
     set_parts: (doc.setParts ?? []).length > 0 ? doc.setParts!.map((part) => part.value) : null,
     description: doc.description ?? "",

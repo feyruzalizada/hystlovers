@@ -29,6 +29,7 @@ export type Product = {
   is_preorder: boolean;
   preorder_ships_at: string | null;
   is_new: boolean;
+  image_border: boolean;
   composition: string;
   set_parts: string[] | null;
   description: string;

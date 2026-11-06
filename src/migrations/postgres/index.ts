@@ -12,6 +12,7 @@ import * as migration_20261031_104822_page_banners from './20261031_104822_page_
 import * as migration_20261031_124402_poster_sizes from './20261031_124402_poster_sizes';
 import * as migration_20261106_011630_payload_3_93 from './20261106_011630_payload_3_93';
 import * as migration_20261106_160501_size_guide from './20261106_160501_size_guide';
+import * as migration_20261106_163741_image_border from './20261106_163741_image_border';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261106_160501_size_guide.up,
     down: migration_20261106_160501_size_guide.down,
-    name: '20261106_160501_size_guide'
+    name: '20261106_160501_size_guide',
+  },
+  {
+    up: migration_20261106_163741_image_border.up,
+    down: migration_20261106_163741_image_border.down,
+    name: '20261106_163741_image_border'
   },
 ];

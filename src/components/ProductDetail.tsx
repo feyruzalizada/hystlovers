@@ -148,7 +148,9 @@ export default function ProductDetail({
 
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
         <div>
-          <div className="relative aspect-[3/4] overflow-hidden bg-mist">
+          <div
+            className={`relative aspect-[3/4] overflow-hidden bg-mist ${product.image_border ? "border border-black" : ""}`}
+          >
             {product.images[activeImage] && (
               <Image
                 src={product.images[activeImage]}
