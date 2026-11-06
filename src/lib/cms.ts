@@ -329,8 +329,9 @@ export const getSlides = cache(async (locale: Locale): Promise<Slide[]> => {
       url: doc.ctaUrl ?? "/collections/all-products",
       image: mediaUrl(doc.image) ?? "",
       imageMobile: mediaUrl(doc.imageMobile),
+      video: mediaUrl(doc.video),
     }))
-    .filter((slide) => slide.image);
+    .filter((slide) => slide.image || slide.video);
 });
 
 export const getHomeSections = cache(async (locale: Locale) => {

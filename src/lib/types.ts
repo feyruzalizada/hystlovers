@@ -55,6 +55,7 @@ export type Slide = {
   url: string;
   image: string;
   imageMobile: string | null;
+  video: string | null;
 };
 
 export type FeaturedBlock = {

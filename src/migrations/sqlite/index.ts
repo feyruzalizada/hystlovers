@@ -15,6 +15,7 @@ import * as migration_20261031_124325_poster_sizes from './20261031_124325_poste
 import * as migration_20261106_011622_payload_3_93 from './20261106_011622_payload_3_93';
 import * as migration_20261106_160453_size_guide from './20261106_160453_size_guide';
 import * as migration_20261106_163731_image_border from './20261106_163731_image_border';
+import * as migration_20261106_164839_slide_video from './20261106_164839_slide_video';
 
 export const migrations = [
   {
@@ -100,6 +101,11 @@ export const migrations = [
   {
     up: migration_20261106_163731_image_border.up,
     down: migration_20261106_163731_image_border.down,
-    name: '20261106_163731_image_border'
+    name: '20261106_163731_image_border',
+  },
+  {
+    up: migration_20261106_164839_slide_video.up,
+    down: migration_20261106_164839_slide_video.down,
+    name: '20261106_164839_slide_video'
   },
 ];

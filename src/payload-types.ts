@@ -476,13 +476,17 @@ export interface Slide {
    */
   ctaUrl?: string | null;
   /**
-   * Recommended: 2400×1400 (21:9 on large screens).
+   * Recommended: 2400×1400 (21:9 on large screens). With a video it is shown while the video loads.
    */
-  image: number | Media;
+  image?: (number | null) | Media;
   /**
    * Recommended: 1080×1350 (4:5). Falls back to the desktop image.
    */
   imageMobile?: (number | null) | Media;
+  /**
+   * MP4 or WebM. Plays muted and on a loop in place of the image, on every screen size.
+   */
+  video?: (number | null) | Media;
   isActive?: boolean | null;
   /**
    * Leave empty to show immediately.
@@ -1007,6 +1011,7 @@ export interface SlidesSelect<T extends boolean = true> {
   ctaUrl?: T;
   image?: T;
   imageMobile?: T;
+  video?: T;
   isActive?: T;
   startsAt?: T;
   endsAt?: T;

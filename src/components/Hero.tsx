@@ -40,22 +40,38 @@ export default function Hero({ slides }: { slides: Slide[] }) {
           data-hero-slide={index === active ? "active" : "idle"}
           className="absolute inset-0"
         >
-          <Image
-            src={slide.imageMobile ?? slide.image}
-            alt={index === active ? slide.title : ""}
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            className="object-cover sm:hidden"
-          />
-          <Image
-            src={slide.image}
-            alt={index === active ? slide.title : ""}
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            className="hidden object-cover sm:block"
-          />
+          {slide.video ? (
+            <video
+              src={slide.video}
+              poster={slide.image || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-label={index === active ? slide.title : undefined}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <>
+              <Image
+                src={slide.imageMobile ?? slide.image}
+                alt={index === active ? slide.title : ""}
+                fill
+                priority={index === 0}
+                sizes="100vw"
+                className="object-cover sm:hidden"
+              />
+              <Image
+                src={slide.image}
+                alt={index === active ? slide.title : ""}
+                fill
+                priority={index === 0}
+                sizes="100vw"
+                className="hidden object-cover sm:block"
+              />
+            </>
+          )}
 
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 text-center sm:pb-20">
             {slide.subtitle.trim() && (

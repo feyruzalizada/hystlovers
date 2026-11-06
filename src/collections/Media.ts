@@ -10,7 +10,7 @@ export const Media: CollectionConfig = {
   hooks: revalidateHooks,
   upload: {
     staticDir: "public/media",
-    mimeTypes: ["image/*"],
+    mimeTypes: ["image/*", "video/mp4", "video/webm"],
     imageSizes: [
       { name: "card", width: 600, height: 800, position: "centre" },
       { name: "detail", width: 1200 },

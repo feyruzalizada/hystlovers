@@ -100,8 +100,13 @@ export const Slides: CollectionConfig = {
           type: "upload",
           relationTo: "media",
           label: "Desktop image",
-          required: true,
-          admin: { description: "Recommended: 2400×1400 (21:9 on large screens).", components: { Cell: listCell("ImageCell") } },
+          // Optional once a video is set; the column stays nullable either way.
+          validate: (value: unknown, { siblingData }: { siblingData: { video?: unknown } }) =>
+            value || siblingData?.video ? true : "Add an image or a video.",
+          admin: {
+            description: "Recommended: 2400×1400 (21:9 on large screens). With a video it is shown while the video loads.",
+            components: { Cell: listCell("ImageCell") },
+          },
         },
         {
           name: "imageMobile",
@@ -109,6 +114,16 @@ export const Slides: CollectionConfig = {
           relationTo: "media",
           label: "Mobile image (optional)",
           admin: { description: "Recommended: 1080×1350 (4:5). Falls back to the desktop image." },
+        },
+        {
+          name: "video",
+          type: "upload",
+          relationTo: "media",
+          label: "Video (optional)",
+          filterOptions: { mimeType: { contains: "video" } },
+          admin: {
+            description: "MP4 or WebM. Plays muted and on a loop in place of the image, on every screen size.",
+          },
         },
       ],
     },
