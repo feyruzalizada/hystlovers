@@ -35,61 +35,11 @@ type SeedProduct = {
   images: string[];
 };
 
-/** One-off import of the content carried over from the PHP shop. */
-export async function seed(payload: Payload) {
-  const media = new Map<string, number>();
-
-  const uploadImage = async (publicPath: string) => {
-    if (!publicPath) return null;
-    if (media.has(publicPath)) return media.get(publicPath)!;
-
-    const file = path.join(root, "public", publicPath);
-    if (!fs.existsSync(file)) {
-      payload.logger.warn(`missing image ${publicPath}`);
-      return null;
-    }
-
-    const created = await payload.create({
-      collection: "media",
-      data: { alt: path.basename(publicPath, path.extname(publicPath)) },
-      filePath: file,
-      // The source images already sit in public/media; without this every
-      // re-seed would add a "-1" copy next to them.
-      overwriteExistingFiles: true,
-    });
-
-    media.set(publicPath, created.id as number);
-    return created.id;
-  };
-
-  // ---- media files in Blob ------------------------------------------------
-  // A build without the Blob token records the images but leaves the files on
-  // Vercel's throwaway disk; the next build with the token uploads them again.
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const sources = ["storage/products", "storage/slides", "media"].map((dir) =>
-      path.join(root, "public", dir),
-    );
-    const stored = await payload.find({ collection: "media", limit: 0, pagination: false, depth: 0 });
-    let reuploaded = 0;
-    for (const doc of stored.docs) {
-      if (!doc.url || !doc.filename) continue;
-      const head = await fetch(doc.url, { method: "HEAD" }).catch(() => null);
-      if (head?.ok) continue;
-
-      const stem = path.basename(doc.filename, path.extname(doc.filename));
-      const file = sources
-        .flatMap((dir) => [path.join(dir, `${stem}.png`), path.join(dir, doc.filename!)])
-        .find((candidate) => fs.existsSync(candidate));
-      if (!file) {
-        payload.logger.warn(`no source for media ${doc.filename}`);
-        continue;
-      }
-      await payload.update({ collection: "media", id: doc.id, data: {}, filePath: file, overwriteExistingFiles: true });
-      reuploaded++;
-    }
-    if (reuploaded) payload.logger.info(`re-uploaded ${reuploaded} media files to Blob`);
-  }
-
+/**
+ * What the shop needs to run on an empty database: the administrator, site
+ * texts, the header and footer block and store settings.
+ */
+export async function seedBase(payload: Payload) {
   // ---- admin user -------------------------------------------------------
   const email = process.env.ADMIN_EMAIL ?? "admin@hystlovers.com";
   // A build never plants the well-known dev password; without ADMIN_PASSWORD
@@ -182,20 +132,6 @@ export async function seed(payload: Payload) {
     freeShippingThreshold: number;
     shippingFee: number;
   }>("content/shop.json");
-  const contact = read<{
-    details: {
-      email: string | null;
-      phone: string | null;
-      whatsapp: string | null;
-      address: string | null;
-      workingHours: string | null;
-      socials: { name: string; handle: string }[];
-    };
-  }>("content/contact.json");
-
-  const social = (name: string) =>
-    contact.details.socials.find((s) => s.name.toLowerCase() === name)?.handle ?? null;
-
   // Only on the first run: every build seeds, and the panel owns these afterwards.
   const settings = await payload.findGlobal({ slug: "settings" });
   if (!settings.updatedAt) {
@@ -210,6 +146,78 @@ export async function seed(payload: Payload) {
       },
     });
   }
+}
+
+/** One-off import of the content carried over from the PHP shop. */
+export async function seedContent(payload: Payload) {
+  const media = new Map<string, number>();
+
+  const uploadImage = async (publicPath: string) => {
+    if (!publicPath) return null;
+    if (media.has(publicPath)) return media.get(publicPath)!;
+
+    const file = path.join(root, "public", publicPath);
+    if (!fs.existsSync(file)) {
+      payload.logger.warn(`missing image ${publicPath}`);
+      return null;
+    }
+
+    const created = await payload.create({
+      collection: "media",
+      data: { alt: path.basename(publicPath, path.extname(publicPath)) },
+      filePath: file,
+      // The source images already sit in public/media; without this every
+      // re-seed would add a "-1" copy next to them.
+      overwriteExistingFiles: true,
+    });
+
+    media.set(publicPath, created.id as number);
+    return created.id;
+  };
+
+  // ---- media files in Blob ------------------------------------------------
+  // A build without the Blob token records the images but leaves the files on
+  // Vercel's throwaway disk; the next build with the token uploads them again.
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const sources = ["storage/products", "storage/slides", "media"].map((dir) =>
+      path.join(root, "public", dir),
+    );
+    const stored = await payload.find({ collection: "media", limit: 0, pagination: false, depth: 0 });
+    let reuploaded = 0;
+    for (const doc of stored.docs) {
+      if (!doc.url || !doc.filename) continue;
+      const head = await fetch(doc.url, { method: "HEAD" }).catch(() => null);
+      if (head?.ok) continue;
+
+      const stem = path.basename(doc.filename, path.extname(doc.filename));
+      const file = sources
+        .flatMap((dir) => [path.join(dir, `${stem}.png`), path.join(dir, doc.filename!)])
+        .find((candidate) => fs.existsSync(candidate));
+      if (!file) {
+        payload.logger.warn(`no source for media ${doc.filename}`);
+        continue;
+      }
+      await payload.update({ collection: "media", id: doc.id, data: {}, filePath: file, overwriteExistingFiles: true });
+      reuploaded++;
+    }
+    if (reuploaded) payload.logger.info(`re-uploaded ${reuploaded} media files to Blob`);
+  }
+
+  // ---- contact details --------------------------------------------------
+  const contact = read<{
+    details: {
+      email: string | null;
+      phone: string | null;
+      whatsapp: string | null;
+      address: string | null;
+      workingHours: string | null;
+      socials: { name: string; handle: string }[];
+    };
+  }>("content/contact.json");
+
+  const social = (name: string) =>
+    contact.details.socials.find((s) => s.name.toLowerCase() === name)?.handle ?? null;
+
   const contactDetails = await payload.findGlobal({ slug: "contact-details" });
   if (!contactDetails.updatedAt) {
     await payload.updateGlobal({
