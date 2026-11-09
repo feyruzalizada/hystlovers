@@ -1,0 +1,49 @@
+# Development: hot reload, the whole catalogue from the seed and a local Postgres.
+# docker compose -f docker-compose-dev.yml up --build
+name: hystlovers-dev
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URI: postgres://hystlovers:hystlovers@db:5432/hystlovers
+      SERVER_URL: http://localhost:${DEV_PORT:-3000}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:-dev-only-secret}
+    ports:
+      - "${DEV_PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      # The image's Linux node_modules and the build cache, not the host's.
+      - /app/node_modules
+      - /app/.next
+      # Seeded and uploaded images stay out of the working tree.
+      - media:/app/public/media
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: hystlovers
+      POSTGRES_PASSWORD: hystlovers
+      POSTGRES_DB: hystlovers
+    ports:
+      # For a database client on the host.
+      - "127.0.0.1:${DEV_DB_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hystlovers -d hystlovers"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+  media:

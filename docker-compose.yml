@@ -1,11 +1,18 @@
+# Production. Its own project name keeps the dev stack's database apart.
+name: hystlovers
+
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: prod
     restart: unless-stopped
     env_file: .env
     environment:
       # Overrides the SQLite DATABASE_URI in .env with the db service.
       DATABASE_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # An empty shop: only the admin, site texts and store settings are created.
+      SEED_CONTENT: "false"
     ports:
       # Only the host's nginx reaches the app.
       - "127.0.0.1:${APP_PORT:-3000}:3000"
@@ -32,5 +39,5 @@ services:
 
 volumes:
   pgdata:
-  # Uploads from the panel; starts with the images in the repository.
+  # Uploads from the panel.
   media:
