@@ -8,14 +8,19 @@ import { availableIn, hit, tooManyAttempts } from "@/lib/rate-limit";
 import { PAYMENT_METHODS } from "@/collections/Commerce";
 import type { Order, Product, Setting } from "@/payload-types";
 import type { Locale } from "@/lib/types";
-import { renderOrderEmail } from "@/lib/order-email";
+import { kapitalEnabled } from "@/lib/kapital";
+import { sendOrderEmail } from "@/lib/order-email";
+import { isPayable, startCardPayment, syncCardPayment } from "@/lib/payments";
 import { productName } from "@/lib/product-name";
 
 type OrderItem = NonNullable<Order["items"]>[number];
 type PaymentMethod = Order["paymentMethod"];
 
 export type CheckoutLine = { slug: string; size: string; qty: number };
-export type CheckoutResult = { ok: true; number: string } | { ok: false; message: string };
+export type CheckoutResult =
+  | { ok: true; number: string; paymentUrl?: string; paymentError?: boolean }
+  | { ok: false; message: string };
+export type PayResult = { ok: true; paymentUrl: string | null } | { ok: false; message: string };
 
 const PHONE = /^\+?[0-9 ()-]{7,}$/;
 
@@ -79,7 +84,10 @@ export async function placeOrder(input: {
   if (!PHONE.test(input.phone.trim())) {
     return { ok: false, message: t("checkout.error.phone") };
   }
-  if (!PAYMENT_METHODS.includes(input.paymentMethod as PaymentMethod)) {
+  if (
+    !PAYMENT_METHODS.includes(input.paymentMethod as PaymentMethod) ||
+    (input.paymentMethod === "card" && !kapitalEnabled)
+  ) {
     return { ok: false, message: t("form.error.invalid") };
   }
   if (input.items.length === 0 || input.items.length > 50) {
@@ -90,7 +98,6 @@ export async function placeOrder(input: {
   const settings: Setting = await payload.findGlobal({ slug: "settings", locale });
 
   const lines: OrderItem[] = [];
-  const shopperLines: { name: string; colorName: string }[] = [];
   const stockWrites = new Map<number, { sizes: Product["sizes"]; inStock: boolean }>();
   // Two lines of one product share a doc, so the second sees the first's decrement.
   const docs = new Map<string, Product>();
@@ -123,7 +130,6 @@ export async function placeOrder(input: {
       locale === defaultLocale
         ? doc
         : await payload.findByID({ collection: "products", id: doc.id, locale: defaultLocale, depth: 0, overrideAccess: true });
-    shopperLines.push({ name: productName(doc, locale), colorName: doc.colorName });
 
     // Prices always come from the database, never from the submitted cart.
     const unitPrice = doc.price;
@@ -194,25 +200,53 @@ export async function placeOrder(input: {
     });
   }
 
-  // The order stands even if the confirmation email cannot be delivered.
-  try {
-    await payload.sendEmail({
-      to: customer.email,
-      subject: t("mail.order.subject", { number }),
-      html: renderOrderEmail({
-        order: { ...order, items: (order.items ?? []).map((line, index) => ({ ...line, ...shopperLines[index] })) },
-        t,
-        locale,
-        currencySymbol: settings.currencySymbol ?? "",
-        bankDetails:
-          input.paymentMethod === "bank_transfer" ? (settings.bankTransferDetails ?? null) : null,
-      }),
-    });
-  } catch {
-    // logged by Payload's email adapter
+  if (order.paymentMethod !== "card") {
+    await sendOrderEmail(payload, order);
+    return { ok: true, number };
   }
 
-  return { ok: true, number };
+  // The order is kept either way; an unpaid one can be paid from its page.
+  try {
+    return { ok: true, number, paymentUrl: await startCardPayment(payload, order) };
+  } catch (error) {
+    payload.logger.error(`order ${number}: ${(error as Error).message}`);
+    return { ok: true, number, paymentError: true };
+  }
+}
+
+/** "Pay by card" on an unpaid card order: a fresh bank order, unless the last one went through. */
+export async function payOrder(input: { locale: string; number: string }): Promise<PayResult> {
+  const locale = localeOf(input.locale);
+  const t = await getTranslator(locale);
+
+  const customer = await getCustomer();
+  if (!customer) return { ok: false, message: t("auth.failed") };
+
+  const key = `pay:${customer.id}`;
+  if (tooManyAttempts(key, 10)) {
+    return { ok: false, message: t("auth.throttled", { seconds: availableIn(key) }) };
+  }
+  hit(key, 60);
+
+  const payload = await payloadClient();
+  const { docs } = await payload.find({
+    collection: "orders",
+    where: { number: { equals: input.number }, customer: { equals: customer.id } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+  });
+  let order = docs[0];
+  if (!order || !isPayable(order)) return { ok: false, message: t("form.error.invalid") };
+
+  try {
+    order = await syncCardPayment(payload, order);
+    if (!isPayable(order)) return { ok: true, paymentUrl: null };
+    return { ok: true, paymentUrl: await startCardPayment(payload, order) };
+  } catch (error) {
+    payload.logger.error(`order ${order.number}: ${(error as Error).message}`);
+    return { ok: false, message: t("account.order.payment_error") };
+  }
 }
 
 export async function orderPath(locale: string, number: string): Promise<string> {

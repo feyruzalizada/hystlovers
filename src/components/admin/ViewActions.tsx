@@ -105,6 +105,32 @@ export function UpdateStatus({
   );
 }
 
+/** "Refund payment": returns a paid card order's full amount through Kapital Bank, confirmed first. */
+export function RefundPayment({ id, amount }: { id: number | string; amount: string }) {
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+
+  const refund = async () => {
+    if (!window.confirm(`Refund ${amount} to the customer's card? This cannot be undone.`)) return;
+    setSaving(true);
+    const response = await fetch(`/api/orders/${id}/refund`, { method: "POST", credentials: "include" }).catch(() => null);
+    setSaving(false);
+    if (response?.ok) {
+      toast.success("Payment refunded");
+      router.refresh();
+    } else {
+      const body = await response?.json().catch(() => null);
+      toast.error(body?.error ?? "Could not refund the payment");
+    }
+  };
+
+  return (
+    <button type="button" className="fi-btn fi-btn--danger" disabled={saving} onClick={() => void refund()}>
+      Refund payment
+    </button>
+  );
+}
+
 /** "Grant panel access" / "Revoke panel access", confirmed first. */
 export function PanelAccess({ id, granted }: { id: number | string; granted: boolean }) {
   const router = useRouter();

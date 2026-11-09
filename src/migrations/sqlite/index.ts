@@ -17,6 +17,7 @@ import * as migration_20261106_160453_size_guide from './20261106_160453_size_gu
 import * as migration_20261106_163731_image_border from './20261106_163731_image_border';
 import * as migration_20261106_164839_slide_video from './20261106_164839_slide_video';
 import * as migration_20261106_171920_background_audio from './20261106_171920_background_audio';
+import * as migration_20261109_101153_kapital_payment from './20261109_101153_kapital_payment';
 
 export const migrations = [
   {
@@ -112,6 +113,11 @@ export const migrations = [
   {
     up: migration_20261106_171920_background_audio.up,
     down: migration_20261106_171920_background_audio.down,
-    name: '20261106_171920_background_audio'
+    name: '20261106_171920_background_audio',
+  },
+  {
+    up: migration_20261109_101153_kapital_payment.up,
+    down: migration_20261109_101153_kapital_payment.down,
+    name: '20261109_101153_kapital_payment'
   },
 ];

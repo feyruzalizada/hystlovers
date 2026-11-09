@@ -7,7 +7,7 @@ const escape = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** Read straight from the collection: this runs inside Payload's own hook, outside React. */
-async function translator(payload: Payload, locale: Locale): Promise<Translator> {
+export async function translator(payload: Payload, locale: Locale): Promise<Translator> {
   const result = await payload.find({ collection: "site-texts", limit: 0, pagination: false, depth: 0 });
   const messages = Object.fromEntries(result.docs.map((doc) => [doc.key, doc[locale] || doc.az]));
   return buildTranslator(messages, locale);

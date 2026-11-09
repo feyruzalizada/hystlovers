@@ -1,5 +1,6 @@
 import "server-only";
 import { payloadClient } from "./cms";
+import { isPayable, syncCardPayment } from "./payments";
 import { productName } from "./product-name";
 import type { Order, Setting } from "@/payload-types";
 import type { Locale } from "./types";
@@ -23,6 +24,7 @@ export type OrderView = {
   paymentMethodKey: string;
   paymentStatus: string;
   paymentStatusKey: string;
+  canPay: boolean;
   hasPreorder: boolean;
   customerName: string;
   phone: string;
@@ -59,6 +61,7 @@ function toView(doc: Order, locale: Locale): OrderView {
     paymentMethodKey: `checkout.payment.${doc.paymentMethod}`,
     paymentStatus: doc.paymentStatus,
     paymentStatusKey: `order.payment_status.${doc.paymentStatus}`,
+    canPay: isPayable(doc),
     hasPreorder: items.some((item) => item.isPreorder),
     customerName: doc.customerName,
     phone: doc.phone,
@@ -106,6 +109,25 @@ export async function getOrderFor(
   });
   const doc = result.docs[0];
   return doc ? toView(doc, locale) : null;
+}
+
+/** A card order still awaiting payment is checked with the bank, in case the shopper never came back. */
+export async function refreshCardPayment(customerId: string | number, number: string): Promise<void> {
+  const payload = await payloadClient();
+  const { docs } = await payload.find({
+    collection: "orders",
+    where: { number: { equals: number }, customer: { equals: customerId } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+  });
+  const doc = docs[0];
+  if (!doc || doc.paymentMethod !== "card" || doc.paymentStatus !== "pending" || !doc.bankOrderId) return;
+  try {
+    await syncCardPayment(payload, doc);
+  } catch (error) {
+    payload.logger.error(`order ${number}: ${(error as Error).message}`);
+  }
 }
 
 export async function getBankTransferDetails(locale: Locale): Promise<string | null> {

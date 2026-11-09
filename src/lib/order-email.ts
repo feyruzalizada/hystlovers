@@ -1,7 +1,9 @@
-import "server-only";
-import type { Order } from "@/payload-types";
-import type { Translator } from "./i18n";
+import type { Payload } from "payload";
+import type { Order, Product } from "@/payload-types";
+import { defaultLocale, isLocale, type Translator } from "./i18n";
 import { formatMoney } from "./money";
+import { productName } from "./product-name";
+import { translator } from "./reset-email";
 import type { Locale } from "./types";
 
 const escape = (value: string) =>
@@ -109,4 +111,42 @@ export function renderOrderEmail({
   <p style="color: #777; font-size: 12px;">${escape(t("mail.order.automated"))}</p>
 </body>
 </html>`;
+}
+
+/**
+ * Sends the confirmation in the language the order was placed in. Card orders
+ * get it once the bank confirms the payment, the others right at checkout.
+ */
+export async function sendOrderEmail(payload: Payload, order: Order): Promise<void> {
+  const locale: Locale = isLocale(order.locale) ? order.locale : defaultLocale;
+  const t = await translator(payload, locale);
+  const settings = await payload.findGlobal({ slug: "settings", locale });
+
+  // The order keeps the shop's default language; the shopper reads their own.
+  const items = await Promise.all(
+    (order.items ?? []).map(async (line) => {
+      const id = typeof line.product === "object" ? line.product?.id : line.product;
+      const doc: Product | null = id
+        ? await payload.findByID({ collection: "products", id, locale, depth: 0, overrideAccess: true, disableErrors: true })
+        : null;
+      return doc ? { ...line, name: productName(doc, locale), colorName: doc.colorName } : line;
+    }),
+  );
+
+  // The order stands even if the confirmation email cannot be delivered.
+  try {
+    await payload.sendEmail({
+      to: order.customerEmail,
+      subject: t("mail.order.subject", { number: order.number }),
+      html: renderOrderEmail({
+        order: { ...order, items },
+        t,
+        locale,
+        currencySymbol: settings.currencySymbol ?? "",
+        bankDetails: order.paymentMethod === "bank_transfer" ? (settings.bankTransferDetails ?? null) : null,
+      }),
+    });
+  } catch {
+    // logged by Payload's email adapter
+  }
 }
