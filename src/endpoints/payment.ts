@@ -35,9 +35,23 @@ export const paymentReturn: Endpoint = {
     const result = synced.paymentStatus === "paid" ? "success" : synced.paymentStatus === "failed" ? "failed" : null;
     const locale = isLocale(order.locale) ? order.locale : defaultLocale;
     const path = localePath(locale, `/account/orders/${encodeURIComponent(number)}`);
-    return Response.redirect(`${origin}${path}${result ? `?payment=${result}` : ""}`, 303);
+    return sameOriginHop(`${path}${result ? `?payment=${result}` : ""}`);
   },
 };
+
+/**
+ * A redirect would keep the bank's navigation cross-site, and Payload ignores
+ * the login cookie on those; a hop from our own page keeps the shopper signed in.
+ */
+function sameOriginHop(path: string): Response {
+  const href = path.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  return new Response(
+    `<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${href}">` +
+      `<script>location.replace(${JSON.stringify(path)})</script></head>` +
+      `<body><a href="${href}">${href}</a></body></html>`,
+    { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } },
+  );
+}
 
 /** "Refund payment" on the view page: returns the full card payment through the bank. */
 export const paymentRefund: Endpoint = {
