@@ -268,10 +268,13 @@ export async function seed(payload: Payload) {
   for (const [slug, id] of categoryIds) {
     const text = descriptions[slug];
     if (!text) continue;
+    const imported = await payload.findByID({ collection: "categories", id, locale: "az", depth: 0 });
     for (const locale of LOCALES) {
       const doc = await payload.findByID({ collection: "categories", id, locale, fallbackLocale: false, depth: 0 });
       if (doc.description) continue;
-      await payload.update({ collection: "categories", id, locale, data: { description: text[locale] } });
+      // The name is required in every language; the imported one stands in until translateContent replaces it.
+      const name = doc.name || imported.name;
+      await payload.update({ collection: "categories", id, locale, data: { description: text[locale], name } });
       described++;
     }
   }
