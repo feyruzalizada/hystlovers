@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import CheckoutForm from "@/components/CheckoutForm";
 import { getCustomer } from "@/lib/auth";
+import { kapitalEnabled } from "@/lib/kapital";
 import { isLocale, localePath } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { getTranslator } from "@/lib/server-i18n";
@@ -25,5 +26,5 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
   const customer = await getCustomer();
   if (!customer) redirect(localePath(locale, "/login"));
 
-  return <CheckoutForm defaultName={customer.name} />;
+  return <CheckoutForm defaultName={customer.name} cardEnabled={kapitalEnabled} />;
 }

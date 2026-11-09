@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { logout } from "@/app/actions/auth";
+import { payOrder } from "@/app/actions/checkout";
 import type { OrderView } from "@/lib/orders";
 import { useI18n } from "./I18nProvider";
 import { useShop } from "./ShopProvider";
@@ -79,22 +81,64 @@ export function OrderList({ orders }: { orders: OrderView[] }) {
   );
 }
 
+/** Sends the shopper to the bank's payment page for an unpaid card order. */
+function PayButton({ number, total }: { number: string; total: number }) {
+  const { t, locale } = useI18n();
+  const { formatPrice } = useShop();
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  // Stays set while the browser leaves for the bank.
+  const [leaving, setLeaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const pay = () =>
+    startTransition(async () => {
+      setError(null);
+      const result = await payOrder({ locale, number });
+      if (!result.ok) {
+        setError(result.message);
+        return;
+      }
+      if (!result.paymentUrl) {
+        router.refresh();
+        return;
+      }
+      setLeaving(true);
+      window.location.assign(result.paymentUrl);
+    });
+
+  return (
+    <div className="mt-8">
+      {error && <p className="mb-3 bg-sale/10 px-4 py-3 text-xs text-sale">{error}</p>}
+      <button type="button" className="btn-primary w-full sm:w-auto" disabled={pending || leaving} onClick={pay}>
+        {pending || leaving ? t("checkout.redirecting") : t("account.order.pay", { total: formatPrice(total) })}
+      </button>
+    </div>
+  );
+}
+
 export function OrderDetail({
   order,
   bankDetails,
   justPlaced,
+  payment,
 }: {
   order: OrderView;
   bankDetails: string | null;
   justPlaced?: boolean;
+  payment?: "success" | "failed" | "error";
 }) {
   const { t, path } = useI18n();
   const { formatPrice } = useShop();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      {justPlaced && (
-        <p className="mb-8 bg-mist px-5 py-4 text-sm">{t("account.order.placed_flash")}</p>
+      {payment === "success" ? (
+        <p className="mb-8 bg-mist px-5 py-4 text-sm">{t("account.order.payment_success")}</p>
+      ) : payment ? (
+        <p className="mb-8 bg-sale/10 px-5 py-4 text-sm text-sale">{t(`account.order.payment_${payment}`)}</p>
+      ) : (
+        justPlaced && <p className="mb-8 bg-mist px-5 py-4 text-sm">{t("account.order.placed_flash")}</p>
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -115,6 +159,8 @@ export function OrderDetail({
           {t("product.preorder.note")}
         </p>
       )}
+
+      {order.canPay && <PayButton number={order.number} total={order.total} />}
 
       {bankDetails && (
         <div className="mt-8 border border-line bg-mist/60 p-5 text-sm">

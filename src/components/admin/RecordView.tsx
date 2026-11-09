@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { adminLabel, ORDER_STATUSES, PAYMENT_STATUSES } from "@/collections/Commerce";
 import { PageHeader } from "./PageHeader";
-import { DeleteRecord, EditRecord, PanelAccess, UpdateStatus } from "./ViewActions";
+import { DeleteRecord, EditRecord, PanelAccess, RefundPayment, UpdateStatus } from "./ViewActions";
 
 // The source panel's read-only view pages (Filament infolists) for orders,
 // customers and contact messages.
@@ -58,6 +58,9 @@ const statusTone = (status: string): Tone =>
           ? "danger"
           : "gray";
 
+const paymentTone = (status: string): Tone =>
+  status === "paid" ? "success" : status === "failed" ? "danger" : status === "refunded" ? "gray" : "warning";
+
 const options = (values: readonly string[]) => values.map((value) => ({ value, label: adminLabel(value) }));
 
 const Page = ({ crumbs, title, actions, children }: Parameters<typeof PageHeader>[0] & { children: ReactNode }) => (
@@ -73,6 +76,8 @@ type Order = {
   status: string;
   paymentMethod: string;
   paymentStatus: string;
+  bankOrderId?: number | null;
+  bankStatus?: string | null;
   createdAt: string;
   customerName: string;
   customerEmail: string;
@@ -103,6 +108,9 @@ export function orders({ doc }: DocumentViewServerProps) {
             statuses={options(ORDER_STATUSES)}
             paymentStatuses={options(PAYMENT_STATUSES)}
           />
+          {order.paymentMethod === "card" && order.paymentStatus === "paid" && order.bankOrderId && (
+            <RefundPayment id={order.id} amount={money.format(Number(order.total))} />
+          )}
         </>
       }
     >
@@ -116,9 +124,15 @@ export function orders({ doc }: DocumentViewServerProps) {
             <Badge>{adminLabel(order.paymentMethod)}</Badge>
           </Entry>
           <Entry label="Payment status">
-            <Badge tone={order.paymentStatus === "paid" ? "success" : "warning"}>{adminLabel(order.paymentStatus)}</Badge>
+            <Badge tone={paymentTone(order.paymentStatus)}>{adminLabel(order.paymentStatus)}</Badge>
           </Entry>
           <Entry label="Placed">{when(order.createdAt)}</Entry>
+          {order.paymentMethod === "card" && (
+            <>
+              <Entry label="Bank order">{order.bankOrderId}</Entry>
+              <Entry label="Bank status">{order.bankStatus}</Entry>
+            </>
+          )}
         </Grid>
       </Section>
       <Section title="Customer">

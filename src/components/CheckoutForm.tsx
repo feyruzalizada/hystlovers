@@ -9,11 +9,11 @@ import { useCart } from "./CartProvider";
 import { useI18n } from "./I18nProvider";
 import { useShop } from "./ShopProvider";
 
-const PAYMENT_METHODS = ["cod", "bank_transfer"] as const;
+const PAYMENT_METHODS = ["cod", "bank_transfer", "card"] as const;
 
 const LABEL = "mb-2 block text-xs font-medium tracking-wide2 uppercase";
 
-export default function CheckoutForm({ defaultName }: { defaultName: string }) {
+export default function CheckoutForm({ defaultName, cardEnabled }: { defaultName: string; cardEnabled: boolean }) {
   const { t, path, locale } = useI18n();
   const { formatPrice, freeShippingThreshold, shippingFee } = useShop();
   const cart = useCart();
@@ -22,6 +22,9 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [method, setMethod] = useState<string>("cod");
+  // Kept while the browser leaves for the bank's payment page.
+  const [leaving, setLeaving] = useState(false);
+  const methods = PAYMENT_METHODS.filter((value) => value !== "card" || cardEnabled);
 
   const shipping = cart.subtotal >= freeShippingThreshold ? 0 : shippingFee;
   const total = cart.subtotal + shipping;
@@ -49,7 +52,12 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
       }
 
       cart.clear();
-      router.push(path(`/account/orders/${result.number}?placed=1`));
+      if (result.paymentUrl) {
+        setLeaving(true);
+        window.location.assign(result.paymentUrl);
+        return;
+      }
+      router.push(path(`/account/orders/${result.number}?${result.paymentError ? "payment=error" : "placed=1"}`));
     });
   }
 
@@ -57,7 +65,9 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="heading-brand text-lg sm:text-2xl">{t("checkout.title")}</h1>
 
-      {cart.lines.length === 0 ? (
+      {leaving ? (
+        <p className="mt-12 text-sm text-ink/60">{t("checkout.redirecting")}</p>
+      ) : cart.lines.length === 0 ? (
         <div className="mt-12 max-w-md">
           <p className="text-sm text-ink/60">{t("checkout.empty")}</p>
           <Link href={path("/collections/all-products")} className="btn-secondary mt-6 inline-block">
@@ -127,7 +137,7 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
                 {t("checkout.payment_method")}
               </legend>
               <div className="space-y-2">
-                {PAYMENT_METHODS.map((value) => (
+                {methods.map((value) => (
                   <label
                     key={value}
                     className={`flex cursor-pointer items-center gap-3 border px-4 py-3 text-sm ${
@@ -148,6 +158,9 @@ export default function CheckoutForm({ defaultName }: { defaultName: string }) {
               </div>
               {method === "bank_transfer" && (
                 <p className="mt-3 bg-mist px-4 py-3 text-xs text-ink/70">{t("checkout.bank_note")}</p>
+              )}
+              {method === "card" && (
+                <p className="mt-3 bg-mist px-4 py-3 text-xs text-ink/70">{t("checkout.card_note")}</p>
               )}
             </fieldset>
 
