@@ -1,0 +1,14 @@
+.git
+node_modules
+.next
+.env*
+!.env.example
+*.db
+*.db-journal
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+/public/uploads
+/tests
+/test-results
+/playwright-report
