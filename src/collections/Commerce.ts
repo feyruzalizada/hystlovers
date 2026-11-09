@@ -8,11 +8,12 @@ import {
   syncPanelAccount,
 } from "./customer-sync";
 import { ordersExport } from "@/endpoints/orders-export";
+import { paymentRefund, paymentReturn } from "@/endpoints/payment";
 import { resetEmailHtml, resetEmailSubject } from "@/lib/reset-email";
 
 export const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
-export const PAYMENT_METHODS = ["cod", "bank_transfer"] as const;
-export const PAYMENT_STATUSES = ["pending", "paid"] as const;
+export const PAYMENT_METHODS = ["cod", "bank_transfer", "card"] as const;
+export const PAYMENT_STATUSES = ["pending", "paid", "failed", "refunded"] as const;
 export const CONTACT_SUBJECTS = ["order", "return", "product", "other"] as const;
 
 // Wording the source panel used; anything not listed is just capitalised.
@@ -132,7 +133,7 @@ export const Orders: CollectionConfig = {
     listSearchableFields: ["number", "customerName"],
   },
   disableDuplicate: true,
-  endpoints: [ordersExport],
+  endpoints: [ordersExport, paymentReturn, paymentRefund],
   hooks: {
     afterChange: [countOrdersAfterChange],
     afterDelete: [countOrdersAfterDelete],
@@ -211,6 +212,21 @@ export const Orders: CollectionConfig = {
         { name: "city", type: "text", required: true, admin: { readOnly: true } },
         { name: "address", type: "textarea", required: true, admin: { readOnly: true } },
         { name: "note", type: "textarea", admin: { readOnly: true } },
+      ],
+    },
+    {
+      type: "collapsible",
+      label: "Card payment",
+      admin: { condition: (data) => data?.paymentMethod === "card" },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            // The latest Kapital Bank order; a retried payment replaces it.
+            { name: "bankOrderId", type: "number", label: "Bank order", index: true, admin: { width: "50%", readOnly: true } },
+            { name: "bankStatus", type: "text", label: "Bank status", admin: { width: "50%", readOnly: true } },
+          ],
+        },
       ],
     },
     {

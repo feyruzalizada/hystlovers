@@ -188,14 +188,16 @@ export interface Order {
   itemsCount?: number | null;
   customer?: (number | null) | Customer;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: 'cod' | 'bank_transfer';
-  paymentStatus: 'pending' | 'paid';
+  paymentMethod: 'cod' | 'bank_transfer' | 'card';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   customerName: string;
   customerEmail: string;
   phone: string;
   city: string;
   address: string;
   note?: string | null;
+  bankOrderId?: number | null;
+  bankStatus?: string | null;
   items: {
     product?: (number | null) | Product;
     name: string;
@@ -849,6 +851,8 @@ export interface OrdersSelect<T extends boolean = true> {
   city?: T;
   address?: T;
   note?: T;
+  bankOrderId?: T;
+  bankStatus?: T;
   items?:
     | T
     | {
